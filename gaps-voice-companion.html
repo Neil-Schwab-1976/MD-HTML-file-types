@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>G.A.P.S. Companion · HALO</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#d4a843;--gold-dim:#8a6a22;--navy:#0a1628;--navy-light:#1e3a5f;--blue:#4a90e2;--green:#2e8b57;--red:#c0392b;--purple:#9b59b6;--text1:#f0f6ff;--text2:#aac8e8;--dim:#607a9a;--border:rgba(74,144,226,0.25);--border-gold:rgba(212,168,67,0.35);--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.08);--r:18px;--rs:10px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--navy);font-family:'Lato',sans-serif;color:var(--text1);overflow:hidden;}
+/* SETUP */
+#setupOverlay{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,#050e1e,#0d1f3c 60%,#091225);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.sc{width:100%;max-width:420px;background:rgba(255,255,255,0.04);border:1px solid var(--border-gold);border-radius:28px;padding:36px 28px 32px;box-shadow:0 30px 60px rgba(0,0,0,.6);}
+.sl{text-align:center;margin-bottom:26px;}
+.sl .lt{font-family:'Cinzel',serif;font-size:28px;letter-spacing:6px;color:var(--gold);text-shadow:0 0 30px rgba(212,168,67,.4);display:block;}
+.sl .ls{font-size:11px;letter-spacing:3px;color:var(--dim);margin-top:6px;display:block;}
+.sl .ld{font-size:11px;color:var(--text2);margin-top:8px;opacity:.7;display:block;}
+.fg{margin-bottom:15px;}
+.fg label{display:block;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;font-weight:700;text-transform:uppercase;}
+.fg input,.fg select{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:var(--rs);padding:11px 15px;color:var(--text1);font-family:'Lato',sans-serif;font-size:16px;outline:none;-webkit-appearance:none;}
+.fg select option{background:#1a2a4a;}
+.fg input:focus,.fg select:focus{border-color:var(--blue);}
+.btn-launch{width:100%;padding:15px;background:linear-gradient(135deg,#2c5282,#1e3a5f);border:1px solid var(--blue);border-radius:40px;color:#fff;font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;cursor:pointer;margin-top:18px;transition:all .2s;}
+.btn-launch:hover{transform:translateY(-1px);}
+.sn{font-size:11px;color:var(--dim);text-align:center;margin-top:10px;line-height:1.5;}
+/* APP */
+#appShell{display:none;height:100vh;flex-direction:column;background:linear-gradient(180deg,#070f1e,#0c1a30);}
+.status-bar{padding:11px 15px 7px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(7,15,30,.92);backdrop-filter:blur(10px);flex-shrink:0;}
+.s-logo{font-family:'Cinzel',serif;font-size:14px;letter-spacing:4px;color:var(--gold);}
+.s-phase{font-size:10px;color:var(--text2);text-align:center;flex:1;padding:0 6px;}
+.s-day{font-size:11px;color:var(--blue);font-weight:700;}
+/* HALT BAR */
+.halt-bar{display:flex;padding:7px 11px;gap:5px;border-bottom:1px solid var(--border);background:rgba(5,12,25,.8);flex-shrink:0;cursor:pointer;}
+.hp{flex:1;background:var(--glass);border:1px solid var(--border);border-radius:7px;padding:4px 5px;text-align:center;}
+.hp.hi{border-color:rgba(192,57,43,.5);background:rgba(192,57,43,.1);}
+.hp.md{border-color:rgba(212,168,67,.4);background:rgba(212,168,67,.07);}
+.hp .hl{font-size:8px;color:var(--dim);letter-spacing:1px;display:block;}
+.hp .hs{font-size:17px;font-weight:700;line-height:1;color:var(--text2);}
+.hp.hi .hs{color:#e74c3c;}.hp.md .hs{color:var(--gold);}
+/* SCROLL */
+.tab-content{flex:1;overflow-y:auto;overflow-x:hidden;padding:11px 11px 4px;-webkit-overflow-scrolling:touch;}
+.tab-pane{display:none;}.tab-pane.active{display:block;}
+/* NAV */
+.bottom-nav{display:flex;border-top:1px solid var(--border);background:rgba(7,15,30,.96);backdrop-filter:blur(15px);flex-shrink:0;}
+.nv{flex:1;padding:8px 2px 6px;background:none;border:none;color:var(--dim);font-size:8.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s;}
+.nv .ni{font-size:17px;}.nv.active{color:var(--gold);}
+/* SESSION */
+.phase-banner{background:linear-gradient(135deg,rgba(30,58,95,.8),rgba(15,36,64,.9));border:1px solid var(--border-gold);border-radius:var(--r);padding:11px 13px;margin-bottom:9px;display:flex;align-items:center;gap:9px;}
+.pi{font-size:22px;}.pinfo{flex:1;}
+.pname{font-weight:700;font-size:13px;color:var(--gold);}
+.pdesc{font-size:10px;color:var(--text2);margin-top:2px;}
+.hurdle-row{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
+.hchip{background:rgba(74,144,226,.1);border:1px solid rgba(74,144,226,.3);border-radius:20px;padding:2px 9px;font-size:10px;color:var(--blue);}
+.hchip.top{border-color:rgba(212,168,67,.4);background:rgba(212,168,67,.08);color:var(--gold);}
+/* WORKER EMOTIONS ACCORDION */
+.emo-accordion{margin-bottom:10px;}
+.emo-toggle{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--rs);padding:9px 13px;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;text-align:left;letter-spacing:1px;display:flex;justify-content:space-between;align-items:center;}
+.emo-toggle.open{border-color:rgba(212,168,67,.3);color:var(--gold);}
+.emo-body{display:none;background:rgba(5,12,25,.5);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--rs) var(--rs);padding:11px;}
+.emo-body.open{display:block;}
+.emo-item{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.05);}
+.emo-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.emo-name{font-weight:700;font-size:13px;margin-bottom:3px;}
+.emo-risk{font-size:9px;letter-spacing:1px;padding:1px 6px;border-radius:20px;background:rgba(192,57,43,.15);color:#e74c3c;border:1px solid rgba(192,57,43,.3);display:inline-block;margin-left:6px;}
+.emo-sounds{font-size:11px;color:var(--dim);font-style:italic;margin-bottom:3px;}
+.emo-somatic{font-size:11px;color:var(--text2);margin-bottom:4px;}
+.emo-int{font-size:11px;color:var(--gold);border-left:2px solid var(--gold-dim);padding-left:7px;}
+/* CONV */
+.conv-panel{background:rgba(5,12,25,.7);border:1px solid var(--border);border-radius:var(--r);padding:13px 11px;min-height:160px;margin-bottom:9px;max-height:200px;overflow-y:auto;}
+.msg{display:flex;margin-bottom:10px;animation:fadeUp .2s ease;}
+.msg.worker{justify-content:flex-start;}.msg.client{justify-content:flex-end;}.msg.system{justify-content:center;}
+.bubble{max-width:82%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;word-break:break-word;}
+.msg.worker .bubble{background:var(--navy-light);border-bottom-left-radius:4px;border:1px solid var(--blue);color:#f0f6ff;}
+.msg.client .bubble{background:#1e3a2a;border-bottom-right-radius:4px;border:1px solid var(--gold-dim);color:#f5f0e0;}
+.msg.system .bubble{background:rgba(255,255,255,.03);border:1px dashed var(--border);border-radius:9px;color:var(--dim);font-size:11px;font-style:italic;max-width:100%;}
+.tdots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:bounce 1.2s infinite;margin:0 2px;}
+.tdots span:nth-child(2){animation-delay:.2s;}.tdots span:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.listen-status{text-align:center;font-size:11px;color:var(--gold);min-height:16px;margin-bottom:5px;}
+.session-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;}
+.btn-w,.btn-c,.btn-v,.btn-rst{padding:11px;border-radius:40px;font-family:'Lato',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:all .15s;border:1px solid;}
+.btn-w{background:var(--navy-light);border-color:var(--blue);color:#fff;box-shadow:0 4px 0 #050e1e;}
+.btn-c{background:#1e3a2a;border-color:var(--gold-dim);color:#fff;box-shadow:0 4px 0 #0a1e10;}
+.btn-w:active,.btn-c:active{transform:translateY(3px);box-shadow:none;}
+.btn-w:disabled,.btn-c:disabled{opacity:.4;pointer-events:none;}
+.btn-v{grid-column:1/-1;background:rgba(74,144,226,.1);border-color:rgba(74,144,226,.4);color:var(--blue);box-shadow:none;}
+.btn-rst{grid-column:1/-1;background:transparent;border-color:var(--border);color:var(--dim);font-size:11px;padding:6px;box-shadow:none;}
+/* BLOCKS */
+.bsh{font-size:9px;letter-spacing:2px;color:var(--dim);padding:3px 0 5px;margin-top:7px;text-transform:uppercase;border-top:1px solid var(--border);font-weight:700;}
+.bsh:first-child{margin-top:0;border-top:none;}
+.se{color:#3498db;}.sm{color:var(--gold);}.sp{color:#e74c3c;}
+.bc{background:var(--glass);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;margin-bottom:7px;}
+.bc.fw{border-color:rgba(74,144,226,.6);background:rgba(74,144,226,.05);}
+.bc.fc{border-color:rgba(212,168,67,.6);background:rgba(212,168,67,.05);}
+.bc.fb{border-color:rgba(192,57,43,.6);background:rgba(192,57,43,.07);}
+.bch{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.bn{font-size:10px;color:var(--dim);font-weight:700;width:20px;}
+.bnm{font-weight:700;font-size:13px;flex:1;}
+.bflags{display:flex;gap:3px;}
+.fbtn{font-size:10px;padding:2px 6px;border-radius:20px;border:1px solid;cursor:pointer;font-weight:700;background:transparent;transition:all .15s;}
+.fbtn.wf{border-color:var(--blue);color:var(--blue);}
+.fbtn.cf{border-color:var(--gold);color:var(--gold);}
+.fbtn.active.wf{background:var(--blue);color:#fff;}
+.fbtn.active.cf{background:var(--gold);color:#000;}
+.bdesc{font-size:11px;color:var(--text2);line-height:1.4;margin-bottom:4px;}
+.bpocket{font-size:10px;color:var(--gold);font-style:italic;border-top:1px solid var(--border);padding-top:4px;}
+.ctag{font-size:8px;letter-spacing:1px;padding:1px 6px;border-radius:20px;font-weight:700;text-transform:uppercase;}
+.cG{background:rgba(46,139,87,.2);color:#2ecc71;border:1px solid rgba(46,139,87,.3);}
+.cA{background:rgba(52,152,219,.2);color:#3498db;border:1px solid rgba(52,152,219,.3);}
+.cP{background:rgba(155,89,182,.2);color:#9b59b6;border:1px solid rgba(155,89,182,.3);}
+.cS{background:rgba(212,168,67,.2);color:var(--gold);border:1px solid rgba(212,168,67,.3);}
+/* TOOLS */
+.tc{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:14px 14px 10px;margin-bottom:9px;}
+.th{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+.ti{font-size:24px;}.tn{font-weight:700;font-size:14px;}
+.tcap-label{font-size:9px;color:var(--dim);margin-top:2px;letter-spacing:1px;}
+.tbody{font-size:12px;line-height:1.6;color:var(--text2);}
+.tsteps{margin:9px 0 0;padding-left:4px;list-style:none;}
+.tsteps li{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:5px;padding-left:16px;position:relative;}
+.tsteps li::before{content:'→';position:absolute;left:0;color:var(--blue);}
+.tsteps li strong{color:var(--text1);}
+.tpractice{background:rgba(212,168,67,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:9px 12px;margin-top:9px;font-size:12px;color:#f5e8c0;line-height:1.55;font-style:italic;}
+.theta-btn{width:100%;margin-top:9px;padding:10px;border-radius:30px;background:rgba(155,89,182,.15);border:1px solid rgba(155,89,182,.4);color:#9b59b6;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
+.theta-btn.playing{background:rgba(155,89,182,.3);color:#c39bd3;}
+.theta-status{text-align:center;font-size:10px;color:var(--purple);margin-top:4px;min-height:14px;font-style:italic;}
+.btn-speak{width:100%;margin-top:8px;padding:8px;border-radius:30px;background:transparent;border:1px solid var(--border);color:var(--dim);font-size:11px;cursor:pointer;transition:all .15s;}
+.btn-speak:hover{border-color:var(--blue);color:var(--blue);}
+/* PAWS */
+.hcard{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);margin-bottom:9px;overflow:hidden;}
+.hhead{padding:11px 13px;cursor:pointer;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.02);}
+.hnum{width:28px;height:28px;border-radius:50%;background:var(--navy-light);border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue);flex-shrink:0;}
+.htitle{flex:1;font-weight:700;font-size:13px;}
+.hwt{font-size:10px;color:var(--dim);background:rgba(255,255,255,.04);padding:2px 6px;border-radius:20px;}
+.hwt.hi{color:#e74c3c;background:rgba(192,57,43,.1);}.hwt.md{color:var(--gold);background:rgba(212,168,67,.1);}
+.hpanels{display:none;}.hpanels.open{display:block;}
+.ptabs{display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.ptab{flex:1;padding:6px 3px;text-align:center;font-size:9px;letter-spacing:1px;font-weight:700;cursor:pointer;color:var(--dim);border-right:1px solid var(--border);transition:all .15s;}
+.ptab:last-child{border-right:none;}.ptab.active{color:var(--gold);background:rgba(212,168,67,.07);}
+.pcontent{padding:12px 14px;font-size:12px;line-height:1.6;color:var(--text2);}
+.schema-box{margin-top:12px;background:rgba(155,89,182,.05);border:1px solid rgba(155,89,182,.2);border-radius:var(--r);padding:13px;}
+.schema-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:#9b59b6;margin-bottom:9px;text-transform:uppercase;}
+.schema-item{margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.05);}
+.schema-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.schema-item h4{font-size:12px;color:var(--text1);margin-bottom:2px;}
+.schema-item p{font-size:11px;color:var(--text2);line-height:1.45;}
+/* DAILY */
+.daily-hdr{text-align:center;margin-bottom:14px;padding:14px;background:linear-gradient(135deg,rgba(30,58,95,.8),rgba(15,36,64,.9));border:1px solid var(--border-gold);border-radius:var(--r);}
+.daily-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;color:var(--gold);}
+.daily-sub{font-size:10px;color:var(--text2);margin-top:5px;}
+.slbl{font-size:9px;letter-spacing:2px;color:var(--gold);margin:13px 0 7px;font-weight:700;text-transform:uppercase;opacity:.8;}
+.cep-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-bottom:7px;}
+.cep-head{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.cep-time{font-size:9px;letter-spacing:1px;color:var(--dim);background:rgba(255,255,255,.04);padding:2px 7px;border-radius:20px;}
+.cep-name{font-weight:700;font-size:13px;flex:1;}
+.cep-dur{font-size:9px;color:var(--blue);}
+.cep-body{font-size:12px;color:var(--text2);line-height:1.5;}
+.cep-prac{font-size:12px;color:var(--gold);font-style:italic;margin-top:7px;padding:7px 11px;background:rgba(212,168,67,.07);border-radius:7px;}
+.btn-cs{width:100%;margin-top:7px;padding:7px;border-radius:30px;background:transparent;border:1px solid var(--border);color:var(--dim);font-size:10px;cursor:pointer;transition:all .15s;}
+.btn-cs:hover{border-color:var(--blue);color:var(--blue);}
+.dose-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:11px;}
+.dose-chem{background:var(--glass);border:1px solid var(--border);border-radius:var(--rs);padding:11px;cursor:pointer;transition:all .15s;user-select:none;}
+.dose-chem:hover{background:var(--glass2);}
+.dose-chem.on{border-color:rgba(46,139,87,.5);background:rgba(46,139,87,.08);}
+.dc-icon{font-size:20px;margin-bottom:4px;}
+.dc-name{font-weight:700;font-size:12px;margin-bottom:2px;}
+.dc-trigger{font-size:10px;color:var(--dim);line-height:1.35;}
+.dc-check{font-size:9px;margin-top:5px;color:var(--green);display:none;}
+.dose-chem.on .dc-check{display:block;}
+.limbic-box{background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.25);border-radius:var(--rs);padding:11px;margin-top:3px;}
+.limbic-title{font-size:11px;color:#e74c3c;font-weight:700;margin-bottom:5px;}
+.limbic-body{font-size:11px;color:var(--text2);line-height:1.5;}
+.intention-card{background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(212,168,67,.03));border:1px solid var(--border-gold);border-radius:var(--rs);padding:13px;margin-bottom:7px;}
+.int-q{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);text-align:center;margin-bottom:8px;}
+.int-rule{font-size:12px;color:var(--text2);text-align:center;line-height:1.55;}
+.sand-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--rs);padding:13px;margin-bottom:7px;}
+.sand-t{font-weight:700;font-size:13px;margin-bottom:6px;}
+.sand-b{font-size:12px;color:var(--text2);line-height:1.55;}
+.sand-i{font-style:italic;color:var(--gold);margin-top:7px;font-size:12px;padding:7px 11px;background:rgba(212,168,67,.07);border-radius:7px;}
+/* HALT MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-sheet{width:100%;max-width:480px;background:#0d1e35;border-top:1px solid var(--border-gold);border-radius:24px 24px 0 0;padding:20px 19px 28px;}
+.mh{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;}
+.mt{font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--gold);margin-bottom:18px;text-align:center;}
+.hsg{margin-bottom:16px;}
+.hsh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.hsn{font-weight:700;font-size:13px;}
+.hsv{font-size:19px;font-weight:700;color:var(--blue);min-width:28px;text-align:right;}
+.hsv.hi{color:#e74c3c;}.hsv.md{color:var(--gold);}
+input[type=range]{width:100%;height:6px;appearance:none;background:var(--border);border-radius:3px;outline:none;}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid #fff;}
+.hn{font-size:10px;color:var(--dim);margin-top:3px;}
+.btn-done{width:100%;padding:13px;background:var(--navy-light);border:1px solid var(--blue);border-radius:30px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;}
+</style>
+</head>
+<body>
+
+<div id="setupOverlay">
+  <div class="sc">
+    <div class="sl">
+      <span class="lt">G.A.P.S.</span>
+      <span class="ls">by HALO · Human Advocacy & Lived Observations</span>
+      <span class="ld">Gratitude · Acceptance · Presence · Surrender</span>
+    </div>
+    <div class="fg"><label>Client First Name (optional)</label><input id="inpName" type="text" placeholder="or leave blank for privacy"></div>
+    <div class="fg"><label>Primary Substance</label>
+      <select id="inpSub">
+        <option value="">— Select —</option>
+        <option value="alcohol">Alcohol</option>
+        <option value="opioids">Opioids</option>
+        <option value="stimulants">Stimulants (cocaine / meth)</option>
+        <option value="poly">Poly-substance</option>
+        <option value="benzo">Benzodiazepines</option>
+      </select>
+    </div>
+    <div class="fg"><label>Days Since Last Use</label><input id="inpDays" type="number" min="0" max="1825" placeholder="e.g. 47"></div>
+    <p class="sn">No data leaves your device during setup. AI conversation requires a connection.</p>
+    <button class="btn-launch" onclick="launchApp()">OPEN SESSION</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="haltModal">
+  <div class="modal-sheet">
+    <div class="mh"></div>
+    <div class="mt">HALT CHECK-IN</div>
+    <div id="haltSliders"></div>
+    <button class="btn-done" onclick="closeHalt()">Save & Close</button>
+  </div>
+</div>
+
+<div id="appShell">
+  <div class="status-bar">
+    <div class="s-logo">G.A.P.S.</div>
+    <div class="s-phase" id="sPhase">—</div>
+    <div class="s-day" id="sDay">Day 0</div>
+  </div>
+  <div class="halt-bar" onclick="openHalt()">
+    <div class="hp" id="hpH"><span class="hl">HUNGRY</span><span class="hs" id="hsH">5</span></div>
+    <div class="hp" id="hpA"><span class="hl">ANGRY</span><span class="hs" id="hsA">3</span></div>
+    <div class="hp" id="hpL"><span class="hl">LONELY</span><span class="hs" id="hsL">7</span></div>
+    <div class="hp" id="hpT"><span class="hl">TIRED</span><span class="hs" id="hsT">6</span></div>
+  </div>
+
+  <div class="tab-content">
+    <!-- SESSION -->
+    <div class="tab-pane active" id="tab-session">
+      <div class="emo-accordion">
+        <button class="emo-toggle" id="emoTgl" onclick="toggleEmo()">⚡ WORKER: EMOTIONS UNDER LOAD <span id="emoArr">▼</span></button>
+        <div class="emo-body" id="emoBody"></div>
+      </div>
+      <div class="phase-banner">
+        <div class="pi" id="phIcon">🧠</div>
+        <div class="pinfo"><div class="pname" id="phName">—</div><div class="pdesc" id="phDesc"></div></div>
+      </div>
+      <div class="hurdle-row" id="hurdleRow"></div>
+      <div class="conv-panel" id="convPanel"></div>
+      <div class="listen-status" id="listenSt"></div>
+      <div class="session-btns">
+        <button class="btn-w" id="btnW" onclick="genLine('worker')">🧑‍⚕️ Worker</button>
+        <button class="btn-c" id="btnC" onclick="genLine('client')">🧘 Client</button>
+        <button class="btn-v" id="btnV" onclick="startVoice()">🎤 Speak as Client</button>
+        <button class="btn-rst" onclick="resetConv()">⟲ Restart Session</button>
+      </div>
+    </div>
+
+    <!-- BLOCKS -->
+    <div class="tab-pane" id="tab-blocks">
+      <p style="font-size:11px;color:var(--dim);margin-bottom:10px;">Flag <strong style="color:var(--blue)">W</strong> (worker sees it) or <strong style="color:var(--gold)">C</strong> (client flags it). Both flagging same block = mismatch alert.</p>
+      <div id="blocksContainer"></div>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="tab-pane" id="tab-tools">
+      <div id="toolsContainer"></div>
+    </div>
+
+    <!-- PAWS -->
+    <div class="tab-pane" id="tab-paws">
+      <div class="phase-banner" style="margin-bottom:13px;">
+        <div class="pi">📊</div>
+        <div class="pinfo"><div class="pname" id="pawsTabName">PAWS Timeline</div><div class="pdesc" id="pawsTabDesc">Tap each hurdle · 3-panel view</div></div>
+      </div>
+      <div id="hurdlesContainer"></div>
+      <div class="schema-box">
+        <div class="schema-title">Early Schemas — Why the Client Is Here</div>
+        <div id="schemaContainer"></div>
+      </div>
+    </div>
+
+    <!-- DAILY -->
+    <div class="tab-pane" id="tab-daily">
+      <div class="daily-hdr">
+        <div class="daily-title">D.O.S.E. DAILY</div>
+        <div class="daily-sub">CEP Micro-Hooks · Neurochemical Check-In · Intention Practice</div>
+      </div>
+      <div class="intention-card">
+        <div class="int-q">⚖️ The Holy Rule</div>
+        <div class="int-rule">"Does this intention serve others kindly?"<br><br>Pause and ask this before any significant action or decision — not after. The intention sets the neurological trajectory before the action begins. This is conscious karma in practice.</div>
+      </div>
+      <div class="sand-card">
+        <div class="sand-t">🏖️ The Sand Metaphor</div>
+        <div class="sand-b">Every unconscious act deposits a grain of sand. You can't see one grain. But enough grains become a desert — and you wake up one day surrounded by it, wondering how it happened.<br><br>The same is true in reverse. Every conscious act removes a grain. Every Sacred Pause. Every honest check-in. Every time you choose presence over autopilot.</div>
+        <div class="sand-i">"The tightest grip loses the most sand. Surrender is not letting go of what matters — it is releasing the grip that was crushing it."</div>
+      </div>
+      <div class="slbl">☀️ CEP Morning Hook · ~60 seconds</div>
+      <div class="cep-card" id="cepM"></div>
+      <div class="slbl">☀️☀️ CEP Midday Hook · 60–120 seconds</div>
+      <div class="cep-card" id="cepD"></div>
+      <div class="slbl">🌙 CEP Close · ~60 seconds</div>
+      <div class="cep-card" id="cepC"></div>
+      <div class="slbl">🧪 D.O.S.E. Check — Tap what activated today</div>
+      <div class="dose-grid" id="doseGrid"></div>
+      <div class="limbic-box">
+        <div class="limbic-title">⚠️ The Limbic Prison</div>
+        <div class="limbic-body">When all four D.O.S.E. chemicals are chronically depleted, the person enters survival mode — unconscious reactivity, trauma loops, behaviour mistaken for personality. This is neurochemical starvation, not moral failure.<br><br>Addiction is neurochemical poverty with a coping strategy attached. The substance met a real need — dopamine, oxytocin, serotonin relief — through a destructive path. The G.A.P.S. framework provides the originals: Dopamine through progress, Oxytocin through genuine connection, Serotonin through earned dignity, Endorphins through real physical challenge survived.</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nv active" id="nav-session" onclick="switchTab('session')"><span class="ni">💬</span>Session</button>
+    <button class="nv" id="nav-blocks" onclick="switchTab('blocks')"><span class="ni">🧱</span>Blocks</button>
+    <button class="nv" id="nav-tools" onclick="switchTab('tools')"><span class="ni">🛠️</span>Tools</button>
+    <button class="nv" id="nav-paws" onclick="switchTab('paws')"><span class="ni">🧠</span>PAWS</button>
+    <button class="nv" id="nav-daily" onclick="switchTab('daily')"><span class="ni">🌅</span>Daily</button>
+  </nav>
+</div>
+
+<script>
+"use strict";
+const PHASES=[
+  {name:'Acute Resolution',icon:'⚡',days:[0,14],desc:'Weeks 1–2. Relief, possible pink cloud.',need:'Structure. Routine. External scaffolding — not insight, scaffolding.'},
+  {name:'PAWS Emergence',icon:'🌊',days:[15,42],desc:'Weeks 3–6. Fog, sleep, irritability emerge.',need:'Psychoeducation: this is normal. It\'s supposed to feel like this.'},
+  {name:'Symptom Cycling',icon:'🔄',days:[43,84],desc:'Weeks 6–12. Good days then bad. Swings peak.',need:'Normalisation. Peer support. Somebody who says "me too."'},
+  {name:'Gradual Improvement',icon:'📈',days:[85,180],desc:'Months 3–6. Real progress with setbacks.',need:'Continued structure. Data showing real progress over time.'},
+  {name:'Stabilisation',icon:'⚓',days:[181,365],desc:'Months 6–12. Symptoms less frequent.',need:'Relapse reframe tools. Something to become, not just avoid.'},
+  {name:'Integration',icon:'🌅',days:[366,99999],desc:'Year 2+. Neural integration. New identity.',need:'Long-term community. Meaning. Purpose. Real D.O.S.E. sources.'}
+];
+const HURDLES=[
+  {id:1,name:'Cognitive Fog',emoji:'🌫️',
+   cenaps:'Gorski identifies "changes in thought" as among the earliest warning signs. Prefrontal cortex compromise means the client loses the executive functioning that supports healthy decision-making, impulse control, and the capacity to pause before responding. Clinical response: simplify the environment, reduce decisions required, maintain external structure.',
+   paws:'The prefrontal cortex is still recalibrating after chronic substance exposure altered baseline dopamine signalling. During a fog episode the brain is not broken — it is rebooting. Processing speed slows. Working memory reduces. Emotional regulation drops because the cortex cannot modulate limbic reactivity. Neurological, not motivational. Peaks Weeks 2–8, improves through Month 6.',
+   gaps:'Capacity: Acceptance. Say or write: "My brain is rebuilding. This fog is temporary." Reduce to the smallest decision unit — the next step only. Presence practice: 5 things you can see, 4 you can hear, 3 you can feel. Return to sensory reality before attempting complex thinking.',
+   sw:{alcohol:0.9,opioids:0.7,stimulants:0.8,poly:0.9,benzo:0.9}},
+  {id:2,name:'Emotional Lability',emoji:'🎢',
+   cenaps:'CENAPS names "changes in feeling" as a primary warning sign. Mood swings, disproportionate irritability, sudden anger or sadness. The worker distinguishes PAWS emotional reactivity from genuine dysregulation requiring clinical intervention.',
+   paws:'Dopamine and serotonin systems are recovering. The brain\'s emotional regulation circuits were hijacked by the substance and are rebuilding baseline function. Mood swings from nowhere. Crying without cause. Or the opposite: affective flatness, emptiness. Both are the same neurological process from different angles. Affects everyone. Peaks 8–12 weeks.',
+   gaps:'Capacity: Acceptance — Fish Bowl Method. "There is grief. I am not grief." Observe the emotion without becoming it. The fish does not require action from you. Watch it. Let it move through. Physiological grounding: double inhale, long exhale, three rounds.',
+   sw:{alcohol:0.8,opioids:0.7,stimulants:0.7,poly:0.9,benzo:0.8}},
+  {id:3,name:'Sleep Disruption',emoji:'😴',
+   cenaps:'Sleep disruption amplifies every other PAWS hurdle — a multiplier for relapse risk across all three CENAPS stages. Document sleep quality every session. Disrupted sleep lowers the threshold for emotional relapse, reduces cognitive capacity for interruption, and increases impulse vulnerability.',
+   paws:'Alcohol and opioids fundamentally alter sleep architecture. GABA and glutamate systems are rebalancing. Insomnia, fragmented sleep, vivid dreams, night sweats, early waking. This is not insomnia as distress. This is neurological rebuilding. Highest risk: alcohol, benzodiazepines, stimulants.',
+   gaps:'Capacity: Surrender. Wind-down sequence every night: no screens for 30 minutes, one journal line to externalise the day. "My body does not need me to sleep perfectly. It needs me to stop fighting the process." Surrender: "I release the outcome of tonight. Rest is enough."',
+   sw:{alcohol:0.9,opioids:0.7,stimulants:0.8,poly:0.9,benzo:0.9}},
+  {id:4,name:'Stress Sensitivity',emoji:'⚡',
+   cenaps:'HPA axis hypersensitivity — cortisol reactivity elevated. Minor inconveniences register as catastrophic. Map the client\'s stress triggers. Help distinguish genuine emergencies from PAWS-amplified stress responses. This is the neurological source of many "overreactions" that damage relationships and social support in early recovery.',
+   paws:'No chemical buffer between you and the normal friction of daily life. Ordinary stress hits like an emergency. Disproportionate anger at small delays, noise, interruption. Overwhelmed by tasks that used to be manageable. Highest risk: opioids, stimulants.',
+   gaps:'Capacity: Presence — Sacred Pause. Physiological sigh: double inhale through the nose, long slow exhale through the mouth. Three rounds. This physically activates the parasympathetic system. "I am safe right now. This is temporary activation. I choose my response."',
+   sw:{alcohol:0.5,opioids:0.9,stimulants:0.7,poly:0.8,benzo:0.6}},
+  {id:5,name:'Cravings',emoji:'🌀',
+   cenaps:'Cravings are CENAPS Stage 2 indicators when specific and targeted. Distinguish ambient craving (normal PAWS) from planned craving (Block 6 territory). Key signal: has the craving become specific? Does the person know the route, the contact, the logistics? If yes — Block 7 escalation now.',
+   paws:'Your brain built superhighways connecting distress to substance use. The craving is not you wanting to use — it is your dopamine system sending a distress signal. It is depleted and looking for the fastest known source of relief. Critical fact: cravings peak at 20 minutes and then recede.',
+   gaps:'Capacity: Acceptance + Surrender — Craving Analysis. Make contact with one person before the 20-minute window closes. "There is a craving. I see it. I am not it. It will peak and recede." Ask: what is this craving actually for? Oxytocin? Dopamine? Cortisol relief? Name the real need and address it directly.',
+   sw:{alcohol:0.6,opioids:0.9,stimulants:0.8,poly:0.8,benzo:0.5}},
+  {id:6,name:'Anhedonia',emoji:'🫙',
+   cenaps:'Anhedonia — inability to feel pleasure — is a primary driver of relapse in the 3–6 month window. Monitor: is the client able to experience any positive emotion? Are they participating in previously enjoyed activities? Anhedonia persisting beyond 3 months without improvement warrants psychiatric consultation.',
+   paws:'Your dopamine system was flooded and overloaded. It compensated by reducing the number and sensitivity of its own receptors. Now that the substance is gone, the dopamine system is understimulated — everyday pleasures do not register. Food tastes flat. Friends feel distant. Nothing feels worth doing. This is dopamine receptor regeneration. Takes 3–6 months minimum.',
+   gaps:'Capacity: Gratitude — Micro-Win practice. One tiny completable action right now. Complete it. Notice any response, however small. Write it down. Stack three micro-wins per day. The dopamine system rebuilds through repeated low-dose reward. D.O.S.E. architecture: Dopamine through achievement, Oxytocin through connection, Serotonin through purpose, Endorphins through movement.',
+   sw:{alcohol:0.7,opioids:0.8,stimulants:0.9,poly:0.8,benzo:0.6}},
+  {id:7,name:'Identity Disorientation',emoji:'🪞',
+   cenaps:'CENAPS identifies loss of sense of self as a late-stage vulnerability state preceding physical relapse. The person who used for years may not know who they are without the substance. Explore: what is the person moving toward, not just away from? Identity vacuum is as dangerous as any HALT score.',
+   paws:'You built an identity around using. The substance was the constant when everything else was variable. Now that it\'s gone, you don\'t know who you are. This is not weakness — it is the predictable result of using substances to manage every difficult emotion for years. The brain\'s default mode network (the "who am I" network) is recalibrating. Takes 12–24 months.',
+   gaps:'Capacity: Surrender — Lighthouse practice. You do not need to know the destination. You need to know the next step. "I am not who I was. I am not yet who I will be. I am exactly where I need to be right now." Explore what you value. Help someone else. Meaning is the fastest route to identity reconstruction.',
+   sw:{alcohol:0.6,opioids:0.7,stimulants:0.7,poly:0.9,benzo:0.6}}
+];
+const BLOCKS=[
+  {id:1,name:'The Drift',st:'E',cap:'G',desc:'Subtle attitude shift. Skipping small routines. "I don\'t need to do that today." Internal permission to let structure slide. Missing one meeting. Then two. Energy flat — you don\'t notice because it\'s gradual.',pk:'Drifting? Name one good thing. Right now. Out loud.',int:'GRATITUDE — Name one specific thing from today that went okay. "I ate breakfast." "I noticed the sky." This breaks the scarcity loop that powers the drift.'},
+  {id:2,name:'The Mask',st:'E',cap:'A',desc:'Presenting as "fine" while internal distress rises. Social withdrawal. Answers get shorter. "Good" when you\'re not. Jaw tightens. Shoulders up. Breathing shallow.',pk:'Performing "fine"? There\'s a fish you\'re not naming. What is it?',int:'ACCEPTANCE — Fish Bowl: "There\'s something I\'m not saying." Name the fish. You don\'t have to tell anyone yet. Just see it swimming. Don\'t follow it.'},
+  {id:3,name:'The Build',st:'E',cap:'P',desc:'Irritability increasing. Sleep disrupting again. Small conflicts escalating. Frustration tolerance dropping. PAWS symptoms flaring. Everything feels like too much. Body running hot.',pk:'Body running hot? STOP. Breathe 4-2-6 three times. Then decide.',int:'PRESENCE — Sacred Pause at the first somatic signal. Stop. Breathe (4 in, 2 hold, 6 out, three rounds). Is what I\'m about to do fear-based or choice-based? Act from the answer.'},
+  {id:4,name:'The Wall',st:'E',cap:'S',desc:'"I can do this alone." "I don\'t need the program." Rejecting structure. Pushing away people. Cancelling appointments. Isolating by choice. Arms crossed. Everything feels like an intrusion.',pk:'Pushing everyone away? That\'s the wall. Don\'t lock the door.',int:'SURRENDER — "I don\'t have to have the answer right now. I don\'t have to do this alone to prove I\'m strong. Accepting help is not weakness — it\'s the bravest thing I\'ve done since Day 1."'},
+  {id:5,name:'The Fog',st:'M',cap:'G',desc:'Romanticising past use. "It wasn\'t that bad." Memory editing — brain highlights relief and erases consequences. Minimising. Glamourising. A softening, almost nostalgic. The danger: it feels pleasant.',pk:'Thinking "it wasn\'t that bad"? Write down what actually happened.',int:'GRATITUDE — Reality check. Write down what actually happened. Not what the fog says — what actually happened. The hospital visit. The lost job. The look on your kid\'s face.'},
+  {id:6,name:'The Bargain',st:'M',cap:'A',desc:'"I could have just one." "I\'ll control it this time." "Just on weekends." The internal negotiation. Restlessness. Energy rises. The body is already preparing for the thing the mind is negotiating.',pk:'Bargaining? Name it: "There\'s a bargain swimming." Watch it.',int:'ACCEPTANCE — Name the fish. "There\'s a bargain swimming in the bowl. I see it. I don\'t have to follow it." Naming it as something observed — rather than a reasonable idea — takes away its power.'},
+  {id:7,name:'The Plan',st:'M',cap:'P',desc:'Mapping access to substances. You know where to go. You know who to call. Logistics in place even without a decision. Driving past the old neighbourhood. Keeping a number. Hyper-alert. Focused.',pk:'Making a plan? Call your person right now. Before anything else.',int:'PRESENCE — HALT check right now. Which one is it? Then call the number on your card. Tell someone what\'s happening. You do not have to follow the plan. The plan is fear in disguise.'},
+  {id:8,name:'The Secret',st:'M',cap:'S',desc:'Selective non-disclosure. Not telling your worker the full truth. Not telling your support network what\'s actually happening. Lying to yourself — "I\'ll tell them next week." The secret is the relapse in slow motion.',pk:'Keeping a secret from your worker? That\'s Block 8. Say it out loud.',int:'SURRENDER — "The secret is keeping me sick. I can say: something is wrong and I need to say it out loud." You don\'t have to have it figured out first.'},
+  {id:9,name:'The Tunnel',st:'P',cap:'G',desc:'Tunnel vision. Only one outcome visible. The decision hasn\'t been consciously made but the body is moving. Everything has narrowed. Clinical window almost closed.',pk:'Can\'t see anything but using? Call your crisis contact. Right now.',int:'GRATITUDE — Emergency break. Call your crisis number. Name someone who needs you clean today. One specific person. Their face. That\'s the interruption.'},
+  {id:10,name:'The Permission',st:'P',cap:'A',desc:'"I deserve it." "After everything I\'ve been through." "Just this once." "Nobody would blame me." The survival brain has granted permission and is now executing.',pk:'Feeling like you\'ve earned a use? The permission is a lie. Call someone.',int:'ACCEPTANCE — "My brain has written a permission slip. I do not have to sign it. The permission is a neurological event, not a truth." Call someone before you move.'},
+  {id:11,name:'The Edge',st:'P',cap:'P',desc:'Standing at the threshold. Seconds or minutes away. Logistics in motion. Last window before physical relapse. Most people do not interrupt here without external intervention.',pk:'At the edge? One breath. One call. One step away from where you are.',int:'PRESENCE — One breath. Just one. "I am here. I am alive. I am still in this." Then call. Then leave the location if possible.'},
+  {id:12,name:'The Fall',st:'P',cap:'S',desc:'Use has occurred. This is not failure — it is information. The relapse process started long before this moment. No shame. The question: "What did the setback teach me?" Return protocol begins now.',pk:'You fell. You\'re still here. Call your worker. Today. No shame.',int:'SURRENDER — "I used. I am still in recovery. One use is not the end. What did this teach me? Where did the process start?" Return to your worker. Today if possible.'}
+];
+const TOOLS=[
+  {name:'Fish Bowl Method',icon:'🐠',cap:'Acceptance',
+   body:'Your mind is the bowl. Your thoughts, feelings, urges, and fears are the fish swimming inside it. You are not the fish — you are the person watching. This distinction changes everything. From the observer position, you have choice.',
+   steps:[{s:'Notice You\'re Hooked',d:'Recognise when a thought or emotion has pulled you out of present-moment awareness and into identification with it.'},
+          {s:'Name What\'s Swimming',d:'"There\'s anxiety." "There\'s the bargain." "There\'s the story I\'m not good enough." Key phrase: "There\'s X" — not "I am X."'},
+          {s:'Watch It Swim',d:'Resist the urge to fight it, suppress it, or act on it. Simply watch. Notice how it moves through your awareness. Notice it changes.'},
+          {s:'Choose Your Response',d:'From the observer position you have choice. Let the fish swim away, engage with it consciously, or redirect attention to something more useful.'},
+          {s:'Return to Now',d:'Feel your breath. Notice your surroundings. Ground in physical sensation. The bowl is always here. You are always the watcher.'}],
+   practice:'"There is [name it]. I see it. I am not it. I watch it. It will swim past."\n\nThe fish does not require action from you. Stay at the bowl. Observe without judgment.'},
+  {name:'Snap Practice — A-S-S-S-T',icon:'🫰',cap:'Presence',
+   body:'A rapid multi-sensory technique to break the cycle of intrusive thoughts, cravings, or triggers. Five steps. Portable. The snap bracelet on your wrist is the physical anchor — it\'s in your Anchor Kit.',
+   steps:[{s:'Anticipate',d:'Acknowledge the thought pattern will arise. You know your triggers. Prepare the observer stance before the trigger lands.'},
+          {s:'See',d:'Consciously observe the thought as an object in the mind. "I see it. It is a thought. It is not me."'},
+          {s:'Shrink',d:'Visually reduce it in size and power in your mind\'s eye. Watch it get smaller. It loses authority as it shrinks.'},
+          {s:'Snap',d:'Physical rubber band or snap bracelet snap on the wrist. Creates a somatic neural interrupt — sensation breaks the cognitive loop.'},
+          {s:'Throw',d:'Visually discard the shrunken thought. Consciously release it. Watch it leave the bowl completely.'}],
+   practice:'The snap bracelet goes on your wrist from Day 1.\n\nIt is the physical reminder that you are the observer — not the thought, not the craving, not the trigger.\n\nWear it. Use it. Every snap is a choice.'},
+  {name:'Mandela Method',icon:'🌀',cap:'Presence + Surrender',
+   body:'A guided meditative process for accessing and healing core trauma in the subconscious. Used when surface-level tools have stabilised the person and they are ready for deeper work. Not for acute crisis — for a quiet, safe space with a trusted worker present.',
+   steps:[{s:'Access the Theta State',d:'Guided relaxation until visual patterns or deep calm appear — this is the theta brainwave gateway (4–8 Hz). Use the theta audio below. Allow the mind to soften. Do not force.'},
+          {s:'Surface the Material',d:'Invite the subconscious to bring forward a memory, emotion, or unmet need that is ready for healing. Do not force. Simply wait in the theta space.'},
+          {s:'Conscious Adult Intervention',d:'Bring your present-day adult consciousness into the memory. Protect the inner child. Offer what was missing. Change the outcome from inside the memory.'},
+          {s:'Alchemy into Wisdom',d:'The traumatic charge dissolves as the memory is integrated. Extract the wisdom: what resilience, empathy, or strength did this wound forge?'}],
+   practice:'The healing trajectory:\nSnap Practice (acute moment) → Fish Bowl (ongoing awareness) → Mandela Method (deep reprocessing) → Trauma-to-Wisdom extraction\n\nThe wound is not the enemy. The wound is the teacher. If you can learn to listen to it instead of running from it, it will teach you exactly what needs to heal.',
+   theta:true},
+  {name:'Sacred Pause',icon:'⏸️',cap:'Presence',
+   body:'The gap between stimulus and response is where choice lives. Without the pause, every trigger goes directly to the old response — there is no decision, just the automatic. The Sacred Pause creates the decision moment.',
+   steps:[],
+   practice:'Breathe in for 4 counts. Hold for 2. Out for 6.\nThree rounds.\n\nThe extended exhale activates your parasympathetic nervous system — the part that says "you are safe right now."\n\nDo this before any difficult conversation, any HALT trigger, any moment the system needs resetting.'},
+  {name:'5-4-3-2-1 Ground',icon:'🖐️',cap:'Presence',
+   body:'When the mind is spinning — dissociation, flashback, panic, environmental overwhelm — this moves brain activity from the emotional centre back to the thinking centre. Two minutes. Works every time.',
+   steps:[],
+   practice:'5 things you can SEE — name them out loud.\n4 things you can HEAR — name them.\n3 things you can FEEL — texture, temperature, pressure.\n2 things you can SMELL.\n1 thing you can TASTE.\n\n"I am here. I am real. I am safe right now."'},
+  {name:'HALT Check',icon:'🔴',cap:'Presence',
+   body:'Every craving, every impulse, every "I don\'t care anymore" moment has a HALT driver underneath it. The HALT check names the driver — which makes it workable. Always run the HALT before any other intervention.',
+   steps:[],
+   practice:'"Right now, am I...\nHungry — or Hurt — or Haven\'t eaten?\nAngry — or Anxious — or Alone?\nLonely — or Longing — or Lacking connection?\nTired — or Triggered — or Telling myself a story?"\n\nScore each 1–10. Anything above 7 needs direct addressing before any other decision.'},
+  {name:'Micro-Win',icon:'✅',cap:'Gratitude',
+   body:'Anhedonia and learned helplessness tell the brain that action is pointless. The micro-win is the counter-signal. One tiny completable action. Complete it. Notice any response, however small. The dopamine system rebuilds through repeated low-dose reward.',
+   steps:[],
+   practice:'Right now: name one thing you can complete in the next 5 minutes.\nDo it.\nWrite it down: "I did [this]."\n\nStack three micro-wins per day. Over time the noticing becomes easier — receptor sensitivity rebuilds. This is dopamine restoration in action.'},
+  {name:'Relapse Reframe',icon:'🔄',cap:'Surrender',
+   body:'Shame is relapse accelerant. When use occurs, the cultural message says "failure." The Relapse Reframe replaces that with learning. Relapse is a setback, not an identity. It is the most recent piece of data about what the person still needs.',
+   steps:[],
+   practice:'"I used. I am still in recovery. One use does not erase everything that came before it.\n\nWhat did the setback teach me? Where did the process actually start — Block 1 or Block 2? What will I do differently between now and the next trigger?\n\nI call my worker. Today. I do not wait."'},
+  {name:'Connection Text',icon:'📱',cap:'Gratitude',
+   body:'Isolation is the fastest route to Block 2 and Block 4. Connection is the interruption. But when you\'re in Block 2, you won\'t feel like calling anyone. The Connection Text lowers the barrier below the level of effort the fog allows.',
+   steps:[],
+   practice:'Send this text — right now — to one person:\n\n"Hey. Having a tough [morning/afternoon/night]. Not asking for anything. Just letting you know I\'m here."\n\nThat\'s it. You\'ve interrupted the isolation. They will respond. You will feel it.'},
+  {name:'Bubble Paper Exercise',icon:'🫧',cap:'Presence + Acceptance',
+   body:'Used to bypass the "form filling" resistance that shuts down clients before they\'ve said a word. Instead of answering questions on a clipboard, the client draws or writes anything inside circles — whatever is on their mind, whatever matters, whatever they\'re scared to say. No wrong answers. No required format. This is how Marcus found his daughter and his fishing rod.',
+   steps:[{s:'Hand them the sheet',d:'"Instead of filling out a form, I want you to put anything in these circles. Words. Drawings. Whatever\'s true right now." Then be quiet.'},
+          {s:'Give them silence',d:'Do not prompt. Do not fill the space. Let them sit with it. The discomfort is data. The first thing they put down is often the thing they most needed to say.'},
+          {s:'Ask about one bubble',d:'"Tell me about one of these." Not "what does that mean?" — "tell me about it." Their words, not yours. Follow their energy.'},
+          {s:'Follow the energy',d:'Whatever they light up around — that\'s the work. Don\'t rush to the next bubble. Stay where the life is. That\'s the change talk. Don\'t fix it. Honour it.'}],
+   practice:'The bubble paper sheet is in the Anchor Kit booklet.\n\nSheet 1: A few example bubbles at the top so they know what it is. Rest is blank.\nSheet 2: Completely blank — theirs to keep and add to between sessions.\n\nNo obligation. No grades. No wrong answers.'}
+];
+const WORKER_EMOTIONS=[
+  {name:'Passion',risk:'Overdrive Risk',sounds:'"If I just push harder, we can turn this around."',somatic:'Forward-lean, jaw set, shallow chest breath.',int:'51% Rule check — are you doing more than your share of the work? Sacred Pause. Energy Audit: is this energy clean or driven by fear of failure?'},
+  {name:'Empathy',risk:'Boundary Collapse',sounds:'"I feel everything they feel."',somatic:'Chest ache, droop posture, fatigue after sessions.',int:'Fish Bowl labeling: "There\'s grief — it is not mine to carry." Bubble visualization around your energy field. Schedule-bound contact windows only.'},
+  {name:'Guilt',risk:'Outcome Attachment',sounds:'"If I take a break, I\'m abandoning them."',somatic:'Solar plexus tight, rumination loops.',int:'Clean Service ethic: your job is to show up fully, not to produce outcomes. Outcome Detachment ritual. 24-hour rule before extra-scope commitments.'},
+  {name:'Shame',risk:'Identity Hit',sounds:'"I\'m not good enough. I failed this client."',somatic:'Gaze down, heat in face, postural collapse.',int:'Fish Bowl defusion: "There\'s the story that I failed." Name one strength you actually used today. Peer check-in: "How\'s your light?"'},
+  {name:'Grief',risk:'Unprocessed Loss',sounds:'Silent heaviness after overdose or relapse news.',somatic:'Throat lump, chest pressure, heaviness.',int:'90-second breath-wave. Alchemy journaling: "What is this teaching me?" Ritualized closure — mark the ending before the next session begins.'},
+  {name:'Anger',risk:'Moral Injury',sounds:'"The system handcuffed us again."',somatic:'Heat in arms and face, clenched hands.',int:'24-hour rule on hot communications. "I notice..." scripts. Draft the email — then delete it. Policy-from-practice note for next team huddle.'},
+  {name:'Fear / Anxiety',risk:'Threat Scanning',sounds:'"What if they overdose tonight?"',somatic:'Tight shoulders, shallow breath, jitter.',int:'5-4-3-2-1 grounding. 60-second body scan. Co-breath with a teammate (two cycles) before action. Posture shift — feet flat, spine long.'},
+  {name:'Hopelessness',risk:'Scarcity State',sounds:'"Nothing changes."',somatic:'Dorsal slump, cold limbs, flatness.',int:'Micro-win review. Fair Exchange audit — add one replenisher for every two depletors. Assign a mentorable small task to regain agency.'}
+];
+const SCHEMAS=[
+  {name:'Conditional Love',desc:'Affection dependent on achievement, appearance, or compliance rather than authentic being. The child learned: "I am loveable only when I perform." This becomes the scarcity blueprint that the substance temporarily silenced.'},
+  {name:'Emotional Neglect',desc:'Caregivers who failed to mirror, validate, or respond to the child\'s emotional needs. The reach toward connection went unanswered — so the reach itself became coded as dangerous. This is the root of the "I don\'t need anyone" presentation at Block 4.'},
+  {name:'Oscillating Idealization / Devaluation',desc:'Unpredictable excessive praise alternating with harsh criticism. The nervous system learns: safety is temporary and threats are always approaching. This is the neurological origin of hypervigilance and stress sensitivity (PAWS Hurdle 4).'},
+  {name:'Enmeshment or Abandonment',desc:'Either excessive involvement that prevented autonomous development, or profound emotional abandonment. No middle ground was modelled. The client never learned what "enough" feels like — this becomes the driver of craving confusion (PAWS Hurdle 5).'},
+  {name:'The Instrumentalized Child',desc:'Valued primarily as an extension of the caregiver\'s needs. The child learned: "My worth is what I produce, not who I am." This becomes the root of the Rescuer Trap in addiction workers — and identity disorientation (PAWS Hurdle 7) in clients.'}
+];
+const DOSE_CHEMS=[
+  {name:'Dopamine',icon:'🎯',trigger:'Progress & purpose. Completing tasks. Earning something real. Visible improvement. Colour tier advancement.'},
+  {name:'Oxytocin',icon:'🤝',trigger:'Bonding & trust. Genuine connection. Co-regulation pairs. Peer witnessing. Being truly seen by another person.'},
+  {name:'Serotonin',icon:'🏅',trigger:'Dignity & status. Earned recognition. Being seen for contribution. Community belonging. Respected role.'},
+  {name:'Endorphins',icon:'💪',trigger:'Joy & resilience. Genuine physical labour. Laughter that isn\'t performed. Challenge survived. Movement in nature.'}
+];
+const CEP_DATA=[
+  {id:'cepM',time:'MORNING',name:'Chem Check',dur:'60 sec',body:'Before the day gets momentum, notice what\'s running in your body. Not a diagnosis — a reading. Where do you feel tightness? Where do you feel ease? One honest sentence about your current state.',practice:'"Right now my body is telling me: ___"\n\nSerotonin signal: Is there any sense of groundedness or okayness — even faint?\nOxytocin signal: Is there any warmth or connection present — even for yourself?'},
+  {id:'cepD',time:'MIDDAY',name:'Co-Regulation Pair',dur:'60–120 sec',body:'Find one other person — physically or by text. Take one paced breath together, or exchange one genuine observation about how each of you is doing. Not a performance. A real exchange.',practice:'One paced breath together: in for 4, out for 6.\n\nOr: "I\'m carrying [this] today. How are you actually doing?"\n\nOxytocin activates through genuine reciprocal presence — not through being helped, but through being met.'},
+  {id:'cepC',time:'CLOSE',name:"Today's Fish",dur:'60 sec',body:'One thought that was swimming today — name it without following it. The Fish Bowl applied to the entire day. What tried to hook you? What fish do you notice now, as the day ends?',practice:'"Today there was [name the fish]. I noticed it. I did not become it."\n\nThis is how consciousness learns to watch itself. One sentence. One fish. One day at a time.'}
+];
+
+// ═══ STATE ═══
+const S={name:'',substance:'',days:0,phase:null,activeHurdles:[],halt:{H:5,A:3,L:7,T:6},workerBlocks:new Set(),clientBlocks:new Set(),conversation:[],isGenerating:false,thetaCtx:null,thetaNodes:[],thetaPlaying:false};
+let synth=window.speechSynthesis,voicesLoaded=false,recognition=null;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+
+function getPhase(d){return PHASES.find(p=>d>=p.days[0]&&d<=p.days[1])||PHASES[5];}
+function getHurdles(sub,d){const dr=d>365?0.3:d>180?0.2:d>84?0.1:0;return HURDLES.map(h=>({hurdle:h,weight:Math.max(0.1,(h.sw[sub]||0.7)-dr)})).sort((a,b)=>b.weight-a.weight);}
+
+function launchApp(){
+  const sub=document.getElementById('inpSub').value;
+  const d=parseInt(document.getElementById('inpDays').value);
+  if(!sub){alert('Please select a primary substance.');return;}
+  if(isNaN(d)||d<0){alert('Please enter days since last use.');return;}
+  S.name=document.getElementById('inpName').value.trim()||'Client';
+  S.substance=sub;S.days=d;S.phase=getPhase(d);S.activeHurdles=getHurdles(sub,d);
+  document.getElementById('setupOverlay').style.display='none';
+  document.getElementById('appShell').style.display='flex';
+  if(synth.getVoices().length)voicesLoaded=true;else synth.onvoiceschanged=()=>voicesLoaded=true;
+  renderAll();
+  addSys(`Session opened · ${S.name} · Day ${S.days} · ${S.phase.name}. Tap Worker or Client to begin.`);
+}
+
+function renderAll(){
+  // Status
+  document.getElementById('sPhase').textContent=S.phase.icon+' '+S.phase.name;
+  document.getElementById('sDay').textContent='Day '+S.days;
+  // HALT bar
+  renderHalt();
+  // Phase banner
+  document.getElementById('phIcon').textContent=S.phase.icon;
+  document.getElementById('phName').textContent=S.phase.icon+' '+S.phase.name;
+  document.getElementById('phDesc').textContent='Day '+S.days+' · '+S.phase.desc;
+  const row=document.getElementById('hurdleRow');row.innerHTML='';
+  S.activeHurdles.slice(0,3).forEach((h,i)=>{const c=document.createElement('div');c.className='hchip'+(i===0?' top':'');c.textContent=h.hurdle.emoji+' '+h.hurdle.name;row.appendChild(c);});
+  document.getElementById('pawsTabName').textContent=S.phase.icon+' '+S.phase.name;
+  document.getElementById('pawsTabDesc').textContent=S.phase.need;
+  // Worker emotions
+  document.getElementById('emoBody').innerHTML=WORKER_EMOTIONS.map(e=>`<div class="emo-item"><div class="emo-name">${e.name}<span class="emo-risk">${e.risk}</span></div><div class="emo-sounds">"${e.sounds}"</div><div class="emo-somatic">Body: ${e.somatic}</div><div class="emo-int">↳ ${e.int}</div></div>`).join('');
+  // Blocks
+  renderBlocks();
+  // Tools
+  renderTools();
+  // PAWS info
+  renderPaws();
+  // Schemas
+  document.getElementById('schemaContainer').innerHTML=SCHEMAS.map(s=>`<div class="schema-item"><h4>${s.name}</h4><p>${s.desc}</p></div>`).join('');
+  // Daily
+  renderDaily();
+}
+
+function renderHalt(){
+  ['H','A','L','T'].forEach(k=>{
+    const v=S.halt[k];
+    document.getElementById('hs'+k).textContent=v;
+    const p=document.getElementById('hp'+k);
+    p.className='hp'+(v>=7?' hi':v>=5?' md':'');
+  });
+}
+
+function toggleEmo(){
+  const b=document.getElementById('emoBody');const t=document.getElementById('emoTgl');
+  const open=b.classList.toggle('open');t.classList.toggle('open',open);
+  document.getElementById('emoArr').textContent=open?'▲':'▼';
+}
+
+function renderBlocks(){
+  const c=document.getElementById('blocksContainer');c.innerHTML='';
+  [['E','Emotional Relapse — CENAPS Stage 1','se'],['M','Mental Relapse — CENAPS Stage 2','sm'],['P','Physical Relapse — CENAPS Stage 3','sp']].forEach(([st,lbl,cls])=>{
+    const h=document.createElement('div');h.className='bsh';h.innerHTML=`<span class="${cls}">${lbl}</span>`;c.appendChild(h);
+    BLOCKS.filter(b=>b.st===st).forEach(b=>{
+      const wA=S.workerBlocks.has(b.id),cA=S.clientBlocks.has(b.id);
+      const cc={G:'cG',A:'cA',P:'cP',S:'cS'}[b.cap];
+      const cl={G:'Gratitude',A:'Acceptance',P:'Presence',S:'Surrender'}[b.cap];
+      const d=document.createElement('div');
+      d.className='bc'+(wA&&cA?' fb':wA?' fw':cA?' fc':'');
+      d.innerHTML=`<div class="bch"><span class="bn">${b.id}</span><span class="bnm">${b.name}</span><span class="ctag ${cc}">${cl}</span><div class="bflags"><button class="fbtn wf${wA?' active':''}" onclick="toggleBlock(event,${b.id},'W')">W</button><button class="fbtn cf${cA?' active':''}" onclick="toggleBlock(event,${b.id},'C')">C</button></div></div><div class="bdesc">${b.desc}</div><div class="bpocket">📌 ${b.pk}</div>`;
+      c.appendChild(d);
+    });
+  });
+}
+function toggleBlock(e,id,who){
+  e.stopPropagation();
+  const set=who==='W'?S.workerBlocks:S.clientBlocks;
+  set.has(id)?set.delete(id):set.add(id);
+  renderBlocks();
+  const both=[...S.workerBlocks].filter(id=>S.clientBlocks.has(id));
+  if(both.length){const names=both.map(id=>BLOCKS.find(b=>b.id===id).name).join(', ');addSys(`⚠️ MISMATCH: ${names} flagged by both. That perceptual gap is the clinical data — explore it now.`);}
+}
+
+function renderTools(){
+  const c=document.getElementById('toolsContainer');c.innerHTML='';
+  TOOLS.forEach((t,idx)=>{
+    const cc={'Acceptance':'cA','Presence':'cP','Gratitude':'cG','Surrender':'cS','Presence + Surrender':'cP','Presence + Acceptance':'cP'}[t.cap]||'cP';
+    const stepsHtml=t.steps.length?`<ul class="tsteps">${t.steps.map(s=>`<li><strong>${s.s}:</strong> ${s.d}</li>`).join('')}</ul>`:'';
+    const thetaHtml=t.theta?`<button class="theta-btn" id="tBtn${idx}" onclick="toggleTheta(${idx})">🎵 Activate Theta Wave Audio · 6 Hz Binaural</button><div class="theta-status" id="tSt${idx}"></div>`:'';
+    const d=document.createElement('div');d.className='tc';
+    d.innerHTML=`<div class="th"><span class="ti">${t.icon}</span><div><div class="tn">${t.name}</div><div class="tcap-label">${t.cap.toUpperCase()}</div></div><span class="ctag ${cc}" style="margin-left:auto;">${t.cap}</span></div><div class="tbody">${t.body}</div>${stepsHtml}<div class="tpractice">${t.practice.replace(/\n/g,'<br>')}</div>${thetaHtml}<button class="btn-speak" onclick="speakIt(this,\`${t.practice.replace(/`/g,"'").replace(/\n/g,' ')}\`)">🔊 Speak Practice</button>`;
+    c.appendChild(d);
+  });
+}
+
+function speakIt(btn,text){
+  if(!synth)return;synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.rate=0.87;u.pitch=1.05;
+  if(voicesLoaded){const v=synth.getVoices().find(v=>v.name.includes('Samantha')||v.name.includes('Google US'));if(v)u.voice=v;}
+  synth.speak(u);btn.textContent='🔊 Speaking...';
+  u.onend=()=>btn.textContent='🔊 Speak Practice';
+}
+
+function toggleTheta(idx){
+  const btn=document.getElementById('tBtn'+idx);
+  const st=document.getElementById('tSt'+idx);
+  if(S.thetaPlaying){
+    S.thetaNodes.forEach(n=>{try{n.stop();}catch(e){}});
+    S.thetaNodes=[];S.thetaPlaying=false;
+    btn.textContent='🎵 Activate Theta Wave Audio · 6 Hz Binaural';
+    btn.classList.remove('playing');st.textContent='';return;
+  }
+  try{
+    if(!S.thetaCtx)S.thetaCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const ctx=S.thetaCtx;
+    const merger=ctx.createChannelMerger(2);
+    const gain=ctx.createGain();gain.gain.value=0.05;
+    merger.connect(gain);gain.connect(ctx.destination);
+    [[200,206],[300,306]].forEach(([fl,fr])=>{
+      const oL=ctx.createOscillator(),oR=ctx.createOscillator();
+      oL.frequency.value=fl;oR.frequency.value=fr;oL.type='sine';oR.type='sine';
+      oL.connect(merger,0,0);oR.connect(merger,0,1);
+      oL.start();oR.start();S.thetaNodes.push(oL,oR);
+    });
+    S.thetaPlaying=true;
+    btn.textContent='⏹️ Stop Theta Audio';btn.classList.add('playing');
+    st.textContent='6 Hz theta active · Allow the mind to soften · Do not force · Just wait in the quiet';
+  }catch(e){st.textContent='Audio not supported in this browser — use Chrome or Edge.';}
+}
+
+function renderPaws(){
+  const c=document.getElementById('hurdlesContainer');c.innerHTML='';
+  HURDLES.forEach(h=>{
+    const wo=S.activeHurdles.find(x=>x.hurdle.id===h.id);
+    const w=wo?wo.weight:0.5;
+    const wl=w>=0.8?'HIGH ACTIVE':w>=0.6?'ACTIVE':'BACKGROUND';
+    const wc=w>=0.8?'hi':w>=0.6?'md':'';
+    const d=document.createElement('div');d.className='hcard';
+    d.innerHTML=`<div class="hhead" onclick="toggleHurdle(${h.id})"><div class="hnum">${h.id}</div><div class="htitle">${h.emoji} ${h.name}</div><div class="hwt ${wc}">${wl}</div></div>
+    <div class="hpanels" id="hp${h.id}">
+      <div class="ptabs"><div class="ptab active" id="pt${h.id}c" onclick="switchPanel(${h.id},'c')">CENAPS</div><div class="ptab" id="pt${h.id}p" onclick="switchPanel(${h.id},'p')">PAWS</div><div class="ptab" id="pt${h.id}g" onclick="switchPanel(${h.id},'g')">G.A.P.S.</div></div>
+      <div class="pcontent" id="pc${h.id}c">${h.cenaps}</div>
+      <div class="pcontent" id="pc${h.id}p" style="display:none">${h.paws}</div>
+      <div class="pcontent" id="pc${h.id}g" style="display:none">${h.gaps}</div>
+    </div>`;
+    c.appendChild(d);
+  });
+}
+function toggleHurdle(id){document.getElementById('hp'+id).classList.toggle('open');}
+function switchPanel(id,p){
+  ['c','p','g'].forEach(x=>{
+    document.getElementById(`pt${id}${x}`).className='ptab'+(x===p?' active':'');
+    document.getElementById(`pc${id}${x}`).style.display=x===p?'block':'none';
+  });
+}
+
+function renderDaily(){
+  CEP_DATA.forEach(d=>{
+    const el=document.getElementById(d.id);
+    el.innerHTML=`<div class="cep-head"><span class="cep-time">${d.time}</span><span class="cep-name">${d.name}</span><span class="cep-dur">${d.dur}</span></div><div class="cep-body">${d.body}</div><div class="cep-prac">${d.practice.replace(/\n/g,'<br>')}</div><button class="btn-cs" onclick="speakIt(this,\`${d.practice.replace(/`/g,"'").replace(/\n/g,' ')}\`)">🔊 Speak</button>`;
+  });
+  const grid=document.getElementById('doseGrid');grid.innerHTML='';
+  DOSE_CHEMS.forEach((ch,i)=>{
+    const d=document.createElement('div');d.className='dose-chem';
+    d.innerHTML=`<div class="dc-icon">${ch.icon}</div><div class="dc-name">${ch.name}</div><div class="dc-trigger">${ch.trigger}</div><div class="dc-check">✓ Activated today</div>`;
+    d.onclick=()=>d.classList.toggle('on');grid.appendChild(d);
+  });
+}
+
+// ═══ CONVERSATION ═══
+function addMsg(sp,txt){
+  const p=document.getElementById('convPanel');
+  const d=document.createElement('div');d.className=`msg ${sp}`;
+  d.innerHTML=`<div class="bubble">${txt}</div>`;
+  p.appendChild(d);p.scrollTop=p.scrollHeight;
+  S.conversation.push({role:sp,text:txt});
+}
+function addSys(txt){
+  const p=document.getElementById('convPanel');
+  const d=document.createElement('div');d.className='msg system';
+  d.innerHTML=`<div class="bubble">${txt}</div>`;
+  p.appendChild(d);p.scrollTop=p.scrollHeight;
+}
+function showTyping(){
+  const p=document.getElementById('convPanel');
+  const d=document.createElement('div');d.className='msg worker';d.id='typing';
+  d.innerHTML='<div class="bubble tdots"><span></span><span></span><span></span></div>';
+  p.appendChild(d);p.scrollTop=p.scrollHeight;
+}
+function removeTyping(){const e=document.getElementById('typing');if(e)e.remove();}
+
+function buildPrompt(role){
+  const top=S.activeHurdles.slice(0,3).map(h=>h.hurdle.name).join(', ');
+  const h=S.halt;
+  const wb=[...S.workerBlocks].map(id=>BLOCKS.find(b=>b.id===id)?.name).join(', ')||'none';
+  const cb=[...S.clientBlocks].map(id=>BLOCKS.find(b=>b.id===id)?.name).join(', ')||'none';
+  const conv=S.conversation.map(m=>`${m.role.toUpperCase()}: ${m.text}`).join('\n');
+  if(role==='worker')return `You are a G.A.P.S. recovery worker trained in CENAPS (Gorski), PAWS neuroscience, Motivational Interviewing, and the G.A.P.S. four capacities (Gratitude, Acceptance, Presence, Surrender).
+
+FOUNDATIONAL CONTEXT:
+Addiction is neurochemical poverty with a coping strategy attached. The client's substance met a real need — dopamine, oxytocin, serotonin relief — through a destructive path. The core wound is often this: the nervous system learned that the reach toward love and connection produced pain rather than nourishment. The wound is not the absence of love — it is the equation the nervous system drew between longing and loss. Before speaking, the worker asks: what real D.O.S.E. need is this person communicating beneath the presenting behaviour?
+
+The healing trajectory: Snap Practice (acute) → Fish Bowl (ongoing awareness) → Mandela Method (deep reprocessing) → Trauma-to-Wisdom extraction. The worker is a lighthouse — you show the shore. You do not swim out and drag the person in.
+
+CLIENT STATE:
+Name: ${S.name} · Substance: ${S.substance} · Day: ${S.days}
+PAWS Phase: ${S.phase.name} — ${S.phase.desc}
+Top active hurdles: ${top}
+HALT — Hungry:${h.H} Angry:${h.A} Lonely:${h.L} Tired:${h.T} (out of 10)
+Worker-flagged blocks: ${wb} · Client-flagged blocks: ${cb}
+
+CONVERSATION SO FAR:
+${conv||'(none yet)'}
+
+YOUR ROLE: Speak as the recovery worker. Plain, warm, direct. No clinical jargon without explanation. Max 2–4 sentences — the client is under PAWS cognitive load. Reference HALT and active Blocks when relevant. When using a G.A.P.S. tool, give the exact practice script. End with ONE question OR one practice invitation — never both. No shame. No fixing reflex. Evoke, don't install.`;
+
+  return `You are the RECOVERY CLIENT in a G.A.P.S. session. You are ${S.name}.
+
+YOUR STATE:
+Substance: ${S.substance} · Day ${S.days} of recovery
+PAWS Phase: ${S.phase.name} · Experiencing: ${top}
+HALT: Hungry ${h.H} · Angry ${h.A} · Lonely ${h.L} · Tired ${h.T} (out of 10)
+Your flagged blocks: ${cb||'none'}
+
+CONVERSATION SO FAR:
+${conv||'(none yet)'}
+
+Respond authentically as someone in early recovery — honest, sometimes resistant, sometimes vulnerable. 1–3 sentences max. Plain, real language. The highest HALT scores (${h.L>=7?'Loneliness ':''} ${h.T>=6?'Tiredness ':''}) should show in your tone. Not scripted. Not cooperative. Real. Respond directly to whatever the worker just said.`;
+}
+
+async function genLine(role){
+  if(S.isGenerating)return;
+  S.isGenerating=true;
+  document.getElementById('btnW').disabled=true;document.getElementById('btnC').disabled=true;
+  showTyping();
+  try{
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:buildPrompt(role),messages:[{role:"user",content:`Generate the ${role}'s next response.`}]})
+    });
+    const data=await resp.json();
+    removeTyping();
+    const txt=data.content?.[0]?.text||(role==='worker'?"I'm here with you. What's coming up right now?":"I don't know. I'm just tired.");
+    addMsg(role,txt);speakLine(txt,role);
+  }catch(e){removeTyping();addMsg(role,role==='worker'?"I'm here. What's on your mind?":"I don't know.");}
+  finally{S.isGenerating=false;document.getElementById('btnW').disabled=false;document.getElementById('btnC').disabled=false;}
+}
+
+function speakLine(text,speaker){
+  if(!synth)return;synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.rate=0.92;u.pitch=speaker==='worker'?0.95:1.1;
+  if(voicesLoaded){const vs=synth.getVoices();const v=speaker==='worker'?vs.find(v=>v.name.includes('Daniel')||v.name.includes('UK English Male')):vs.find(v=>v.name.includes('Samantha')||v.name.includes('US English Female'));if(v)u.voice=v;}
+  synth.speak(u);
+}
+
+function startVoice(){
+  if(!SR){alert('Voice recognition requires Chrome or Edge.');return;}
+  if(recognition){recognition.stop();recognition=null;document.getElementById('btnV').textContent='🎤 Speak as Client';return;}
+  recognition=new SR();recognition.continuous=false;recognition.interimResults=false;recognition.lang='en-US';
+  recognition.onstart=()=>{document.getElementById('listenSt').textContent='🎙️ Listening — speak as the client...';document.getElementById('btnV').textContent='⏹️ Stop';};
+  recognition.onresult=e=>{const t=e.results[0][0].transcript;document.getElementById('listenSt').textContent='';addMsg('client',t);speakLine(t,'client');recognition=null;document.getElementById('btnV').textContent='🎤 Speak as Client';setTimeout(()=>genLine('worker'),1200);};
+  recognition.onerror=()=>{document.getElementById('listenSt').textContent='Voice error — try again';document.getElementById('btnV').textContent='🎤 Speak as Client';recognition=null;};
+  recognition.onend=()=>{document.getElementById('btnV').textContent='🎤 Speak as Client';recognition=null;};
+  recognition.start();
+}
+
+function resetConv(){
+  synth&&synth.cancel();S.conversation=[];
+  document.getElementById('convPanel').innerHTML='';document.getElementById('listenSt').textContent='';
+  addSys(`Session reset · ${S.name} · Day ${S.days} · ${S.phase.name} · Ready.`);
+}
+
+function openHalt(){
+  const defs=[{k:'H',l:'Hungry / Hurt / Haven\'t eaten',n:'Physical need driving your state right now'},{k:'A',l:'Angry / Anxious / Activated',n:'Emotional threat response level'},{k:'L',l:'Lonely / Longing / Lacking connection',n:'Oxytocin deficit — connection need'},{k:'T',l:'Tired / Triggered / Telling a story',n:'Fatigue + cognitive load combined'}];
+  document.getElementById('haltSliders').innerHTML=defs.map(d=>`<div class="hsg"><div class="hsh"><span class="hsn">${d.l}</span><span class="hsv${S.halt[d.k]>=7?' hi':S.halt[d.k]>=5?' md':''}" id="hv${d.k}">${S.halt[d.k]}</span></div><input type="range" min="0" max="10" value="${S.halt[d.k]}" oninput="updHalt('${d.k}',this.value)"><div class="hn">${d.n}</div></div>`).join('');
+  document.getElementById('haltModal').classList.add('open');
+}
+function updHalt(k,v){S.halt[k]=parseInt(v);const el=document.getElementById('hv'+k);el.textContent=v;el.className='hsv'+(v>=7?' hi':v>=5?' md':'');}
+function closeHalt(){document.getElementById('haltModal').classList.remove('open');renderHalt();}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nv').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('nav-'+tab).classList.add('active');
+}
+</script>
+</body>
+</html>

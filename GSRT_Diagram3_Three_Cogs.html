@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSRT — The Three Cogs System Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Sans 3', sans-serif; background: #f4f6f9; min-height: 100vh; }
+
+  .header { background: #1a3a5c; padding: 22px 28px 18px; border-bottom: 3px solid #b8860b; }
+  .header-title { font-family: 'Playfair Display', serif; color: #fff; font-size: 18px; }
+  .header-sub { color: #9eb8d0; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
+
+  .body { padding: 28px 20px; max-width: 960px; margin: 0 auto; }
+  .dtitle { font-family: 'Playfair Display', serif; color: #1a3a5c; font-size: 20px; margin-bottom: 4px; }
+  .dsub { color: #7f8c8d; font-size: 12.5px; margin-bottom: 6px; }
+  .gold-bar { height: 3px; width: 70px; background: linear-gradient(90deg, #b8860b, transparent); margin-bottom: 24px; }
+
+  .cogs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media(max-width: 680px) { .cogs-grid { grid-template-columns: 1fr; } }
+
+  .cog { border-radius: 10px; border: 2px solid; overflow: hidden; }
+  .cog-head { padding: 16px 18px; }
+  .cog-num { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; opacity: 0.85; }
+  .cog-name { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; margin: 5px 0 3px; }
+  .cog-role { font-size: 12px; opacity: 0.8; }
+  .cog-body { background: #fff; padding: 16px 18px; }
+  .cog-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f0f3f7; align-items: flex-start; }
+  .cog-item:last-child { border-bottom: none; }
+  .cog-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .cog-text { font-size: 12px; color: #444; line-height: 1.55; }
+
+  .c1 { border-color: #27ae60; }
+  .c1 .cog-head { background: #1e4d2b; color: #fff; }
+  .c2 { border-color: #2980b9; }
+  .c2 .cog-head { background: #1a3a5c; color: #fff; }
+  .c3 { border-color: #b8860b; }
+  .c3 .cog-head { background: #7d5a00; color: #fff; }
+
+  .connector-bar { background: #fff; border: 1px solid #dde4ed; border-radius: 8px; padding: 18px 22px; margin-top: 18px; }
+  .conn-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #1a3a5c; margin-bottom: 14px; }
+  .conn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media(max-width: 600px) { .conn-grid { grid-template-columns: 1fr; } }
+  .conn-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: #f4f6f9; border-radius: 6px; }
+  .conn-arrow { font-size: 20px; color: #b8860b; font-weight: 900; line-height: 1; margin-top: 1px; flex-shrink: 0; }
+  .conn-label { font-size: 12.5px; font-weight: 700; color: #1a3a5c; }
+  .conn-desc { font-size: 11.5px; color: #7f8c8d; margin-top: 2px; }
+
+  .antifrag { margin-top: 14px; padding: 14px 18px; background: #fef9e7; border-left: 4px solid #b8860b; border-radius: 5px; font-size: 12.5px; color: #7d5a00; line-height: 1.7; }
+
+  .footer { background: #1a3a5c; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
+  .footer-l { color: #9eb8d0; font-size: 10.5px; }
+  .footer-r { color: #d4a017; font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">Global Stewardship & Reconciliation Trust Initiative</div>
+  <div class="header-sub">Diagram 3 of 4 · Three Cogs System Architecture · Government of Canada Submission · February 2026</div>
+</div>
+
+<div class="body">
+  <div class="dtitle">The Three Cogs — Integrated System Architecture</div>
+  <div class="dsub">Each cog independently functional · All three together create antifragility · Remove one — the others still run</div>
+  <div class="gold-bar"></div>
+
+  <div class="cogs-grid">
+
+    <div class="cog c1">
+      <div class="cog-head">
+        <div class="cog-num">COG 1</div>
+        <div class="cog-name">The Muscle</div>
+        <div class="cog-role">CCGBI — The Work</div>
+      </div>
+      <div class="cog-body">
+        <div class="cog-item"><div class="cog-dot" style="background:#27ae60"></div><div class="cog-text">Colour-coded environmental restoration — White → Blue → Green → Black → Gold</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#27ae60"></div><div class="cog-text">WHMIS-integrated safety certification — internationally portable credentials</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#27ae60"></div><div class="cog-text">Paid physical work AI cannot replicate — human presence, judgment, community trust</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#27ae60"></div><div class="cog-text">Verification-Before-Payment at every level — quality before cash</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#27ae60"></div><div class="cog-text">Entrepreneurial pathway: individual worker → operator → franchise → space debris</div></div>
+      </div>
+    </div>
+
+    <div class="cog c2">
+      <div class="cog-head">
+        <div class="cog-num">COG 2</div>
+        <div class="cog-name">The Nervous System</div>
+        <div class="cog-role">GTT / CEP / HALO — The Listening</div>
+      </div>
+      <div class="cog-body">
+        <div class="cog-item"><div class="cog-dot" style="background:#5dade2"></div><div class="cog-text">5 Core Questions — anonymous daily flourishing data from the global network</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#5dade2"></div><div class="cog-text">Quantum Data Sovereignty — Saint Christopher Handshake governs all access</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#5dade2"></div><div class="cog-text">CEP daily micro-practices — neurochemical regulation in 3 minutes per day</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#5dade2"></div><div class="cog-text">AI-HALO bionic sidekick — tracks Hue, Shade, Tint across a lifetime</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#5dade2"></div><div class="cog-text">Trajectory Illumination — pre-positions support before crisis arrives</div></div>
+      </div>
+    </div>
+
+    <div class="cog c3">
+      <div class="cog-head">
+        <div class="cog-num">COG 3</div>
+        <div class="cog-name">The Heart</div>
+        <div class="cog-role">GSRT — The Sharing</div>
+      </div>
+      <div class="cog-body">
+        <div class="cog-item"><div class="cog-dot" style="background:#d4a017"></div><div class="cog-text">20/40/20/10/10 vacuum-sealed waterfall — 80% local benefit mandate</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#d4a017"></div><div class="cog-text">Reverse revenue calculation: dignity pay P → required gross R = P ÷ 0.40</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#d4a017"></div><div class="cog-text">Aquifer Recharge: 10% of gross refills the Godspring seed over 5 years</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#d4a017"></div><div class="cog-text">Grace-C reserve: welfare, disability, and space exploration funded continuously</div></div>
+        <div class="cog-item"><div class="cog-dot" style="background:#d4a017"></div><div class="cog-text">$18.5M seed fully repaid by Year 5 — self-sustaining thereafter</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="connector-bar">
+    <div class="conn-title">How the Three Cogs Feed Each Other</div>
+    <div class="conn-grid">
+      <div class="conn-item">
+        <div class="conn-arrow">→</div>
+        <div><div class="conn-label">COG 1 funds COG 3</div><div class="conn-desc">Restoration revenue flows to the GSRT waterfall for distribution</div></div>
+      </div>
+      <div class="conn-item">
+        <div class="conn-arrow">→</div>
+        <div><div class="conn-label">COG 2 optimises COG 1</div><div class="conn-desc">GTT flourishing data improves routes, training, and worker matching</div></div>
+      </div>
+      <div class="conn-item">
+        <div class="conn-arrow">→</div>
+        <div><div class="conn-label">COG 3 funds new COG 1 nodes</div><div class="conn-desc">Community reinvestment from Scaling Reserve seeds regional expansion</div></div>
+      </div>
+      <div class="conn-item">
+        <div class="conn-arrow">→</div>
+        <div><div class="conn-label">VVV Gate protects all three</div><div class="conn-desc">Values · Virtues · Veterans integrity firewall — misaligned inputs are filtered before entry</div></div>
+      </div>
+    </div>
+    <div class="antifrag">
+      <strong>Antifragility Principle:</strong> Traditional systems weaken under stress. This system gains order during chaos. When mayhem increases, restoration demand increases, more workers are needed, more revenue is generated, more community reinvestment flows. Calculated entropy change: <strong>ΔS_system = −0.23025</strong>. The system grows more ordered as external pressure rises. Verified: Co-Pilot 365 Independent Audit, February 2026.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-l">Neil J. Schwab · Framework Architect · neil.schwab@live.ca · Newmarket, Ontario · Confidential — Limited Distribution</div>
+  <div class="footer-r">PBTG</div>
+</div>
+
+</body>
+</html>

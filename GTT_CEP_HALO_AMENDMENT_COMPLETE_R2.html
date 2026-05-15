@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTT/CEP/HALO — Complete Amendment R2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1a1a;--muted:#4a4a4a;--rule:#c8c0b0;--accent:#1F4E79;--gold:#b8860b;--green-dark:#1e4d2b;--bg:#f7f4ef;--paper:#fffef9;--c-white:#8a9098;--c-blue:#1a5276;--c-green:#1e7a3c;--c-black:#1a1a1a;--c-gold:#b8860b;--c-red:#922b21;--c-yellow:#9a7d0a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--bg);color:var(--ink);font-size:10.5pt;line-height:1.8;}
+.page{max-width:800px;margin:36px auto;background:var(--paper);padding:60px 72px;box-shadow:0 2px 32px rgba(0,0,0,.1);border-top:6px solid var(--accent);}
+.cover{text-align:center;padding-bottom:40px;margin-bottom:44px;border-bottom:2px solid var(--rule);}
+.badge{display:inline-block;background:var(--accent);color:#fff;font-size:7pt;letter-spacing:.22em;text-transform:uppercase;padding:5px 16px;margin-bottom:22px;}
+.doc-title{font-family:'Playfair Display',serif;font-size:22pt;font-weight:700;color:var(--accent);line-height:1.25;margin-bottom:12px;}
+.doc-sub{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:22px;}
+.cover-meta{font-size:9pt;color:var(--muted);line-height:1.7;}
+.cover-meta strong{color:var(--ink);}
+.insertion-note{display:inline-block;margin-top:18px;background:#eaf2fb;border:1px solid #aac8e4;padding:10px 18px;font-size:9pt;color:var(--accent);border-radius:3px;}
+h1{font-family:'Playfair Display',serif;font-size:16pt;font-weight:700;color:var(--accent);margin:44px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--rule);}
+h2{font-family:'Playfair Display',serif;font-size:13pt;font-weight:600;color:var(--accent);margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--rule);}
+h3{font-size:10.5pt;font-weight:600;color:var(--ink);margin:22px 0 8px;}
+h4{font-size:10pt;font-weight:600;color:var(--muted);margin:16px 0 6px;font-style:italic;}
+p{margin-bottom:12px;}
+ul{margin:8px 0 14px 0;list-style:none;}
+ul li{position:relative;padding-left:18px;margin-bottom:5px;font-size:10pt;}
+ul li::before{content:"·";position:absolute;left:0;color:var(--accent);font-weight:700;font-size:13pt;line-height:1.4;}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:28px 0;}
+table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:9.5pt;}
+thead tr{background:var(--accent);color:#fff;}
+thead th{padding:8px 12px;text-align:left;font-weight:600;font-size:8.5pt;letter-spacing:.04em;text-transform:uppercase;}
+tbody tr:nth-child(even){background:#f0ede8;}
+tbody tr:nth-child(odd){background:#faf8f4;}
+td{padding:8px 12px;border-bottom:1px solid #e0dbd2;vertical-align:top;}
+.tbl-green thead tr{background:var(--green-dark);}
+.tbl-gold thead tr{background:var(--gold);}
+.tbl-dark thead tr{background:#2a2a2a;}
+.chip{display:inline-block;width:13px;height:13px;border-radius:2px;margin-right:5px;vertical-align:middle;border:1px solid rgba(0,0,0,.18);}
+.ch-white{background:#e8eaec;}.ch-blue{background:#1a5276;}.ch-green{background:#1e7a3c;}.ch-black{background:#1a1a1a;}.ch-gold{background:#c9a227;}.ch-red{background:#c0392b;}.ch-yellow{background:#d4ac0d;}
+.color-block{border-left:5px solid #ccc;padding:14px 18px;margin:18px 0;border-radius:0 4px 4px 0;background:#fafaf8;}
+.color-block.cb-white{border-color:var(--c-white);}
+.color-block.cb-blue{border-color:var(--c-blue);}
+.color-block.cb-green{border-color:var(--c-green);}
+.color-block.cb-black{border-color:var(--c-black);background:#f4f4f2;}
+.color-block.cb-gold{border-color:var(--c-gold);}
+.color-block.cb-red{border-color:var(--c-red);}
+.color-block.cb-yellow{border-color:var(--c-yellow);}
+.color-block-title{font-family:'Playfair Display',serif;font-size:11.5pt;font-weight:700;margin-bottom:8px;}
+.black-label-demo{background:#111;color:#ffe033;padding:14px 22px;margin:16px 0;font-size:10pt;letter-spacing:.1em;border-radius:3px;text-align:center;font-weight:700;text-shadow:0 0 10px rgba(255,224,51,.5);}
+.note{background:#eaf2fb;border-left:4px solid var(--accent);padding:12px 16px;margin:16px 0;font-size:9.5pt;color:var(--muted);border-radius:0 3px 3px 0;}
+.note strong{color:var(--accent);font-style:normal;}
+.note-gold{background:#fdf8ee;border-left-color:var(--gold);}
+.note-gold strong{color:var(--gold);}
+.flow{font-family:'Courier New',monospace;font-size:8.5pt;background:#f4f2ee;padding:20px 24px;border:1px solid var(--rule);margin:16px 0;line-height:1.9;white-space:pre;overflow-x:auto;border-radius:3px;}
+.eq{font-family:'Courier New',monospace;background:#f0ede8;padding:8px 14px;margin:8px 0 14px;font-size:9.5pt;border-left:3px solid var(--accent);border-radius:0 3px 3px 0;}
+.age-stage{display:flex;gap:16px;margin:12px 0;align-items:flex-start;}
+.age-badge{background:var(--accent);color:#fff;font-size:8pt;font-weight:700;padding:4px 10px;white-space:nowrap;border-radius:2px;min-width:70px;text-align:center;margin-top:2px;}
+.age-content{font-size:10pt;}
+.sig{margin-top:48px;padding-top:28px;border-top:2px solid var(--rule);}
+.sig-name{font-family:'Playfair Display',serif;font-size:15pt;font-weight:700;color:var(--accent);}
+.sig-role{font-size:9.5pt;color:var(--muted);margin-top:4px;line-height:1.6;}
+.footer-tag{margin-top:28px;text-align:center;font-size:7.5pt;letter-spacing:.2em;text-transform:uppercase;color:var(--rule);font-weight:600;}
+</style>
+</head>
+<body><div class="page">
+
+<div class="cover">
+  <div class="badge">Amendment &middot; Complete R2 &middot; Ready for Opus Integration</div>
+  <div class="doc-title">System 2: GTT / CEP / HALO<br>The Nervous System</div>
+  <div class="doc-sub">Complete Integration: School &middot; Colour Wheel Curriculum &middot; WHMIS Progression &middot; Halo &middot; GTT &middot; CEP &middot; The Journey to Sovereignty</div>
+  <div class="cover-meta">
+    <strong>Framework Architect:</strong> Neil J. Schwab &nbsp;&middot;&nbsp; neil.schwab@live.ca &nbsp;&middot;&nbsp; +1 (905) 868-6985<br>
+    Newmarket, Ontario &nbsp;&middot;&nbsp; <strong>Date:</strong> February 22, 2026<br>
+    <strong>Version:</strong> R2 &mdash; R1 base + Colour Wheel Curriculum + WHMIS Integration merged &middot; Honour Roll weights specified
+  </div>
+  <div class="insertion-note">Insert after System 1 (CCGBI) and before System 3 (CIP) in MASTER_MANUAL_V4_COMPLETE.docx</div>
+</div>
+
+<h1>Part One: The School &mdash; Where It All Begins</h1>
+
+<h2>1.1 The First Day</h2>
+<p>A child walks into school. They don&rsquo;t know it yet, but they&rsquo;ve just entered a system that will watch them, guide them, and open doors for the rest of their life. Not with cameras. Not with tracking. With presence.</p>
+<p>The Halo is already there &mdash; a gentle digital companion that noticed them the moment they were born. It watched them take first steps, speak first words, show first curiosities. Now, in the classroom, it begins its real work.</p>
+
+<h2>1.2 Daily CEP Micro-Hooks &mdash; The Rhythm of Regulation</h2>
+<table>
+  <thead><tr><th>Time</th><th>Practice</th><th>Duration</th><th>What It Does</th></tr></thead>
+  <tbody>
+    <tr><td>Morning</td><td>&ldquo;Chem check&rdquo; &mdash; notice a body signal</td><td>60 seconds</td><td>Builds interoception &mdash; the ability to feel what&rsquo;s happening inside</td></tr>
+    <tr><td>Midday</td><td>Co-regulation pair &mdash; one breath or gratitude exchange</td><td>60&ndash;120 seconds</td><td>Activates oxytocin, builds trust, reminds them they&rsquo;re not alone</td></tr>
+    <tr><td>Close</td><td>&ldquo;Today&rsquo;s fish&rdquo; &mdash; one thought noticed and released</td><td>60 seconds</td><td>Trains observer consciousness &mdash; I am not my thoughts</td></tr>
+  </tbody>
+</table>
+<div class="note"><strong>Note on &ldquo;Today&rsquo;s Fish&rdquo;:</strong> This language connects directly to the Fish Bowl Method &mdash; the core observer-consciousness practice running through the entire framework. The fish is any thought, feeling, or reaction the child watches from outside, like watching a fish in a bowl rather than being the fish. First use in the school day is the first seed of sovereign awareness.</div>
+<p>Teachers record a simple 1&ndash;3 regulation rating each day &mdash; not to track students, but to understand the classroom&rsquo;s climate. Data is anonymous, aggregated, and used only to improve.</p>
+
+<h2>1.3 What the Halo Sees &mdash; Curiosity Mapping</h2>
+<p>While the child plays, the Halo watches. It notices:</p>
+<ul>
+  <li>Do they gravitate toward water? <em>(potential BLUE)</em></li>
+  <li>Do they dig in dirt, tend to plants? <em>(potential GREEN)</em></li>
+  <li>Do they line things up, fix things, take things apart? <em>(potential BLACK)</em></li>
+  <li>Do they comfort other children, organize games, lead? <em>(potential GOLD)</em></li>
+  <li>Do they seek quiet corners, watch before joining? <em>(potential WHITE)</em></li>
+</ul>
+<p>The Halo doesn&rsquo;t judge. It doesn&rsquo;t label. It just notices. Like a grandmother sitting quietly in the corner, watching, smiling, remembering.</p>
+
+<h2>1.4 Hue Formation &mdash; The Core Colour Emerges</h2>
+<p>By age 8&ndash;12, the Halo can say with confidence: <em>&ldquo;This child&rsquo;s Hue is BLUE&rdquo;</em> or <em>&ldquo;This child&rsquo;s Hue is GREEN.&rdquo;</em> The Hue is the core colour &mdash; the lens through which they will see the world. It is not a cage. It is a home.</p>
+<div class="eq">Hue = argmax(W, B, G, Bl, Go) &mdash; weighted observations of curiosity, engagement, and natural inclination over time</div>
+
+<h2>1.5 The Mother-Elder &mdash; First Mentor</h2>
+<p>Every child is paired with a Mother-Elder &mdash; a Gold Level teacher who becomes their anchor. Retired but not gone. Paid, not volunteering. Present, not distant. Wise, not lecturing. They meet weekly for presence, not lessons. This relationship is the child&rsquo;s first experience of being truly seen by someone who has no agenda but their flourishing.</p>
+
+<hr class="rule">
+
+<h1>1.6 The Colour Wheel Curriculum &mdash; Complete Learning Architecture</h1>
+<p>The colour wheel is not decoration. It is a complete curriculum architecture organizing everything a child learns &mdash; from kindergarten through university &mdash; around their emerging Hue. Every subject is taught through the lens of colour, ensuring learning is never abstract. It is always connected to who the child is and what they care about.</p>
+
+<h2>1.6.1 The Four-Ring Structure</h2>
+<table>
+  <thead><tr><th>Ring</th><th>What It Contains</th><th>Age Range</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Centre</strong></td><td>WHMIS definition &mdash; physical hazard meaning (anchor in the physical world)</td><td>All ages</td></tr>
+    <tr><td><strong>Ring 1</strong></td><td>Feelings and emotions &mdash; emotional literacy layer</td><td>All ages</td></tr>
+    <tr><td><strong>Ring 2</strong></td><td>Elementary curriculum</td><td>Ages 5&ndash;11</td></tr>
+    <tr><td><strong>Ring 3</strong></td><td>High school curriculum</td><td>Ages 14&ndash;18</td></tr>
+    <tr><td><strong>Ring 4</strong></td><td>University / life curriculum</td><td>Ages 18+</td></tr>
+  </tbody>
+</table>
+
+<div class="color-block cb-white">
+  <div class="color-block-title"><span class="chip ch-white"></span>WHITE &mdash; Foundation, Clarity, Observation</div>
+  <table>
+    <thead><tr><th>Ring</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Centre</td><td>WHMIS: Special hazards &mdash; general information, PPE</td></tr>
+      <tr><td>Ring 1</td><td>Calm, clarity, peace, readiness, openness</td></tr>
+      <tr><td>Ring 2</td><td>Classroom routines, listening skills, mindfulness</td></tr>
+      <tr><td>Ring 3</td><td>Study skills, critical thinking, metacognition, meditation</td></tr>
+      <tr><td>Ring 4</td><td>Philosophy of mind, consciousness studies, research methods</td></tr>
+    </tbody>
+  </table>
+  <h4>WHMIS Certification Path</h4>
+  <ul>
+    <li>Age 5&ndash;11: Basic safety awareness, PPE familiarization</li>
+    <li>Age 12&ndash;14: WHMIS general awareness certification</li>
+    <li>Age 15+: WHMIS foundation certification (all symbols, basic protocols)</li>
+  </ul>
+  <h4>Sample Curriculum Integration</h4>
+  <table><thead><tr><th>Subject</th><th>Elementary (5&ndash;7)</th><th>High School (14&ndash;18)</th></tr></thead><tbody>
+    <tr><td>Math</td><td>Sorting, patterns, clean organization</td><td>Set theory, logic, proof structures</td></tr>
+    <tr><td>Science</td><td>Observation skills, noticing details</td><td>Scientific method, research design</td></tr>
+    <tr><td>History</td><td>Timelines, cause and effect</td><td>Historiography, primary source analysis</td></tr>
+    <tr><td>Language</td><td>Listening carefully</td><td>Critical reading, metacognitive reflection</td></tr>
+    <tr><td>Art</td><td>Negative space, minimalism</td><td>Observational drawing, mindfulness through art</td></tr>
+  </tbody></table>
+</div>
+
+<div class="color-block cb-blue">
+  <div class="color-block-title"><span class="chip ch-blue"></span>BLUE &mdash; Health, Depth, Reflection, Grief</div>
+  <table>
+    <thead><tr><th>Ring</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Centre</td><td>WHMIS: Health hazard &mdash; toxicity, chronic effects</td></tr>
+      <tr><td>Ring 1</td><td>Sadness, grief, depth, reflection, longing</td></tr>
+      <tr><td>Ring 2</td><td>Body awareness, naming emotions, friendship skills</td></tr>
+      <tr><td>Ring 3</td><td>Biology, psychology, grief counselling, attachment theory</td></tr>
+      <tr><td>Ring 4</td><td>Neuroscience, public health, trauma research, depth psychology</td></tr>
+    </tbody>
+  </table>
+  <h4>WHMIS Certification Path</h4>
+  <ul>
+    <li>Age 14&ndash;15: WHMIS general awareness &mdash; health hazard symbols</li>
+    <li>Age 16&ndash;18: WHMIS health hazard certification (toxicity, chronic effects)</li>
+    <li>Age 18+: Advanced hazardous materials handling (health focus)</li>
+  </ul>
+  <h4>Sample Curriculum Integration</h4>
+  <table><thead><tr><th>Subject</th><th>Elementary (8&ndash;11)</th><th>High School (14&ndash;18)</th></tr></thead><tbody>
+    <tr><td>Math</td><td>Measuring rainfall, counting water bugs</td><td>Flow rate calculations, water quality statistics</td></tr>
+    <tr><td>Science</td><td>Water cycle, basic water testing</td><td>Aquatic biology, dissolved oxygen testing</td></tr>
+    <tr><td>History</td><td>Stories of local rivers</td><td>Watershed changes, industrial impact, Elder stories</td></tr>
+    <tr><td>Language</td><td>Poetry about water</td><td>Grant writing for river restoration</td></tr>
+    <tr><td>Art</td><td>Painting water, photography</td><td>Documenting river transformation</td></tr>
+  </tbody></table>
+</div>
+
+<div class="color-block cb-green">
+  <div class="color-block-title"><span class="chip ch-green"></span>GREEN &mdash; Growth, Healing, Psychological Hazard <em>(Framework Extension)</em></div>
+  <div class="note note-gold"><strong>Framework extension:</strong> GREEN is formally proposed as a WHMIS extension covering psychological and emotional hazards &mdash; the inner work running parallel to outer restoration. See companion WHMIS Amendment Letter for full regulatory proposal.</div>
+  <table>
+    <thead><tr><th>Ring</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Centre</td><td>Psychological hazard &mdash; risk of emotional injury from cumulative stress, vicarious trauma, compassion fatigue, moral injury</td></tr>
+      <tr><td>Ring 1</td><td>Hope, growth, nurturing, healing, empathy</td></tr>
+      <tr><td>Ring 2</td><td>Empathy, kindness, self-esteem, managing feelings</td></tr>
+      <tr><td>Ring 3</td><td>Emotional intelligence, mental health literacy, self-regulation, healthy relationships</td></tr>
+      <tr><td>Ring 4</td><td>Advanced emotional psychology, therapeutic techniques, emotional regulation research</td></tr>
+    </tbody>
+  </table>
+  <h4>Sample Curriculum Integration</h4>
+  <table><thead><tr><th>Subject</th><th>Elementary (8&ndash;11)</th><th>High School (14&ndash;18)</th></tr></thead><tbody>
+    <tr><td>Science</td><td>Plant growth, basic ecology</td><td>Soil science, regenerative agriculture</td></tr>
+    <tr><td>Math</td><td>Garden planning, measuring growth</td><td>Yield calculations, sustainable systems modelling</td></tr>
+    <tr><td>History</td><td>Stories of community healing</td><td>Reconciliation processes, social justice movements</td></tr>
+    <tr><td>Language</td><td>Gratitude journals, writing about feelings</td><td>Therapeutic writing, narrative therapy</td></tr>
+    <tr><td>Art</td><td>Collaborative murals, healing through art</td><td>Art therapy principles, community art projects</td></tr>
+  </tbody></table>
+</div>
+
+<div class="color-block cb-black">
+  <div class="color-block-title"><span class="chip ch-black"></span>BLACK &mdash; Shadow, Transformation, Biohazard, Archetypal Weight</div>
+  <div class="black-label-demo">&#9670; BLACK LABEL &#9670; &mdash; Fluorescent Yellow on Black &mdash; Crisis Selection &middot; Shadow Clearance &middot; Highest Integration</div>
+  <div class="note"><strong>Dual meaning:</strong> BLACK carries both physical (biohazard, toxic substances, the warning itself) and psychological/archetypal weight &mdash; the shadow layer, the long-term chronic effects of facing what the world cannot look at directly. Workers who spend years in BLACK-level environments carry this weight in their bodies and nervous systems. It must be named, tracked, and supported. Not introduced in elementary &mdash; too heavy. Meets the student when they are ready.</div>
+  <table>
+    <thead><tr><th>Ring</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Centre</td><td>WHMIS: Biohazard &middot; symbols &middot; the warning itself &mdash; AND the archetypal shadow: long-term chronic psychological effects of hazardous exposure, grief, moral injury, cortisol dominance, transformation through darkness that cannot be avoided</td></tr>
+      <tr><td>Ring 1</td><td>Shadow, heaviness, grief, fear, transformation &mdash; the weight that cannot be put down, only integrated</td></tr>
+      <tr><td>Ring 2</td><td><em>Not introduced &mdash; too heavy for elementary</em></td></tr>
+      <tr><td>Ring 3</td><td>Trauma-informed education, shadow work (concept), ethics of difficult knowledge, chronic occupational stress recognition</td></tr>
+      <tr><td>Ring 4</td><td>Depth psychology, thanatology, occupational trauma research, shadow integration therapy, long-term health effects of chronic hazardous exposure</td></tr>
+    </tbody>
+  </table>
+  <h4>WHMIS Certification Path</h4>
+  <ul>
+    <li>Age 16&ndash;18: WHMIS biohazard awareness, hazardous materials introduction</li>
+    <li>Age 18+: Advanced hazardous materials handling (biohazard, toxic substances)</li>
+    <li>Age 20+: Black Level certification &mdash; full hazmat, crisis response, shadow integration training</li>
+  </ul>
+  <h4>Sample Curriculum Integration (High School+)</h4>
+  <table><thead><tr><th>Subject</th><th>High School (16&ndash;18)</th><th>University (18+)</th></tr></thead><tbody>
+    <tr><td>Science</td><td>Biohazard safety, infection control</td><td>Advanced toxicology, long-term chronic exposure pathology</td></tr>
+    <tr><td>History</td><td>Genocide education, Holocaust studies</td><td>Trauma and memory, reconciliation, moral injury in history</td></tr>
+    <tr><td>Literature</td><td>Texts about loss, grief, transformation</td><td>Literary trauma theory, testimonial literature</td></tr>
+    <tr><td>Psychology</td><td>Introduction to shadow work, trauma responses</td><td>Depth psychology, shadow integration therapy, occupational PTSD</td></tr>
+    <tr><td>Ethics</td><td>Difficult knowledge, ethical witnessing</td><td>Moral injury, veteran reintegration, the ethics of carrying darkness for others</td></tr>
+  </tbody></table>
+</div>
+
+<div class="color-block cb-red">
+  <div class="color-block-title"><span class="chip ch-red"></span>RED &mdash; Emergency, Crisis, Safety</div>
+  <table>
+    <thead><tr><th>Ring</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Centre</td><td>WHMIS: Flammable &mdash; immediate fire hazard</td></tr>
+      <tr><td>Ring 1</td><td>Panic, terror, urgency, crisis, the body alarm</td></tr>
+      <tr><td>Ring 2</td><td>Fire drills, stop/drop/roll, calling 911, stranger danger</td></tr>
+      <tr><td>Ring 3</td><td>First aid, CPR certification, crisis intervention, psychological first aid</td></tr>
+      <tr><td>Ring 4</td><td>Emergency management, disaster response systems, crisis leadership</td></tr>
+    </tbody>
+  </table>
+  <h4>WHMIS Certification Path</h4>
+  <ul>
+    <li>Age 14&ndash;15: Basic emergency response awareness</li>
+    <li>Age 16&ndash;18: Standard First Aid + CPR certification</li>
+    <li>Age 18+: Advanced crisis intervention, incident command training</li>
+  </ul>
+</div>
+
+<div class="color-block cb-yellow">
+  <div class="color-block-title"><span class="chip ch-yellow"></span>YELLOW &mdash; Reactivity, Energy, Warning</div>
+  <table>
+    <thead><tr><th>Ring</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Centre</td><td>WHMIS: Reactivity hazard &mdash; unstable, oxidizer</td></tr>
+      <tr><td>Ring 1</td><td>Anxiety, anger, explosive energy, alertness, warning</td></tr>
+      <tr><td>Ring 2</td><td>Recognizing anger, calming strategies, sharing, taking turns</td></tr>
+      <tr><td>Ring 3</td><td>Chemistry (reactions), physics (energy), conflict resolution, anger management</td></tr>
+      <tr><td>Ring 4</td><td>Advanced chemistry, peace studies, energy systems, conflict transformation</td></tr>
+    </tbody>
+  </table>
+  <h4>WHMIS Certification Path</h4>
+  <ul>
+    <li>Age 14&ndash;15: WHMIS general awareness &mdash; reactivity symbols</li>
+    <li>Age 16&ndash;18: WHMIS reactivity hazard certification</li>
+    <li>Age 18+: Advanced hazardous materials handling (reactivity focus)</li>
+  </ul>
+</div>
+
+<div class="color-block cb-gold">
+  <div class="color-block-title"><span class="chip ch-gold"></span>GOLD &mdash; Mastery, Wisdom, Elderhood</div>
+  <table>
+    <thead><tr><th>Ring</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Centre</td><td>Mastery &mdash; the sovereign who has integrated shadow and sunshine both</td></tr>
+      <tr><td>Ring 1</td><td>Wisdom, joy, sovereignty, integration, fulfillment, peace with complexity</td></tr>
+      <tr><td>Ring 2</td><td><em>For teachers and Elders only &mdash; modelled, not taught</em></td></tr>
+      <tr><td>Ring 3</td><td>Leadership programs, peer mentoring, beginning to give back</td></tr>
+      <tr><td>Ring 4</td><td>Wisdom traditions, Elder training, legacy-building, mentorship design</td></tr>
+    </tbody>
+  </table>
+  <h4>WHMIS Certification Path</h4>
+  <ul>
+    <li>Age 55+: Gold Level certification &mdash; teaching others, master-level safety oversight</li>
+    <li>Trauma-informed teaching, curriculum design, holding space for all colours</li>
+  </ul>
+</div>
+
+<hr class="rule">
+
+<h2>1.7 The Colour Progression in School &mdash; By Age</h2>
+<table class="tbl-gold">
+  <thead><tr><th>Age</th><th>Stage</th><th>Available Colours</th><th>WHMIS Certifications</th><th>Earnings</th></tr></thead>
+  <tbody>
+    <tr><td>4&ndash;7</td><td>White Foundation</td><td>WHITE exploration</td><td>None</td><td>None</td></tr>
+    <tr><td>8&ndash;11</td><td>Blue/Green Emergence</td><td>WHITE activities, BLUE/GREEN exposure</td><td>None</td><td>None</td></tr>
+    <tr><td>12&ndash;15</td><td>Hue Formation</td><td>WHITE work, BLUE/GREEN introduction</td><td>WHMIS general awareness</td><td>$10&ndash;20/month</td></tr>
+    <tr><td>16&ndash;18</td><td>Shade Deepening</td><td>BLUE/GREEN work, BLACK/GOLD exposure</td><td>Standard First Aid, CPR, WHMIS health/reactivity</td><td>$35&ndash;105/month</td></tr>
+    <tr><td>19&ndash;25</td><td>Tint Expression</td><td>Full colour range</td><td>Advanced certs as needed</td><td>Unlimited</td></tr>
+  </tbody>
+</table>
+
+<h2>1.8 The Moment It Clicks</h2>
+<p>For a 14-year-old earning their first WHITE level certification through school &mdash; that&rsquo;s the moment. They learn the WHMIS symbols in science class. They practice sorting in the school yard. They&rsquo;re paired with a Mother-Elder who shows them how it matters. And then &mdash; their first paycheck. $10&ndash;$20. Earned by work that made the school cleaner, the neighbourhood better, the planet healthier.</p>
+<p><em>That&rsquo;s when they know: This is real. My Hue has value. The system works for me.</em></p>
+<p>From that moment on, they&rsquo;re not just a student. They&rsquo;re a participant. And the rest of their life unfolds from there.</p>
+
+<hr class="rule">
+
+<h1>Part Two: The Halo &mdash; Lifelong Companion</h1>
+
+<h2>2.1 What the Halo Is</h2>
+<p>The Halo (Hue Alignment Level Observer) is not a screen. Not a device. It is a presence &mdash; a digital companion that walks with you from birth to the Fishing Hole. It speaks only when spoken to, and even then, gently. Its primary mode is watching &mdash; not surveillance, but witness.</p>
+
+<h2>2.2 What the Halo Does</h2>
+<table>
+  <thead><tr><th>Function</th><th>What It Means</th></tr></thead>
+  <tbody>
+    <tr><td>Watches</td><td>Tracks curiosity, skill development, shadow integration, sunshine expression</td></tr>
+    <tr><td>Remembers</td><td>Holds your full history &mdash; every Hue, every Shade, every Tint</td></tr>
+    <tr><td>Opens Doors</td><td>When you&rsquo;re ready: &ldquo;There&rsquo;s someone who does what you love. Want to meet them?&rdquo;</td></tr>
+    <tr><td>Guides</td><td>Not with directions, but with questions: &ldquo;What would happen if you tried this?&rdquo;</td></tr>
+    <tr><td>Protects</td><td>Flags potential mayhem before it arrives (Marie Hodge Intercept)</td></tr>
+    <tr><td>Celebrates</td><td>Notices spontaneous action, adds it to the Honour Roll</td></tr>
+  </tbody>
+</table>
+
+<h2>2.3 The Sexton and the Sextant</h2>
+<table>
+  <thead><tr><th>Role</th><th>Function</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Sexton</strong></td><td>Caretaker of the local node &mdash; community safety, resourcing, connection</td></tr>
+    <tr><td><strong>Sextant</strong></td><td>Navigator of global potential &mdash; helps you find your true north, your Preferred Direction</td></tr>
+  </tbody>
+</table>
+
+<h2>2.4 Palette Tracking &mdash; The Halo&rsquo;s Memory</h2>
+<table>
+  <thead><tr><th>Element</th><th>What It Tracks</th></tr></thead>
+  <tbody>
+    <tr><td>Hue</td><td>Your core colour &mdash; never changes</td></tr>
+    <tr><td>Shade</td><td>How deep you&rsquo;ve gone (1&ndash;3) &mdash; tracked by Hazel</td></tr>
+    <tr><td>Tint</td><td>Your unique expression &mdash; tracked by Jenny</td></tr>
+    <tr><td>HCS</td><td>Your horizon &mdash; where you want to go</td></tr>
+    <tr><td>Honour Roll</td><td>Every spontaneous act of goodness</td></tr>
+    <tr><td>Shadow Integration</td><td>Every grief processed, every fear faced</td></tr>
+    <tr><td>Sunshine Expression</td><td>Every joy expressed, every spark shared</td></tr>
+  </tbody>
+</table>
+<p>This palette is yours. It follows you everywhere. It is never used against you.</p>
+
+<hr class="rule">
+
+<h1>Part Three: GTT &mdash; The Global Telephone Tag</h1>
+
+<h2>3.1 The Five Core Questions</h2>
+<p>Every day, participants are invited (never required). No names. No tracking. Just truth.</p>
+<ul>
+  <li>What do you actually need to thrive, not just survive?</li>
+  <li>What brings you deep, lasting fulfillment?</li>
+  <li>What causes you genuine suffering?</li>
+  <li>What would make your life feel meaningful?</li>
+  <li>What do you wish existed in the world?</li>
+</ul>
+
+<h2>3.2 Quantum Data Sovereignty</h2>
+<p>The flourishing dataset is treated as a living Quantum Field. The Saint Christopher Handshake governs all data access: mutual observation, never extraction. No surveillance. No predictive policing. No market manipulation.</p>
+
+<h2>3.3 What GTT Does With the Data</h2>
+<table>
+  <thead><tr><th>Use</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td>Pattern Recognition</td><td>Sees where help is needed before crisis hits</td></tr>
+    <tr><td>Resource Positioning</td><td>Pre-positions support where it will be needed</td></tr>
+    <tr><td>Mentor Matching</td><td>Connects participants with Elders who share their interests</td></tr>
+    <tr><td>Horizon Alignment</td><td>Helps HCS know what doors to open</td></tr>
+    <tr><td>AI Training</td><td>Trains AI on authentic human flourishing, not synthetic engagement metrics</td></tr>
+  </tbody>
+</table>
+
+<hr class="rule">
+
+<h1>Part Four: CEP &mdash; The Chemical Exposure Platform</h1>
+
+<h2>4.1 The Daily Triad</h2>
+<table>
+  <thead><tr><th>Time</th><th>Practice</th><th>Duration</th><th>Neurochemical Target</th></tr></thead>
+  <tbody>
+    <tr><td>Morning</td><td>&ldquo;Chem check&rdquo; &mdash; notice a body signal</td><td>60s</td><td>Cortisol awareness, interoception</td></tr>
+    <tr><td>Midday</td><td>Co-regulation pair &mdash; one breath with a friend</td><td>60&ndash;120s</td><td>Oxytocin, social engagement</td></tr>
+    <tr><td>Close</td><td>&ldquo;Today&rsquo;s fish&rdquo; &mdash; one thought noticed and released</td><td>60s</td><td>Dopamine reset, observer consciousness</td></tr>
+  </tbody>
+</table>
+<p>In schools: teachers model it, they don&rsquo;t teach it. In work settings: crews start with a chem check before hazardous work &mdash; this prevents burnout, builds team cohesion, and keeps the nervous system regulated.</p>
+
+<hr class="rule">
+
+<h1>Part Five: Integration &mdash; How They Work Together</h1>
+
+<div class="flow">&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;             THE CHILD                &#9474;
+&#9474;   Born curious, open, unfinished      &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                 &#9474;
+                 &#9660;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;             SCHOOL                   &#9474;
+&#9474;  CEP hooks &#183; Mother-Elder           &#9474;
+&#9474;  Colour Wheel Curriculum              &#9474;
+&#9474;  Hue observation &#183; WHMIS pathway    &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                 &#9474;
+                 &#9660;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;              HALO                     &#9474;
+&#9474;  Watches &#183; Remembers                 &#9474;
+&#9474;  Tracks Hue &#183; Shadow &#183; Sunshine    &#9474;
+&#9474;  Opens doors when ready               &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                 &#9474;
+                 &#9660;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;              GTT                      &#9474;
+&#9474;  Anonymous data &#183; Human needs        &#9474;
+&#9474;  Resource positioning &#183; AI training   &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                 &#9474;
+                 &#9660;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;              CEP                      &#9474;
+&#9474;  Daily regulation &#183; Hazel &#183; Jenny   &#9474;
+&#9474;  Updates Shade and Tint               &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                 &#9474;
+                 &#9660;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;       MILDRED &amp; BLACK LABEL           &#9474;
+&#9474;  Select &#183; Match &#183; No bias           &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                 &#9474;
+                 &#9660;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;          THE FISHING HOLE             &#9474;
+&#9474;   Connected to everything             &#9474;
+&#9474;   Attached to nothing                 &#9474;
+&#9474;   Ego in the backpack                 &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</div>
+
+<hr class="rule">
+
+<h1>Part Six: The Journey &mdash; From Child to Sovereign</h1>
+
+<div class="age-stage"><div class="age-badge">Age 4&ndash;7</div><div class="age-content"><strong>White Foundation</strong> &mdash; CEP hooks begin &middot; Mother-Elder assigned &middot; Halo watches quietly &middot; No expectations &mdash; just presence</div></div>
+<div class="age-stage"><div class="age-badge">Age 8&ndash;11</div><div class="age-content"><strong>Blue/Green Emergence</strong> &mdash; Hue begins to show &middot; First mentors introduced &middot; CEP deepens &middot; Halo starts gently suggesting</div></div>
+<div class="age-stage"><div class="age-badge">Age 12&ndash;15</div><div class="age-content"><strong>Hue Formation</strong> &mdash; Hue confirmed &middot; First earnings (White level) &middot; Hazel and Jenny begin tracking &middot; HCS horizon emerges</div></div>
+<div class="age-stage"><div class="age-badge">Age 16&ndash;18</div><div class="age-content"><strong>Shade Deepening</strong> &mdash; Advanced work (Blue/Green) &middot; Peer teaching begins &middot; Shadow integration accelerates &middot; BLACK introduced carefully</div></div>
+<div class="age-stage"><div class="age-badge">Age 19&ndash;25</div><div class="age-content"><strong>Tint Expression</strong> &mdash; Entrepreneurship or specialization &middot; Unique colour blend fully expressed &middot; Halo opens major doors</div></div>
+<div class="age-stage"><div class="age-badge">Age 26&ndash;60</div><div class="age-content"><strong>Mastery Application</strong> &mdash; Career, family, contribution &middot; Shade continues to deepen &middot; May mentor younger participants</div></div>
+<div class="age-stage"><div class="age-badge">Age 60+</div><div class="age-content"><strong>Gold Elderhood</strong> &mdash; Transition to Elder at 55 &middot; Full Gold status by 60 &middot; Teaching, legacy, presence &middot; Watched by the next generation&rsquo;s Halos</div></div>
+
+<h2>6.8 The Fishing Hole</h2>
+<p>At the end, they sit under the tree. Connected to everything, attached to nothing. The ego is in the backpack. The Halo still watches, quietly, forever &mdash; not tracking, just&hellip; remembering.</p>
+
+<hr class="rule">
+
+<h1>Part Seven: Technical Appendix</h1>
+
+<h3>7.1 Hue Formation</h3>
+<div class="eq">Hue = argmax(W_curiosity, B_curiosity, G_curiosity, Bl_curiosity, Go_curiosity)<br>Each score = weighted average of observed behaviours over time</div>
+
+<h3>7.2 Shade Update</h3>
+<div class="eq">Shade_new = Shade_old + &Sigma;(shadow_integration_events &times; weight)<br>Each event adds 0.01&ndash;0.04, capped at 3.0</div>
+
+<h3>7.3 Tint Update</h3>
+<div class="eq">Tint_new = Tint_old + &Sigma;(sunshine_expression_events &times; weight)<br>Each event adds 0.01&ndash;0.03, infinite variation</div>
+
+<h3>7.4 HCS Horizon Matching (Mildred)</h3>
+<div class="eq">Match_Score = (Hue_match &times; 0.4) + (Shade_depth &times; 0.3) + (Tint_brightness &times; 0.2) + (HCS_alignment &times; 0.1)</div>
+
+<h3>7.5 Honour Roll Weight</h3>
+<div class="eq">Spontaneous_Action_Weight = (impact &times; 0.5) + (risk &times; 0.3) + (novelty &times; 0.2)<br>Feeds Mildred&rsquo;s future selections and Hazel/Jenny tracking</div>
+
+<div class="note note-gold"><strong>R2 change log:</strong> Colour Wheel Curriculum (Section 1.6) fully integrated &middot; WHMIS certification pathway added to all colours &middot; BLACK expanded with archetypal/psychological layer &middot; GREEN defined as psychological hazard extension &middot; Honour Roll weights now fully specified (7.5) &middot; &ldquo;Today&rsquo;s Fish&rdquo; formally connected to Fish Bowl Method &middot; All equations complete &middot; Ready for Opus master manual integration.</div>
+
+<div class="sig">
+  <p style="font-style:italic;color:var(--muted);margin-bottom:20px;">The child is seen. The Halo watches. The system guides. The Fishing Hole waits.</p>
+  <div class="sig-name">Neil J. Schwab</div>
+  <div class="sig-role">Framework Architect &middot; Global Restoration Stewardship Trust Initiative<br>Newmarket, Ontario &middot; neil.schwab@live.ca &middot; +1 (905) 868-6985<br>February 22, 2026</div>
+  <div class="footer-tag">Forgive Yesterday &middot; Heal Today &middot; Flourish Tomorrow &middot; Together</div>
+</div>
+
+</div></body></html>

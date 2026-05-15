@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSRT Watershed — Two-Level Cascade</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#08111f; font-family:Georgia,serif; color:#f0e6c8; padding:28px 16px; }
+.page { max-width:960px; margin:0 auto; }
+
+.header { text-align:center; margin-bottom:24px; }
+.org { font-size:10px; letter-spacing:3px; color:#b8860b; text-transform:uppercase; margin-bottom:6px; }
+h1 { font-size:23px; color:#d4af37; letter-spacing:1px; margin-bottom:4px; }
+h2 { font-size:12px; color:#a08040; font-style:italic; font-weight:normal; }
+.rule { width:160px; height:1px; background:linear-gradient(to right,transparent,#b8860b,transparent); margin:12px auto; }
+
+/* LEVEL TAG */
+.lvl { font-size:9px; letter-spacing:3px; color:#b8860b; text-transform:uppercase; text-align:center; padding:6px 0; border-top:1px solid rgba(184,134,11,0.2); margin-top:8px; }
+
+/* SOURCE */
+.source { background:linear-gradient(135deg,#1a3a5c,#0d2440); border:2px solid #b8860b; border-radius:8px; padding:13px 20px; text-align:center; }
+.source .val { font-size:22px; font-weight:bold; color:#fff; }
+.source .nm  { font-size:10px; letter-spacing:2px; color:#b8860b; text-transform:uppercase; margin-top:3px; }
+.source .sub { font-size:11px; color:#8aa8c8; font-style:italic; margin-top:4px; }
+
+/* ARROWS */
+.arr { display:flex; flex-direction:column; align-items:center; padding:4px 0; }
+.arr .ln { width:3px; height:20px; background:#b8860b; }
+.arr .hd { width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-top:12px solid #b8860b; }
+
+/* PRIMARY WATERFALL */
+.pf-wrap { border:1px solid rgba(184,134,11,0.4); border-radius:8px; overflow:hidden; }
+.pf-head { background:rgba(26,58,92,0.7); padding:9px 16px; text-align:center; border-bottom:1px solid rgba(184,134,11,0.3); }
+.pf-head .ph-lbl { font-size:9px; letter-spacing:2px; color:#b8860b; text-transform:uppercase; }
+.pf-head .ph-nm  { font-size:15px; color:#fff; font-weight:bold; margin-top:2px; }
+.pf-head .ph-sub { font-size:10px; color:#a08040; font-style:italic; margin-top:2px; }
+.pf-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:2px; background:#08111f; }
+.pfc { padding:13px 5px; text-align:center; }
+.c1 { background:linear-gradient(160deg,#1e3a5a,#14273e); border-bottom:3px solid #4a7eb5; }
+.c2 { background:linear-gradient(160deg,#1a4f30,#102e1e); border-bottom:3px solid #27ae60; }
+.c3 { background:linear-gradient(160deg,#4a2e10,#311e08); border-bottom:3px solid #e07820; }
+.c4 { background:linear-gradient(160deg,#3a2055,#251438); border-bottom:3px solid #8e44ad; }
+.c5 { background:linear-gradient(160deg,#5a3a10,#3c2608); border-bottom:3px solid #f39c12; }
+.pct  { font-size:28px; font-weight:bold; color:#fff; }
+.pnm  { font-size:9px; color:#c0b090; font-weight:bold; text-transform:uppercase; letter-spacing:.5px; margin:4px 0 2px; }
+.pdsc { font-size:9px; color:#8a9880; line-height:1.3; }
+.phi  { font-size:9px; color:#f0e080; font-style:italic; margin-top:3px; }
+
+.ss-bar { background:rgba(90,58,16,0.4); border:1px solid #f39c12; border-top:none; padding:8px 16px; text-align:center; }
+.ss-bar .ss-eq { font-size:12px; color:#f5c040; font-style:italic; }
+.ss-bar .ss-nm { font-size:10px; color:#c09050; margin-top:2px; }
+
+/* SPLIT */
+.split { position:relative; height:52px; margin:4px 0; }
+.sp-trunk { position:absolute; left:50%; transform:translateX(-50%); top:0; width:3px; height:26px; background:#b8860b; }
+.sp-bar   { position:absolute; top:26px; left:16%; right:16%; height:3px; background:#b8860b; }
+.sp-lleg  { position:absolute; left:16%; top:26px; width:3px; height:22px; background:#b8860b; }
+.sp-rleg  { position:absolute; right:16%; top:26px; width:3px; height:22px; background:#b8860b; }
+.sp-lhd   { position:absolute; left:calc(16% - 7px); bottom:0; width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:11px solid #b8860b; }
+.sp-rhd   { position:absolute; right:calc(16% - 7px); bottom:0; width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:11px solid #b8860b; }
+
+/* SECONDARY ENGINES */
+.engines { display:grid; grid-template-columns:1fr 20px 1fr; gap:0; }
+.eng-sep { display:flex; justify-content:center; }
+.eng-sep .sl { width:1px; background:rgba(184,134,11,0.15); margin:0; }
+
+.eng { border:1px solid rgba(184,134,11,0.3); border-radius:8px; overflow:hidden; }
+
+.eh { padding:10px 12px; text-align:center; }
+.eh .el  { font-size:9px; letter-spacing:2px; text-transform:uppercase; }
+.eh .en  { font-size:14px; font-weight:bold; color:#fff; margin-top:3px; }
+.eh .es  { font-size:10px; font-style:italic; margin-top:2px; }
+.eh .ee  { font-size:10px; font-style:italic; margin-top:3px; }
+
+.e1h { background:linear-gradient(135deg,#1a4a1a,#0f2e0f); border-bottom:1px solid rgba(39,174,96,0.4); }
+.e1h .el { color:#27ae60; } .e1h .es { color:#80d0a0; } .e1h .ee { color:#80d0a0; }
+
+.e2h { background:linear-gradient(135deg,#1a1a4a,#0f0f30); border-bottom:1px solid rgba(142,68,173,0.4); }
+.e2h .el { color:#9b59b6; } .e2h .es { color:#c090e0; } .e2h .ee { color:#c090e0; }
+
+.esteps { padding:10px; }
+.estep { background:rgba(255,255,255,0.04); border-radius:5px; padding:9px 10px; margin-bottom:6px; text-align:center; }
+.st-lbl { font-size:9px; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px; }
+.st-val { font-size:17px; font-weight:bold; color:#fff; }
+.st-eq  { font-size:10px; font-style:italic; margin-top:3px; }
+.st-nt  { font-size:9px; margin-top:3px; line-height:1.3; }
+
+.e1s1 { border-left:3px solid #27ae60; } .e1s1 .st-lbl { color:#27ae60; } .e1s1 .st-eq { color:#80d0a0; } .e1s1 .st-nt { color:#608060; }
+.e1s2 { border-left:3px solid #f39c12; } .e1s2 .st-lbl { color:#f39c12; } .e1s2 .st-eq { color:#f5c070; } .e1s2 .st-nt { color:#907040; }
+.e1s3 { border-left:3px solid #3498db; } .e1s3 .st-lbl { color:#3498db; } .e1s3 .st-eq { color:#80c8f0; } .e1s3 .st-nt { color:#406080; }
+.e1s4 { border-left:3px solid #d4af37; background:rgba(212,175,55,0.08); } .e1s4 .st-lbl { color:#d4af37; } .e1s4 .st-eq { color:#f0d080; } .e1s4 .st-nt { color:#907840; }
+
+.e2s1 { border-left:3px solid #9b59b6; } .e2s1 .st-lbl { color:#9b59b6; } .e2s1 .st-eq { color:#c090e0; } .e2s1 .st-nt { color:#605070; }
+
+.rivers { display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-top:5px; }
+.rbox { background:rgba(255,255,255,0.05); border-radius:4px; padding:8px 5px; text-align:center; }
+.r1 { border-top:2px solid #e74c3c; }
+.r2 { border-top:2px solid #2ecc71; }
+.r3 { border-top:2px solid #3498db; }
+.r-icon { font-size:18px; margin-bottom:3px; }
+.r1 .r-icon { color:#e74c3c; }
+.r2 .r-icon { color:#2ecc71; }
+.r3 .r-icon { color:#3498db; }
+.r-nm  { font-size:9px; color:#fff; font-weight:bold; text-transform:uppercase; margin:2px 0; }
+.r-dsc { font-size:8px; color:#8090a0; line-height:1.3; }
+.r-nt  { font-size:8px; color:#c0a060; font-style:italic; margin-top:3px; }
+.e2-note { background:rgba(142,68,173,0.1); border:1px solid rgba(142,68,173,0.25); border-radius:4px; padding:7px; text-align:center; margin-top:6px; font-size:10px; color:#c090e0; font-style:italic; }
+
+/* MERGE */
+.merge { position:relative; height:52px; margin:4px 0; }
+.mg-lleg  { position:absolute; left:16%; top:0; width:3px; height:26px; background:#b8860b; }
+.mg-rleg  { position:absolute; right:16%; top:0; width:3px; height:26px; background:#b8860b; }
+.mg-bar   { position:absolute; top:26px; left:16%; right:16%; height:3px; background:#b8860b; }
+.mg-trunk { position:absolute; left:50%; transform:translateX(-50%); top:26px; width:3px; height:22px; background:#b8860b; }
+.mg-hd    { position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:11px solid #b8860b; }
+
+/* AQUIFER */
+.aquifer { background:linear-gradient(135deg,#0d2440,#08162c); border:2px solid #3498db; border-radius:8px; padding:13px 20px; text-align:center; }
+.aq-lbl { font-size:9px; letter-spacing:2px; color:#3498db; text-transform:uppercase; margin-bottom:4px; }
+.aq-nm  { font-size:18px; font-weight:bold; color:#fff; margin-bottom:4px; }
+.aq-eq  { font-size:11px; color:#80c0f0; font-style:italic; margin-bottom:4px; }
+.aq-dsc { font-size:11px; color:#8aaac0; }
+
+/* GODSPRING */
+.godspring { background:linear-gradient(135deg,#2a1a0a,#180f04); border:2px solid #d4af37; border-radius:8px; padding:13px 20px; text-align:center; }
+.gs-lbl { font-size:9px; letter-spacing:2px; color:#d4af37; text-transform:uppercase; margin-bottom:4px; }
+.gs-nm  { font-size:18px; font-weight:bold; color:#fff; margin-bottom:4px; }
+.gs-dsc { font-size:11px; color:#c0a060; margin-bottom:10px; }
+.gs-tl  { display:flex; gap:6px; }
+.gs-ph  { flex:1; padding:8px 5px; border-radius:4px; text-align:center; }
+.gp1 { background:rgba(231,76,60,0.12); border:1px solid rgba(231,76,60,0.35); }
+.gp1 .gyr { color:#e74c3c; }
+.gp2 { background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.35); }
+.gp2 .gyr { color:#d4af37; }
+.gp3 { background:rgba(39,174,96,0.18); border:1px solid rgba(39,174,96,0.45); }
+.gp3 .gyr { color:#27ae60; }
+.gyr { font-size:12px; font-weight:bold; margin-bottom:3px; }
+.gtx { font-size:9px; color:#c0b090; line-height:1.3; }
+
+/* PERPETUAL */
+.perpetual { background:linear-gradient(135deg,#0f3020,#071f10); border:2px solid #27ae60; border-radius:8px; padding:15px 20px; text-align:center; }
+.pp-lbl { font-size:9px; letter-spacing:2px; color:#27ae60; text-transform:uppercase; margin-bottom:5px; }
+.pp-nm  { font-size:20px; font-weight:bold; color:#fff; margin-bottom:4px; }
+.pp-dsc { font-size:12px; color:#80d0a0; font-style:italic; margin-bottom:10px; }
+.pp-stats { display:flex; gap:6px; }
+.pp-st { flex:1; background:rgba(39,174,96,0.08); border:1px solid rgba(39,174,96,0.25); border-radius:4px; padding:8px 5px; text-align:center; }
+.ps-val { font-size:18px; font-weight:bold; color:#27ae60; }
+.ps-lbl { font-size:9px; color:#70a880; margin-top:2px; }
+
+/* FOOTER */
+.footer { margin-top:18px; text-align:center; border-top:1px solid rgba(184,134,11,0.2); padding-top:10px; }
+.ft-nm  { font-size:11px; color:#a08040; }
+.ft-tag { font-size:9px; letter-spacing:2px; color:#b8860b; text-transform:uppercase; margin-top:4px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="org">Global Stewardship &amp; Reconciliation Trust Initiative</div>
+    <h1>GSRT Watershed Architecture</h1>
+    <h2>The Godspring Watershed — Primary Waterfall + Dual Secondary Engines + Aquifer Cycle</h2>
+    <div class="rule"></div>
+  </div>
+
+  <!-- SOURCE -->
+  <div class="lvl">▲ THE SOURCE</div>
+  <div class="source">
+    <div class="val">GROSS REVENUE — 100%</div>
+    <div class="nm">Godspring Input</div>
+    <div class="sub">Restoration work verified · Community trust earned · AI-resistant labour</div>
+  </div>
+
+  <div class="arr"><div class="ln"></div><div class="hd"></div></div>
+
+  <!-- PRIMARY WATERFALL -->
+  <div class="lvl">▼ LEVEL 1 — PRIMARY WATERFALL</div>
+  <div class="pf-wrap">
+    <div class="pf-head">
+      <div class="ph-lbl">Primary Distribution</div>
+      <div class="ph-nm">The 20 / 40 / 20 / 10 / 10 Justice Floor</div>
+      <div class="ph-sub">80% remains local — this floor never moves</div>
+    </div>
+    <div class="pf-grid">
+      <div class="pfc c1">
+        <div class="pct">20%</div>
+        <div class="pnm">Operations</div>
+        <div class="pdsc">Platform, WHMIS, admin, compliance</div>
+        <div class="phi">System stays running</div>
+      </div>
+      <div class="pfc c2">
+        <div class="pct">40%</div>
+        <div class="pnm">Participants</div>
+        <div class="pdsc">Direct worker income — constitutional floor</div>
+        <div class="phi">Never negotiated away</div>
+      </div>
+      <div class="pfc c3">
+        <div class="pct">20%</div>
+        <div class="pnm">Community</div>
+        <div class="pdsc">Local reinvestment — schools, elders, infrastructure</div>
+        <div class="phi">Stays in the watershed</div>
+      </div>
+      <div class="pfc c4">
+        <div class="pct">10%</div>
+        <div class="pnm">Partners</div>
+        <div class="pdsc">Church · First Nations · Govt · Architect</div>
+        <div class="phi">33 / 33 / 33 / 1%</div>
+      </div>
+      <div class="pfc c5">
+        <div class="pct">10%</div>
+        <div class="pnm">Scaling Stream</div>
+        <div class="pdsc">Reserved — feeds both secondary engines below</div>
+        <div class="phi">The split point ↓</div>
+      </div>
+    </div>
+    <div class="ss-bar">
+      <div class="ss-eq">Scaling_Stream = 0.10 × Gross_Revenue</div>
+      <div class="ss-nm">This stream does not sit idle — it flows into the secondary cascade and powers two simultaneous engines</div>
+    </div>
+  </div>
+
+  <!-- SPLIT ARROW -->
+  <div class="split">
+    <div class="sp-trunk"></div>
+    <div class="sp-bar"></div>
+    <div class="sp-lleg"></div>
+    <div class="sp-rleg"></div>
+    <div class="sp-lhd"></div>
+    <div class="sp-rhd"></div>
+  </div>
+
+  <!-- SECONDARY ENGINES -->
+  <div class="lvl">▼ LEVEL 2 — SECONDARY CASCADE — TWO ENGINES RUNNING SIMULTANEOUSLY</div>
+  <div class="engines">
+
+    <!-- ENGINE 1: ROI RIVER -->
+    <div class="eng">
+      <div class="eh e1h">
+        <div class="el">Engine 1 — ROI River</div>
+        <div class="en">The Aquifer Recharge Engine</div>
+        <div class="es">40% of Scaling Stream → 0.04 × Gross Revenue</div>
+        <div class="ee">Feeds the underground — repays the Godspring seed</div>
+      </div>
+      <div class="esteps">
+        <div class="estep e1s1">
+          <div class="st-lbl">ROI River Input</div>
+          <div class="st-val">4% of Gross Revenue</div>
+          <div class="st-eq">ROI_River = 0.40 × Scaling_Stream = 0.04 × R</div>
+          <div class="st-nt">One river in the cascade — others exist but are not counted here (conservative)</div>
+        </div>
+        <div class="arr"><div class="ln"></div><div class="hd"></div></div>
+        <div class="estep e1s2">
+          <div class="st-lbl">Investment Return — Conservative 10×</div>
+          <div class="st-val">40% of Gross Revenue</div>
+          <div class="st-eq">Return = ROI_River × 10 = 0.40 × R</div>
+          <div class="st-nt">Real-world Kenya pilot shows 500×+ returns. 10× is deliberately conservative.</div>
+        </div>
+        <div class="arr"><div class="ln"></div><div class="hd"></div></div>
+        <div class="estep e1s3">
+          <div class="st-lbl">Aquifer Recharge — 25% of Return</div>
+          <div class="st-val">10% of Gross Revenue</div>
+          <div class="st-eq">Aquifer_Recharge = 0.25 × Return = 0.10 × R</div>
+          <div class="st-nt">Exactly equals the original Scaling Stream — the mathematics self-confirm</div>
+        </div>
+        <div class="arr"><div class="ln"></div><div class="hd"></div></div>
+        <div class="estep e1s4">
+          <div class="st-lbl">Seed Repayment Proof</div>
+          <div class="st-val">$18.5M repaid in 5 years</div>
+          <div class="st-eq">0.50R = $18.5M → R = $37M over 5 years</div>
+          <div class="st-nt">Kenya pilot alone could repay in 3 years. 5 years is deliberately conservative.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="eng-sep"><div class="sl"></div></div>
+
+    <!-- ENGINE 2: THREE RIVERS -->
+    <div class="eng">
+      <div class="eh e2h">
+        <div class="el">Engine 2 — The Three Rivers</div>
+        <div class="en">The Civilizational Output Engine</div>
+        <div class="es">60% of Scaling Stream → 0.06 × Gross Revenue</div>
+        <div class="ee">Funds welfare · charity · space — from Year 1, forever</div>
+      </div>
+      <div class="esteps">
+        <div class="estep e2s1">
+          <div class="st-lbl">Three Rivers Split from Scaling Stream</div>
+          <div class="st-val">60% of Scaling Stream</div>
+          <div class="st-eq">Other_Rivers = 0.60 × Scaling_Stream = 0.06 × R</div>
+          <div class="st-nt">While Engine 1 repays the past, Engine 2 funds the future — simultaneously, from Day 1</div>
+        </div>
+        <div class="rivers">
+          <div class="rbox r1">
+            <div class="r-icon">🏥</div>
+            <div class="r-nm">Welfare River</div>
+            <div class="r-dsc">Social safety net · Healthcare · Basic dignity support</div>
+            <div class="r-nt">What every other system calls a cost — this system converts into a funded output</div>
+          </div>
+          <div class="rbox r2">
+            <div class="r-icon">🌱</div>
+            <div class="r-nm">Charity River</div>
+            <div class="r-dsc">Community healing · Reconciliation · Atonement projects</div>
+            <div class="r-nt">Church + First Nations partnership — healing flows here continuously</div>
+          </div>
+          <div class="rbox r3">
+            <div class="r-icon">🚀</div>
+            <div class="r-nm">Space River</div>
+            <div class="r-dsc">Space debris clearance · Orbital restoration · Frontier stewardship</div>
+            <div class="r-nt">Restoration logic extended to orbit — same WHMIS colour progression, same D.O.S.E. architecture</div>
+          </div>
+        </div>
+        <div class="e2-note">
+          "What every other system calls cost — welfare, charity, space — this system converts into funded outputs of a self-sustaining restoration economy."
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MERGE ARROW DOWN TO AQUIFER -->
+  <div class="merge">
+    <div class="mg-lleg"></div>
+    <div class="mg-rleg"></div>
+    <div class="mg-bar"></div>
+    <div class="mg-trunk"></div>
+    <div class="mg-hd"></div>
+  </div>
+
+  <!-- AQUIFER -->
+  <div class="lvl">▼ THE AQUIFER — UNDERGROUND PRESSURE BUILDS</div>
+  <div class="aquifer">
+    <div class="aq-lbl">The Living Aquifer</div>
+    <div class="aq-nm">Godspring Aquifer — Underground Pressure Chamber</div>
+    <div class="aq-eq">Aquifer_Recharge = 0.10 × Gross_Revenue (cumulative over 5 years = 0.50R)</div>
+    <div class="aq-dsc">Engine 1 fills the aquifer from below. The Godspring does not pump from the aquifer — it <em>rises</em> from it when the pressure is sufficient. The same water. Over and over. Forever.</div>
+  </div>
+
+  <div class="arr"><div class="ln"></div><div class="hd"></div></div>
+
+  <!-- GODSPRING -->
+  <div class="lvl">▲ THE GODSPRING — SEED REPAID · PRESSURE RISES</div>
+  <div class="godspring">
+    <div class="gs-lbl">The Godspring</div>
+    <div class="gs-nm">$18.5M Seed — Repaid and Released</div>
+    <div class="gs-dsc">The government's investment is not spent. It shapes the terrain. Then the rain does the rest.</div>
+    <div class="gs-tl">
+      <div class="gs-ph gp1">
+        <div class="gyr">Years 1–5</div>
+        <div class="gtx">Aquifer fills. Both engines run. Seed repayment accumulates. Three Rivers funded continuously.</div>
+      </div>
+      <div class="gs-ph gp2">
+        <div class="gyr">Year 5</div>
+        <div class="gtx">0.50R = $18.5M. Seed fully repaid. Government investment returned. No further funding required.</div>
+      </div>
+      <div class="gs-ph gp3">
+        <div class="gyr">Year 6+</div>
+        <div class="gtx">Godspring rises from full aquifer. System runs on its own rainfall. Perpetual motion begins.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arr"><div class="ln"></div><div class="hd"></div></div>
+
+  <!-- PERPETUAL MOTION -->
+  <div class="lvl">∞ PERPETUAL MOTION — THE WATERSHED SUSTAINS ITSELF</div>
+  <div class="perpetual">
+    <div class="pp-lbl">Year 6 and Beyond — No External Energy Required</div>
+    <div class="pp-nm">The Watershed Sustains Itself Forever</div>
+    <div class="pp-dsc">"The physicists said perpetual motion was impossible because every mechanical system loses energy to friction. This system does not lose energy to friction — it converts what looked like friction into fuel."</div>
+    <div class="pp-stats">
+      <div class="pp-st">
+        <div class="ps-val">$0</div>
+        <div class="ps-lbl">Government funding required after Year 5</div>
+      </div>
+      <div class="pp-st">
+        <div class="ps-val">10×</div>
+        <div class="ps-lbl">Conservative return on ROI River investment</div>
+      </div>
+      <div class="pp-st">
+        <div class="ps-val">80%</div>
+        <div class="ps-lbl">Value retained locally — justice floor maintained forever</div>
+      </div>
+      <div class="pp-st">
+        <div class="ps-val">3</div>
+        <div class="ps-lbl">Civilizational outputs funded perpetually — welfare, charity, space</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="ft-nm">Neil J. Schwab · Framework Architect · neil.schwab@live.ca · +1 (905) 868-6985 · Newmarket, Ontario</div>
+    <div class="ft-tag">Forgive Yesterday · Heal Today · Flourish Tomorrow · Together · PBTG</div>
+  </div>
+
+</div>
+</body>
+</html>
