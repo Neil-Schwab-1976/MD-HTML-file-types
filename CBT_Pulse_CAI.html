@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBT Pulse — CAI · Conscious Awareness Interface</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:linear-gradient(135deg,#08090D 0%,#101520 60%,#08090D 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;flex-wrap:wrap;gap:40px;color:#E8E4DC}
+
+/* ── DEVICE ── */
+.device-wrap{position:relative}
+.device-glow{position:absolute;inset:-20px;background:radial-gradient(ellipse,rgba(31,126,161,0.1) 0%,transparent 70%);pointer-events:none}
+.device{position:relative;width:200px;background:linear-gradient(180deg,#2D2D31 0%,#1C1C20 100%);border-radius:28px;border:1px solid rgba(255,255,255,0.11);box-shadow:0 24px 64px rgba(0,0,0,0.9),inset 0 1px 0 rgba(255,255,255,0.06)}
+.lug{height:16px;background:linear-gradient(90deg,#191920,#252528,#191920);display:flex;align-items:center;justify-content:center}
+.lug-top{border-radius:28px 28px 0 0;border-bottom:1px solid rgba(0,0,0,0.5)}
+.lug-bot{border-radius:0 0 28px 28px;border-top:1px solid rgba(0,0,0,0.5)}
+.lug-bar{width:28px;height:4px;background:rgba(255,255,255,0.05);border-radius:2px}
+.body-inner{position:relative;overflow:hidden;border-radius:0 0 6px 6px}
+
+/* ── COVER ── */
+.cover{position:absolute;top:0;left:0;right:0;height:100%;z-index:10;background:linear-gradient(180deg,#26262A 0%,#1D1D21 100%);transform:translateY(0);transition:transform 0.45s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:22px 0 14px}
+.cover.open{transform:translateY(-100%)}
+.cover-logo{text-align:center}
+.cover-logo div:first-child{font-size:19px;letter-spacing:.25em;font-weight:700;color:rgba(255,255,255,0.06);text-transform:uppercase}
+.cover-logo div:last-child{font-size:7px;letter-spacing:.35em;color:rgba(255,255,255,0.04);text-transform:uppercase;margin-top:4px}
+.cover-ring{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,0.03),rgba(0,0,0,0.22));border:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center}
+.cover-ring-inner{width:17px;height:17px;border-radius:50%;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07)}
+.cover-btn{background:rgba(212,168,32,0.09);border:1px solid rgba(212,168,32,0.26);border-radius:6px;padding:5px 15px;color:#D4A820;font-size:9px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:Georgia,serif}
+
+/* ── SCREEN ── */
+.screen-area{background:#0A1628;width:100%;aspect-ratio:1/1.1;position:relative;overflow:hidden}
+.screen-glow{position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(31,126,161,0.07) 0%,transparent 50%);pointer-events:none;z-index:1}
+.status-bar{position:absolute;top:0;left:0;right:0;height:13px;background:rgba(0,0,0,0.45);display:flex;justify-content:space-between;align-items:center;padding:0 8px;z-index:4;font-size:7px}
+.status-l{color:rgba(255,255,255,0.22);letter-spacing:.04em}
+.status-r{display:flex;gap:4px;align-items:center}
+.status-dot{color:#34C759;font-size:7px}
+.screen-content{position:absolute;inset:0;padding-top:13px;z-index:2;overflow-y:auto;overflow-x:hidden}
+
+/* ── KEYPAD ── */
+.keypad{background:linear-gradient(180deg,#1A1A1E,#141418);border-top:1px solid rgba(255,255,255,0.04);display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:6px 8px}
+.key{background:#242428;border:1px solid rgba(255,255,255,0.07);border-bottom:2px solid rgba(0,0,0,0.3);border-radius:5px;color:rgba(255,255,255,0.6);font-size:13px;padding:5px 0;cursor:pointer;font-family:Georgia,serif;box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);transition:transform .1s}
+.key:active{transform:translateY(1px)}
+
+/* ── SIDE BUTTONS ── */
+.side-btn{position:absolute;right:-4px;width:5px;background:linear-gradient(90deg,#2A2A2E,#343438);border-radius:0 3px 3px 0;border:1px solid rgba(255,255,255,0.06);box-shadow:2px 0 4px rgba(0,0,0,0.4)}
+.side-btn1{top:33%;height:26px}
+.side-btn2{top:52%;height:17px}
+
+/* ── STRAPS ── */
+.strap{position:absolute;left:14px;right:14px;height:50px;border:1px solid rgba(255,255,255,0.05)}
+.strap-top{top:-46px;background:linear-gradient(180deg,#191920,#252528);border-radius:12px 12px 0 0;box-shadow:0 -4px 10px rgba(0,0,0,0.4)}
+.strap-bot{bottom:-46px;background:linear-gradient(180deg,#252528,#191920);border-radius:0 0 12px 12px;box-shadow:0 4px 10px rgba(0,0,0,0.4)}
+.strap-hole{position:absolute;left:50%;transform:translateX(-50%);width:3px;height:3px;background:rgba(0,0,0,0.5);border-radius:50%;border:1px solid rgba(255,255,255,0.03)}
+.strap-buckle{position:absolute;left:50%;transform:translateX(-50%);bottom:5px;width:17px;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;border:1px solid rgba(255,255,255,0.09)}
+
+/* ── SCREENS ── */
+.scr{display:none;height:100%;flex-direction:column;padding:8px 10px;gap:5px;font-size:11px;overflow-y:auto}
+.scr.active{display:flex}
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-shrink:0}
+.back-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 7px;color:#8A8080;font-size:10px;cursor:pointer;font-family:Georgia,serif}
+.topbar-title{font-size:10px;color:#8A8080;letter-spacing:.07em;text-transform:uppercase;font-weight:700}
+
+/* ── CARDS ── */
+.box{border-left:3px solid;border-radius:0 6px 6px 0;padding:5px 8px;margin-bottom:4px;font-size:9px;line-height:1.4}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.grid-btn{border:1px solid;border-radius:7px;padding:6px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:Georgia,serif}
+.grid-btn span:first-child{font-size:13px}
+.grid-btn span:last-child{font-size:9px;font-weight:700;letter-spacing:.03em}
+.list-btn{border:1px solid;border-left:3px solid;border-radius:0 5px 5px 0;padding:6px 9px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;margin-bottom:4px;font-family:Georgia,serif;background:transparent;color:#E8E4DC}
+.list-btn-icon{font-size:15px;flex-shrink:0}
+.list-btn-t{font-size:11px;font-weight:700;margin-bottom:1px}
+.list-btn-s{font-size:9px;color:#8A8080}
+.scroll-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+.action-btn{border:1px solid;border-radius:5px;padding:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:Georgia,serif;text-align:center}
+.sos-btn{border:1px solid;border-radius:7px;padding:7px 9px;cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left;margin-bottom:4px;font-family:Georgia,serif;background:transparent;color:#E8E4DC;width:100%}
+
+/* ── HALT BARS ── */
+.halt-row{background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 8px}
+.halt-header{display:flex;justify-content:space-between;margin-bottom:3px}
+.halt-bars{display:flex;gap:3px}
+.halt-bar{flex:1;height:13px;border-radius:2px;cursor:pointer;border:none;transition:all .1s;opacity:0.2}
+.halt-bar.on{opacity:1}
+
+/* ── PROGRESS ── */
+.prog-bar-wrap{height:2px;background:rgba(255,255,255,0.04);border-radius:1px}
+.prog-bar-fill{height:100%;background:#D4A820;border-radius:1px;transition:width .4s}
+
+/* ── BREATH CIRCLE ── */
+.breath-circle{border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;transition:all 1s ease-in-out;margin:0 auto}
+
+/* ── INFO TEXT ── */
+.label{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.detail{font-size:9px;color:#8A8080;line-height:1.4}
+.body-text{font-size:10px;color:#E8E4DC;line-height:1.5}
+.italic{font-style:italic}
+.center{text-align:center}
+.flex-col{display:flex;flex-direction:column;gap:4px}
+
+/* ── PANEL ── */
+.panel{max-width:250px;font-family:Georgia,serif;color:rgba(255,255,255,0.55)}
+.panel-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#1F7EA1;margin-bottom:10px}
+.panel-title{font-size:19px;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.3;margin-bottom:8px}
+.panel-desc{font-size:11px;line-height:1.7;margin-bottom:16px;color:rgba(255,255,255,0.45)}
+.panel-features{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.feat{display:flex;gap:9px;align-items:flex-start}
+.feat-icon{font-size:13px;margin-top:1px}
+.feat-title{font-size:11px;color:rgba(255,255,255,0.75);font-weight:700}
+.feat-sub{font-size:9px;color:rgba(255,255,255,0.3)}
+.controls{border-top:1px solid rgba(255,255,255,0.08);padding-top:12px}
+.ctrl-label{font-size:9px;color:rgba(255,255,255,0.25);margin-bottom:7px}
+.day-row{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.day-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:4px;padding:3px 8px;color:#E8E4DC;font-size:10px;cursor:pointer;font-family:Georgia,serif}
+.day-display{font-size:17px;color:#D4A820;font-weight:900;min-width:36px;text-align:center;font-family:Georgia,serif}
+.ctrl-btns{display:flex;gap:5px;margin-bottom:10px}
+.ctrl-open-btn{background:rgba(212,168,32,0.09);border:1px solid rgba(212,168,32,0.26);border-radius:5px;padding:5px 12px;color:#D4A820;font-size:9px;cursor:pointer;letter-spacing:.04em;font-family:Georgia,serif}
+.ctrl-reset-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:5px;padding:5px 12px;color:rgba(255,255,255,0.35);font-size:9px;cursor:pointer;font-family:Georgia,serif}
+.ctrl-note{font-size:9px;color:rgba(255,255,255,0.18);line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- ── DEVICE ────────────────────────────────────────────────── -->
+<div class="device-wrap">
+  <div class="device-glow"></div>
+  <div class="device">
+    <div class="lug lug-top"><div class="lug-bar"></div></div>
+    <div class="body-inner">
+
+      <!-- COVER -->
+      <div class="cover" id="cover">
+        <div class="cover-logo">
+          <div>CBT PULSE</div>
+          <div>CONSCIOUS AWARENESS INTERFACE</div>
+        </div>
+        <div class="cover-ring"><div class="cover-ring-inner"></div></div>
+        <button class="cover-btn" onclick="openCover()">OPEN CAI ↑</button>
+      </div>
+
+      <!-- SCREEN -->
+      <div class="screen-area">
+        <div class="screen-glow"></div>
+        <div class="status-bar">
+          <span class="status-l">CBT·CAI</span>
+          <div class="status-r"><span class="status-dot">●</span><span id="clock" style="color:rgba(255,255,255,0.22)"></span></div>
+        </div>
+        <div class="screen-content">
+
+          <!-- HOME -->
+          <div id="s-home" class="scr active">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:9px;color:#8A8080;letter-spacing:.07em">CBT PULSE — CAI</span>
+              <span style="font-size:9px;color:#34C759">● ACTIVE</span>
+            </div>
+            <div style="text-align:center;padding:4px 0">
+              <div style="font-size:10px;color:#8A8080" id="greeting">Good morning</div>
+              <div style="font-size:26px;font-weight:900;color:#D4A820;font-family:Georgia,serif;line-height:1.1" id="day-display">Day 47</div>
+              <div style="font-size:8px;letter-spacing:.04em" id="paws-label"></div>
+            </div>
+            <div class="box" id="home-tip" style="border-color:#C03030;background:rgba(192,48,48,0.1);color:#8A8080"></div>
+            <div class="btn-row">
+              <button class="grid-btn" style="border-color:rgba(176,120,32,0.38);background:rgba(176,120,32,0.11)" onclick="go('halt')"><span>⚡</span><span style="color:#B07820">HALT</span></button>
+              <button class="grid-btn" style="border-color:rgba(31,126,161,0.38);background:rgba(31,126,161,0.11)" onclick="go('breath')"><span>🌬</span><span style="color:#1F7EA1">Breath</span></button>
+              <button class="grid-btn" style="border-color:rgba(123,78,166,0.38);background:rgba(123,78,166,0.11)" onclick="go('paws')"><span>🧠</span><span style="color:#7B4EA6">PAWS Map</span></button>
+              <button class="grid-btn" style="border-color:rgba(26,92,42,0.38);background:rgba(26,92,42,0.11)" onclick="go('checkin')"><span>✓</span><span style="color:#1A5C2A">Check-In</span></button>
+              <button class="grid-btn" style="border-color:rgba(90,173,204,0.38);background:rgba(90,173,204,0.11)" onclick="go('library')"><span>📚</span><span style="color:#5AADCC">Library</span></button>
+              <button class="grid-btn" style="border-color:rgba(31,126,161,0.38);background:rgba(31,126,161,0.11)" onclick="go('uip')"><span>🔷</span><span style="color:#1F7EA1">Protocol</span></button>
+              <button class="grid-btn" style="border-color:rgba(26,92,42,0.38);background:rgba(26,92,42,0.11)" onclick="go('cep')"><span>🌿</span><span style="color:#1A5C2A">CEP Daily</span></button>
+              <button class="grid-btn" style="border-color:rgba(31,126,161,0.38);background:rgba(31,126,161,0.11)" onclick="go('gtt')"><span>🌍</span><span style="color:#1F7EA1">GTT Daily</span></button>
+              <button class="grid-btn" style="border-color:rgba(212,168,32,0.38);background:rgba(212,168,32,0.11)" onclick="go('colour')"><span>🎨</span><span style="color:#D4A820">Colour</span></button>
+            </div>
+            <button onclick="go('sos')" style="background:rgba(192,48,48,0.08);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:4px 8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;width:100%;font-family:Georgia,serif">
+              <span style="font-size:9px;color:#C03030;font-weight:700">🆘 NEED SUPPORT</span>
+              <span style="font-size:9px;color:#8A8080">988 · ConnexOntario</span>
+            </button>
+          </div>
+
+          <!-- HALT -->
+          <div id="s-halt" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">HALT CHECK</span></div>
+            <div id="halt-rows"></div>
+            <div style="border-radius:6px;padding:5px 8px;text-align:center;margin-top:2px" id="halt-result">
+              <div style="font-size:8px;color:#8A8080">VULNERABILITY</div>
+              <div style="font-size:18px;font-weight:900;font-family:Georgia,serif" id="halt-risk-label">—</div>
+              <div style="font-size:8px;color:#8A8080" id="halt-total">Total 0/20</div>
+            </div>
+            <div id="halt-tip" style="display:none;background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:5px 8px;font-size:9px;color:#C03030;line-height:1.35">High HALT detected. One-Breath Reset now. Contact your Controller before acting.</div>
+            <button id="halt-breath-btn" style="display:none;background:rgba(31,126,161,0.12);border:1px solid rgba(31,126,161,0.3);border-radius:5px;padding:5px;color:#1F7EA1;font-size:9px;font-weight:700;cursor:pointer;font-family:Georgia,serif" onclick="go('breath')">→ BREATH RESET</button>
+          </div>
+
+          <!-- BREATH -->
+          <div id="s-breath" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="stopBreath()">←</button><span class="topbar-title">ONE-BREATH RESET</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+              <div class="breath-circle" id="breath-circle" style="width:68px;height:68px;border-color:#1F7EA1;background:radial-gradient(circle,rgba(31,126,161,0.1),transparent)">
+                <span style="font-size:18px;font-weight:900;color:#1F7EA1;font-family:Georgia,serif" id="breath-num">◉</span>
+              </div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:.09em" id="breath-label" style="color:#1F7EA1">ONE-BREATH RESET</div>
+              <div style="font-size:9px;color:#8A8080" id="breath-sub">4 in · 2 hold · 6 out · 3 cycles</div>
+              <button id="breath-start-btn" onclick="startBreath()" style="background:rgba(31,126,161,0.15);border:1px solid rgba(31,126,161,0.35);border-radius:6px;padding:5px 14px;color:#1F7EA1;font-size:10px;font-weight:700;cursor:pointer;font-family:Georgia,serif">START</button>
+              <div id="breath-done-msg" style="display:none;font-size:9px;color:#8A8080;text-align:center;line-height:1.5">Parasympathetic activated.<br>Nervous system co-regulating.</div>
+            </div>
+          </div>
+
+          <!-- PAWS -->
+          <div id="s-paws" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="go('paws')">←</button><span class="topbar-title" id="paws-screen-title">PAWS MAP</span></div>
+            <div id="paws-list-area" style="font-size:9px;color:#8A8080;text-align:center;margin-bottom:2px"></div>
+            <div class="scroll-area" id="paws-content"></div>
+          </div>
+
+          <!-- CHECK-IN -->
+          <div id="s-checkin" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">DAILY CHECK-IN</span></div>
+            <div id="checkin-content" style="flex:1;display:flex;flex-direction:column;gap:6px"></div>
+          </div>
+
+          <!-- UIP -->
+          <div id="s-uip" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">INTERRUPTION PROTOCOL</span></div>
+            <div style="font-size:9px;color:#8A8080;text-align:center;margin-bottom:2px">For craving, PAWS wave, or relapse signal</div>
+            <div class="scroll-area" id="uip-content"></div>
+            <button onclick="startUIP()" style="background:rgba(31,126,161,0.12);border:1px solid rgba(31,126,161,0.3);border-radius:5px;padding:6px;color:#1F7EA1;font-weight:700;font-size:10px;cursor:pointer;font-family:Georgia,serif;flex-shrink:0">▶ RUN FULL PROTOCOL</button>
+          </div>
+
+          <!-- SOS -->
+          <div id="s-sos" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">SUPPORT</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px;justify-content:center">
+              <button class="sos-btn" onclick="sosPressed(this,'988')"><span style="font-size:15px">📞</span><div><div style="font-size:10px;color:#C03030;font-weight:700">988 Suicide &amp; Crisis</div><div style="font-size:9px;color:#8A8080">Call or text — 24/7 free</div></div></button>
+              <button class="sos-btn" onclick="sosPressed(this,'prodigal')"><span style="font-size:15px">🔄</span><div><div style="font-size:10px;color:#1A5C2A;font-weight:700">Return to Recovery</div><div style="font-size:9px;color:#8A8080">No judgment. Your progress is not lost. Come back.</div></div></button>
+              <button class="sos-btn" onclick="sosPressed(this,'ctrl')"><span style="font-size:15px">👥</span><div><div style="font-size:10px;color:#1F7EA1;font-weight:700">Controller Check-In</div><div style="font-size:9px;color:#8A8080">Your node — always reachable</div></div></button>
+              <button class="sos-btn" onclick="go('breath')"><span style="font-size:15px">🌬</span><div><div style="font-size:10px;color:#B07820;font-weight:700">One-Breath Reset</div><div style="font-size:9px;color:#8A8080">Activate right now</div></div></button>
+              <button class="sos-btn" onclick="go('uip')"><span style="font-size:15px">🔷</span><div><div style="font-size:10px;color:#7B4EA6;font-weight:700">Full Protocol</div><div style="font-size:9px;color:#8A8080">Run all 6 interruption steps</div></div></button>
+            </div>
+            <div id="sos-confirm" style="display:none;background:rgba(26,92,42,0.12);border:1px solid rgba(26,92,42,0.3);border-radius:5px;padding:5px 8px;font-size:9px;color:#1A5C2A;text-align:center;line-height:1.4">Controller notified. You are not alone.</div>
+          </div>
+
+          <!-- LIBRARY -->
+          <div id="s-library" class="scr">
+            <div class="topbar"><button class="back-btn" id="lib-back" onclick="libBack()">←</button><span class="topbar-title" id="lib-title">KNOWLEDGE BASE</span></div>
+            <div id="lib-sub" style="font-size:9px;color:#8A8080;text-align:center;margin-bottom:2px">Full CBT-SUD system — tap any section</div>
+            <div class="scroll-area" id="lib-content"></div>
+          </div>
+
+          <!-- CEP DAILY RHYTHM -->
+          <div id="s-cep" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">CEP DAILY PRACTICE</span></div>
+            <div style="font-size:8px;color:#8A8080;text-align:center;margin-bottom:3px">3 minutes · every day · for life</div>
+            <div class="scroll-area" id="cep-content"></div>
+          </div>
+
+          <!-- GTT DAILY QUESTIONS -->
+          <div id="s-gtt" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">GTT DAILY QUESTIONS</span></div>
+            <div style="font-size:8px;color:#1F7EA1;text-align:center;margin-bottom:3px">Anonymous · no names · no judgment</div>
+            <div class="scroll-area" id="gtt-content" style="flex:1;display:flex;flex-direction:column"></div>
+          </div>
+
+          <!-- COLOUR PROGRESSION -->
+          <div id="s-colour" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">COLOUR PROGRESSION</span></div>
+            <div class="scroll-area" id="colour-content"></div>
+          </div>
+
+        </div><!-- screen-content -->
+      </div><!-- screen-area -->
+
+      <!-- KEYPAD -->
+      <div class="keypad">
+        <button class="key" onclick="keyPress('home')">⌂</button>
+        <button class="key" onclick="keyPress('up')">↑</button>
+        <button class="key" onclick="keyPress('ok')">✓</button>
+        <button class="key" onclick="keyPress('back')">←</button>
+        <button class="key" onclick="keyPress('down')">↓</button>
+        <button class="key" onclick="keyPress('cancel')">✕</button>
+      </div>
+    </div><!-- body-inner -->
+
+    <div class="lug lug-bot"><div class="lug-bar"></div></div>
+    <div class="side-btn side-btn1"></div>
+    <div class="side-btn side-btn2"></div>
+  </div><!-- device -->
+
+  <!-- STRAPS -->
+  <div class="strap strap-top">
+    <div class="strap-hole" style="top:10px"></div>
+    <div class="strap-hole" style="top:18px"></div>
+    <div class="strap-hole" style="top:26px"></div>
+  </div>
+  <div class="strap strap-bot">
+    <div class="strap-hole" style="top:6px"></div>
+    <div class="strap-hole" style="top:14px"></div>
+    <div class="strap-hole" style="top:22px"></div>
+    <div class="strap-buckle"></div>
+  </div>
+</div><!-- device-wrap -->
+
+<!-- ── SIDE PANEL ────────────────────────────────────────────── -->
+<div class="panel">
+  <div class="panel-tag">CBT PULSE — CAI · HALO</div>
+  <div class="panel-title">Conscious Awareness Interface — COG 3 Seed · GTT/CEP/AI Halo IRF</div>
+  <div class="panel-desc">Developed by Neil J. Schwab | Framework Architect — HALO (Human Advocacy &amp; Liberative Operations) | CBT-SUD 4 Program Suite · IntCBT triOS College. This tool is a coaching &amp; mentoring companion — not therapy. It delivers existing validated modalities (CBT, PAWS, CENAPS, D.O.S.E.) in an accessible format. It is also the first operational seed of COG 3 — The AI Integration of the GSRT framework. The GTT passive listening ear begins here. The CEP neurochemical practice begins here. All data stays on this device. Saint Christopher Handshake. Extraction-proof.</div>
+  <div class="panel-features">
+    <div class="feat"><span class="feat-icon">🌍</span><div><div class="feat-title">GTT Daily Questions</div><div class="feat-sub">Anonymous 5-question planetary ear — LISTENING branch</div></div></div>
+    <div class="feat"><span class="feat-icon">🌿</span><div><div class="feat-title">CEP Daily Practice</div><div class="feat-sub">3 min/day · Morning · Midday · Evening · D.O.S.E.</div></div></div>
+    <div class="feat"><span class="feat-icon">🎨</span><div><div class="feat-title">Colour Progression</div><div class="feat-sub">WHITE → GOLD · WHMIS-emotion map · WORK routing</div></div></div>
+    <div class="feat"><span class="feat-icon">⚙</span><div><div class="feat-title">Firmware Values</div><div class="feat-sub">VVV · Prodigal Son · Saint Christopher · Trinity</div></div></div>
+    <div class="feat"><span class="feat-icon">📚</span><div><div class="feat-title">Full CBT-SUD Library</div><div class="feat-sub">11 sections · PAWS · HALT · Fish Bowl · D.O.S.E. · ABC</div></div></div>
+    <div class="feat"><span class="feat-icon">🧠</span><div><div class="feat-title">PAWS Map</div><div class="feat-sub">7 hurdles · full interruption protocols</div></div></div>
+    <div class="feat"><span class="feat-icon">◈</span><div><div class="feat-title">G·A·P·S Capacities</div><div class="feat-sub">Gratitude · Acceptance · Presence · Surrender</div></div></div>
+    <div class="feat"><span class="feat-icon">🔷</span><div><div class="feat-title">Interruption Protocol</div><div class="feat-sub">6-step UIP + If-Then Planning + Reflective/Impulsive</div></div></div>
+    <div class="feat"><span class="feat-icon">⚡</span><div><div class="feat-title">HALT Check</div><div class="feat-sub">Real-time vulnerability scoring · convergence insight</div></div></div>
+    <div class="feat"><span class="feat-icon">🆘</span><div><div class="feat-title">SOS · 988 · Prodigal Son</div><div class="feat-sub">The door is never locked. You're back. That's brave.</div></div></div>
+  </div>
+  <div class="controls">
+    <div class="ctrl-label">SIMULATE DAY IN RECOVERY:</div>
+    <div class="day-row">
+      <button class="day-btn" onclick="changeDay(-10)">–10</button>
+      <button class="day-btn" onclick="changeDay(-1)">–1</button>
+      <div class="day-display" id="panel-day">47</div>
+      <button class="day-btn" onclick="changeDay(1)">+1</button>
+      <button class="day-btn" onclick="changeDay(10)">+10</button>
+    </div>
+    <div class="ctrl-btns">
+      <button class="ctrl-open-btn" id="cover-toggle-btn" onclick="toggleCover()">OPEN COVER ↑</button>
+      <button class="ctrl-reset-btn" onclick="resetDevice()">RESET</button>
+    </div>
+    <div class="ctrl-note">Open the device → explore all tools. GTT 🌍 for daily questions. CEP 🌿 for daily practice. Library 📚 for the full knowledge base.</div>
+  </div>
+  <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)">
+    <div style="font-size:8px;color:rgba(255,255,255,0.18);line-height:1.6">
+      <strong style="color:rgba(255,255,255,0.3)">HALO — Human Advocacy &amp; Liberative Operations</strong><br>
+      Neil J. Schwab · Framework Architect · neil.schwab@live.ca · Newmarket, Ontario · 2026<br><br>
+      <strong style="color:rgba(255,255,255,0.25)">Coaching &amp; Mentoring Tool — Not Therapy.</strong> This tool delivers existing validated CBT modalities in an accessible format. It is not a clinical intervention and does not constitute therapy, counselling, or medical advice. Users experiencing mental health crisis should contact 988 or a licensed professional.<br><br>
+      <strong style="color:rgba(255,255,255,0.25)">Data Sovereignty.</strong> All data entered stays on this device. No cloud transmission. No tracking. No extraction. Saint Christopher Handshake — mutual observation, never extraction. PIPEDA compliant.<br><br>
+      <strong style="color:rgba(255,255,255,0.25)">First Nations TK.</strong> Traditional Ecological Knowledge is vacuum-sealed from all data streams. No access, inference, or incorporation without explicit, documented, revocable consent from the relevant sovereign authority. UNDRIP aligned.<br><br>
+      <em style="color:rgba(255,255,255,0.12)">Forgive Yesterday · Heal Today · Flourish Tomorrow · Together · PBTG</em><br>
+      <em style="color:rgba(255,255,255,0.1)">COG 3 — The AI Integration · GSRT · GTT · CEP · AI Halo IRF · Seed v3.0</em>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const PAWS = [
+  { id:1, name:"Cognitive Fog", peak:"Days 14–45", color:"#1F7EA1",
+    what:"Your brain is rebuilding its thinking infrastructure. Decisions feel hard. Memory slips. This is neurological repair — not personal failure.",
+    why:"Your prefrontal cortex was partially outsourced to the substance. It is now rebuilding its own circuitry from scratch.",
+    signs:["Can't finish a thought","Forgetting simple things","Decisions feel impossible","Reading the same line twice"],
+    interrupt:["Name it: 'There is fog passing through my brain right now.'","Do ONE 10-minute task only. Not a list. One thing.","One-Breath Reset (4–2–6) before any decision.","Write down what you need to remember — don't trust fog memory.","Tell your Controller: 'I'm in the fog today.'"],
+    truth:"The fog clears. Every single person who has been through this has come out the other side thinking clearly again." },
+  { id:2, name:"Emotional Rollercoaster", peak:"Days 30–60", color:"#B07820",
+    what:"Ordinary events feel catastrophic. You may snap, cry, or feel rage with no apparent cause. Your emotional regulation system is recalibrating.",
+    why:"Substances artificially blunted or amplified emotions. Your limbic system is learning to process feelings at natural intensity for the first time.",
+    signs:["Rage at small things","Crying without knowing why","Feeling everything too hard","Snapping at your crew"],
+    interrupt:["Fish Bowl: 'There is anger passing through me. I am not the anger.'","Name the feeling out loud: 'I feel ___.'","Physical movement for 5 minutes — shake it through the body.","One-Breath Reset before speaking when charged.","Tell a Controller before it becomes an action."],
+    truth:"The emotion is real. It is also temporary. It will pass through you in waves — you do not have to become it." },
+  { id:3, name:"Sleep Disruption", peak:"Days 7–30", color:"#1A5C2A",
+    what:"Your sleep architecture is being completely rebuilt. PAWS disrupts natural sleep cycles that substances suppressed for years.",
+    why:"Your brain's melatonin and adenosine systems are relearning their rhythm after years of disruption.",
+    signs:["Wide awake at 2 AM","Exhausted but can't sleep","Vivid or disturbing dreams","Never feeling rested"],
+    interrupt:["Sacred Pause before sleep — every night, no exceptions.","Sleep with the sun — no screens after dark if possible.","No caffeine after noon.","One line in your journal before closing your eyes.","Tell your Controller if sleep is severely disrupted."],
+    truth:"Sleep architecture rebuilds on its own timeline — usually 3–6 months. Each day of consistent rhythm accelerates it." },
+  { id:4, name:"Stress Sensitivity", peak:"Days 45–90", color:"#7B4EA6",
+    what:"Things that used to roll off your back now feel unbearable. Your stress response system is oversensitive during recalibration.",
+    why:"The HPA axis (your stress-hormone system) was dysregulated by substance use. It is re-calibrating and temporarily overshooting.",
+    signs:["Everything feels like too much","Noise is overwhelming","Small problems feel like emergencies","Feeling on the edge constantly"],
+    interrupt:["HALT check immediately — usually at least one axis is elevated.","One-Breath Reset before responding to anything stressful.","Reduce stimulus: quiet place, no screens, 5 minutes.","5-4-3-2-1 Grounding to return to present.","Surrender: 'I release what is not mine to carry.'"],
+    truth:"The same nervous system that is oversensitive right now is the one that will become your greatest strength. It is learning to feel again." },
+  { id:5, name:"Craving Waves", peak:"Days 45–90", color:"#C03030",
+    what:"Intense urges to use that arrive suddenly and feel overwhelming. They are neurochemical events — not decisions, not failures, not identity.",
+    why:"Your dopamine reward pathway has been conditioned by substance use. Each wave that passes without use weakens the neural pathway.",
+    signs:["Sudden powerful urge to use","Feeling you need it right now","Mind building a rationalization — 'just once'","Physical sensation in the chest or gut"],
+    interrupt:["NAME IT OUT LOUD: 'There is a craving. This is a wave.'","Make contact FIRST — call your Controller, text your buddy.","Cravings peak at 20 minutes. Set a timer. Ride it.","One-Breath Reset immediately.","Move your body — walk fast, do push-ups.","Do NOT isolate. Move toward people."],
+    truth:"Every craving wave you ride without using is a real, measurable rewiring of your brain. You are literally building new neural infrastructure every time you choose this." },
+  { id:6, name:"Anhedonia", peak:"Days 60–120", color:"#FF9500",
+    what:"Nothing feels good. Joy is absent. Things you used to love feel flat. This is the hardest hurdle — it makes recovery feel pointless.",
+    why:"Your dopamine system was flooded artificially for so long that its natural baseline dropped. Natural pleasure returns — but slowly.",
+    signs:["Nothing is enjoyable","Food tastes like nothing","Campfire circles feel hollow","Wondering why you're even trying"],
+    interrupt:["FUNCTION BEFORE FEELING — act as if, even when nothing feels good.","One small physical accomplishment per day.","Natural light, every single morning — 10 minutes minimum.","Physical movement activates endorphins even when dopamine is depleted.","Tell your Controller honestly: 'Nothing feels good today.'"],
+    truth:"Anhedonia is the most convincing liar in recovery. It tells you nothing will ever feel good again. It is wrong. The dopamine system heals — but only if you stay present long enough for it to." },
+  { id:7, name:"Identity Confusion", peak:"Days 90–180", color:"#5AADCC",
+    what:"You don't know who you are without the substance. The role, the crew, the habits, the ritual — all gone. A new self hasn't fully formed yet.",
+    why:"Substance use built a whole identity architecture. Recovery dismantles that architecture before a new one is complete.",
+    signs:["Who am I without this?","Feeling like an imposter","Disconnected from your past self","Unclear about your values or direction"],
+    interrupt:["Values anchor: write 3 things you believe in, separate from any role.","Act from values — not from identity.","Find one thing you're good at unrelated to substances.","Return to your direction from Day 1 — why did you come here?"],
+    truth:"The identity forming right now is more real than any you have worn before — because it is being built from the inside out, not the outside in." }
+];
+
+const CAPS = [
+  { letter:"G", name:"Gratitude", color:"#D4A820",
+    what:"The intentional redirect of attention from threat to resource. Not toxic positivity — a tactical neurological interrupt of the cortisol-dominant threat scan.",
+    why:"PAWS creates a brain that looks for everything wrong. Gratitude physically redirects that scan toward what exists.",
+    practice:["One thing — not a list. One real, specific, present thing.","Before a meal: one spoken thing.","When fog hits: name one physical sensation that is neutral or good.","Evening campfire: what existed today that wasn't nothing?"],
+    example:"Not 'I'm grateful for my life.' Instead: 'I'm grateful for the weight of this coffee cup in my hands this morning.'" },
+  { letter:"A", name:"Acceptance", color:"#1F7EA1",
+    what:"The release of energy spent fighting a reality that will not change because it is fought. Not approval. Not defeat. The end of the war with what is.",
+    why:"Resistance to reality multiplies suffering without changing the reality. Acceptance frees the energy of resistance for actual change.",
+    practice:["Three-part statement: 'This is real. I did not want this. I accept it anyway.'","The riverbank: 'The river doesn't carry yesterday's water.'","Identify what is yours to carry and what must be set down.","At campfire: one thing you are accepting tonight that you were fighting today."],
+    example:"'I accept that I am in early recovery and my brain is in fog today. I am not fighting the fog. I am working inside it.'" },
+  { letter:"P", name:"Presence", color:"#1A5C2A",
+    what:"The intentional return to this moment, this body, this 10-minute block. The gap between stimulus and response where conscious choice lives.",
+    why:"PAWS pulls the mind into future catastrophe and past regret simultaneously. Presence is the only moment where anything can actually be done.",
+    practice:["5-4-3-2-1 Grounding: 5 see, 4 hear, 3 touch, 2 smell, 1 taste.","One-Breath Reset: 4 counts in, 2 hold, 6 out.","10-minute blocks: 'For the next 10 minutes I am doing this one thing.'","Physical anchor: feel the ground under your feet."],
+    example:"'For the next 10 minutes I am clearing this section of riverbank. Not tomorrow's hearing. Not yesterday's mistake.'" },
+  { letter:"S", name:"Surrender", color:"#7B4EA6",
+    what:"The recognition of what is yours to carry and what must be set down. Not giving up — the precise identification of your actual domain of responsibility.",
+    why:"Recovery often involves people who have been carrying weight that was never theirs. Surrender removes this unnecessary weight without abandoning genuine responsibility.",
+    practice:["Two-column exercise: What is mine? What is not mine?","The Serenity anchor: change what you can, release what you cannot.","Before sleep: 'I set down what is not mine to carry tonight.'","Write what you're surrendering on paper and close the journal."],
+    example:"'I surrender the family court outcome I cannot control today. I keep what is mine: showing up, staying clean, building the record.'" }
+];
+
+const UIP = [
+  { num:1, name:"NAME IT", color:"#1F7EA1", desc:"Say it out loud or write it. 'There is a craving.' 'I am in PAWS Hurdle 5.' Naming activates the thinking brain and reduces the emotional brain's dominance." },
+  { num:2, name:"GROUND THE BODY", color:"#1A5C2A", desc:"One-Breath Reset (4–2–6). Or 5-4-3-2-1 grounding. Or stamp your feet and look at something solid. Bring the body back to now." },
+  { num:3, name:"MAKE CONTACT", color:"#B07820", desc:"Text or call your Controller, buddy, or anyone in your node. Do this BEFORE the wave peaks. Contact breaks isolation, which is where relapse lives." },
+  { num:4, name:"APPLY THE CAPACITY", color:"#7B4EA6", desc:"GRATITUDE — if the mind is in future dread\nACCEPTANCE — if you're fighting what is real\nPRESENCE — if you've left this moment\nSURRENDER — if you're carrying what isn't yours" },
+  { num:5, name:"WAIT 20 MINUTES", color:"#FF9500", desc:"Craving waves peak at 20 minutes. Do not make any substance-related decision before 20 minutes have passed. Set a timer. Move. Stay near people." },
+  { num:6, name:"DOCUMENT IT", color:"#5AADCC", desc:"One sentence in your journal: what triggered it, what you did, how it passed. This is data — not judgment. Your brain is learning from every entry." }
+];
+
+// ── CEP DATA ─────────────────────────────────────────────────────────────────
+const CEP_PRACTICES = {
+  morning: { name:"Morning Chem Check", icon:"🌅", color:"#D4A820", duration:"60 seconds", chem:"Dopamine — through self-awareness",
+    steps:["Sit still. Both feet on the ground.",
+           "Scan your body from head to toe — slowly.",
+           "Rate each: Energy (1–5) · Mood (1–5) · Tension (1–5).",
+           "Name one physical sensation that is present right now. Just name it.",
+           "That's it. You've checked in with yourself."],
+    note:"This is not a problem to solve. It is a signal to receive. The body has been awake longer than the mind has noticed." },
+  midday: { name:"Co-Regulation Pair", icon:"🤝", color:"#1F7EA1", duration:"60–120 seconds", chem:"Oxytocin — through connection",
+    steps:["One-Breath Reset together with whoever is near — or alone, holding your node in mind.",
+           "Name one thing you are genuinely grateful for right now. Say it out loud or write it.",
+           "Name one person you are glad exists. Don't tell them yet. Just name them.",
+           "Return to your task."],
+    note:"Co-regulation does not require another person to be physically present. The nervous system responds to genuine intention. Your node is real even when you're alone." },
+  evening: { name:"Today's Fish", icon:"🐟", color:"#1A5C2A", duration:"60 seconds", chem:"Serotonin · Endorphins — through release and completion",
+    steps:["Sit with your journal or just your memory.",
+           "Name one thought you WATCHED today without following it.",
+           "Say: 'There was [thought]. I noticed it. I did not become it.'",
+           "Name one thing that existed today — however small.",
+           "Close the day. Set it down."],
+    note:"The last thing you think about before sleep has disproportionate influence on what gets encoded in memory. Choose this deliberately." }
+};
+
+// ── GTT DATA ──────────────────────────────────────────────────────────────────
+const GTT_QUESTIONS = [
+  { domain:"EMOTIONAL", icon:"💛", q:"What emotion has been underneath today — the one that didn't get named?" },
+  { domain:"PHYSICAL",  icon:"🌿", q:"What is your body telling you right now that you haven't listened to yet?" },
+  { domain:"RELATIONAL",icon:"🤝", q:"Who do you wish had checked in on you today?" },
+  { domain:"SPIRITUAL", icon:"✨", q:"What moment today felt most like yourself?" },
+  { domain:"PRACTICAL", icon:"🔑", q:"What one thing would make tomorrow feel more manageable?" },
+  { domain:"EMOTIONAL", icon:"💛", q:"What are you carrying right now that isn't yours to carry?" },
+  { domain:"PHYSICAL",  icon:"🌿", q:"When did your body feel safest today?" },
+  { domain:"RELATIONAL",icon:"🤝", q:"Who showed up for you this week — even in a small way?" },
+  { domain:"SPIRITUAL", icon:"✨", q:"What do you believe today that you didn't used to?" },
+  { domain:"PRACTICAL", icon:"🔑", q:"What small thing, done consistently, would change the most?" },
+  { domain:"EMOTIONAL", icon:"💛", q:"What feeling are you trying to outrun right now?" },
+  { domain:"PHYSICAL",  icon:"🌿", q:"What does your body need that your schedule hasn't allowed?" },
+  { domain:"RELATIONAL",icon:"🤝", q:"Who in your life deserves more of your attention than they're getting?" },
+  { domain:"SPIRITUAL", icon:"✨", q:"What would you do differently if you knew you were enough?" },
+  { domain:"PRACTICAL", icon:"🔑", q:"What decision have you been avoiding that you already know the answer to?" },
+];
+
+// ── COLOUR DATA ───────────────────────────────────────────────────────────────
+const COLOURS = [
+  { code:"WHITE", whmis:"Foundation", emotion:"Clarity · Beginning · Openness", work:"Sorting, basic stewardship, discernment — learning that everything has a place", dose:"Serotonin — baseline regulation", hex:"#C8C4BC",
+    meaning:"Everything has a place. Waste is just material we haven't learned to value yet. You are learning to see clearly — what stays, what goes, what belongs where. This is not a small thing. Most people never learn it." },
+  { code:"BLUE",  whmis:"Health Hazard", emotion:"Flow · Depth · Reflection", work:"Waterway restoration, aquatic work, depth navigation, entering what is difficult", dose:"Oxytocin — connection and depth", hex:"#1F7EA1",
+    meaning:"You are entering depth without drowning. Flow does not mean you know where the river ends. It means you trust it enough to enter. Blue people feel things deeply — that is not a vulnerability. It is a credential." },
+  { code:"GREEN", whmis:"Environmental", emotion:"Growth · Patience · Healing", work:"Land restoration, soil remediation, reforestation — tending what takes time", dose:"Serotonin — sustained calm growth", hex:"#1A5C2A",
+    meaning:"Some things take time. You are learning that patience is not waiting — it is tending. Growth is slow and it is certain. The land restored at GREEN level feeds every other level above it." },
+  { code:"YELLOW",whmis:"Flammable · Emergency", emotion:"Warmth · Awareness · Caution", work:"Emergency response, animal care, first responder skills — staying calm when things ignite", dose:"Endorphins — action and recovery", hex:"#D4A820",
+    meaning:"You notice things before others do. Your awareness is not anxiety — it is a gift. The world needs people who stay calm when things ignite, who move toward the emergency while others move away." },
+  { code:"BLACK", whmis:"Full Hazmat", emotion:"Courage · Gravity · Transformation", work:"Hazardous materials, crisis leadership, shadow integration — standing in the difficult places", dose:"Full D.O.S.E. — all four activated", hex:"#444448",
+    meaning:"You have stood in the difficult places and not run. The shadow you've integrated is not a wound — it is a credential. BLACK level workers are the ones everyone else looks to when things go wrong. That is earned, not assigned." },
+  { code:"GOLD",  whmis:"Mastery", emotion:"Wisdom · Sovereignty · Illumination", work:"Systems design, mentorship, Mother-Elder role, legacy projects — teaching what you've lived", dose:"Dopamine — creation and legacy", hex:"#D4A820",
+    meaning:"You have lived enough to teach. Your value does not fade with age — it compounds. The Fishing Hole is not the end. It is where the river opens into the sea and you realize you were the water all along." }
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let currentDay = 47;
+let currentScreen = 'home';
+let coverOpen = false;
+let haltScores = {H:0,A:0,L:0,T:0};
+let breathPhase = 'idle';
+let breathCount = 0;
+let breathCycles = 0;
+let breathTimer = null;
+let uipStep = null;
+let libStack = [];
+let checkinStep = 0;
+let checkinAnswers = {};
+let pawsDetailId = null;
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+window.onload = function() {
+  updateClock();
+  setInterval(updateClock, 30000);
+  updateHomeForDay();
+  buildHalt();
+  buildUIP();
+  buildCheckin();
+};
+
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent = h + ':' + m;
+  const g = now.getHours() < 12 ? 'Good morning' : now.getHours() < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('greeting').textContent = g;
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function go(screen) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('s-' + screen);
+  if (el) { el.classList.add('active'); currentScreen = screen; }
+  if (screen === 'checkin') resetCheckin();
+  if (screen === 'breath') resetBreath();
+  if (screen === 'paws') buildPawsList();
+  if (screen === 'library') { libStack = []; showLibMain(); }
+  if (screen === 'uip') buildUIP();
+  if (screen === 'sos') document.getElementById('sos-confirm').style.display = 'none';
+  if (screen === 'cep') buildCEP();
+  if (screen === 'gtt') buildGTT();
+  if (screen === 'colour') buildColour();
+}
+
+function keyPress(action) {
+  if (action === 'home') go('home');
+  if (action === 'back') go('home');
+  if (action === 'ok' && currentScreen === 'home') go('checkin');
+}
+
+// ── COVER ─────────────────────────────────────────────────────────────────────
+function openCover() {
+  coverOpen = true;
+  document.getElementById('cover').classList.add('open');
+  document.getElementById('cover-toggle-btn').textContent = 'CLOSE COVER ↓';
+}
+function toggleCover() {
+  coverOpen = !coverOpen;
+  document.getElementById('cover').classList.toggle('open', coverOpen);
+  document.getElementById('cover-toggle-btn').textContent = coverOpen ? 'CLOSE COVER ↓' : 'OPEN COVER ↑';
+}
+function resetDevice() { go('home'); coverOpen = true; document.getElementById('cover').classList.add('open'); document.getElementById('cover-toggle-btn').textContent = 'CLOSE COVER ↓'; }
+
+// ── DAY ───────────────────────────────────────────────────────────────────────
+function changeDay(d) {
+  currentDay = Math.max(1, Math.min(365, currentDay + d));
+  document.getElementById('panel-day').textContent = currentDay;
+  updateHomeForDay();
+  if (currentScreen === 'paws') buildPawsList();
+}
+
+function getPawsHurdle(day) {
+  if (day < 14) return PAWS[2];
+  if (day < 45) return PAWS[0];
+  if (day < 90) return PAWS[4];
+  if (day < 120) return PAWS[5];
+  return PAWS[6];
+}
+
+function updateHomeForDay() {
+  document.getElementById('day-display').textContent = 'Day ' + currentDay;
+  const h = getPawsHurdle(currentDay);
+  const lbl = document.getElementById('paws-label');
+  lbl.textContent = 'PAWS H' + h.id + ' · ' + h.name;
+  lbl.style.color = h.color;
+  const tip = document.getElementById('home-tip');
+  tip.style.borderLeftColor = h.color;
+  tip.style.background = h.color + '18';
+  tip.textContent = h.interrupt[0];
+}
+
+// ── HALT ──────────────────────────────────────────────────────────────────────
+function buildHalt() {
+  const dims = [{k:'H',l:'Hungry',c:'#B07820'},{k:'A',l:'Angry',c:'#C03030'},{k:'L',l:'Lonely',c:'#1F7EA1'},{k:'T',l:'Tired',c:'#7B4EA6'}];
+  const container = document.getElementById('halt-rows');
+  container.innerHTML = '';
+  dims.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'halt-row';
+    row.innerHTML = `<div class="halt-header"><span style="font-size:10px;color:${d.c};font-weight:700">${d.k} — ${d.l}</span><span style="font-size:10px;color:#D4A820;font-weight:900" id="halt-score-${d.k}">0/5</span></div><div class="halt-bars" id="halt-bars-${d.k}"></div>`;
+    container.appendChild(row);
+    const bars = document.getElementById('halt-bars-' + d.k);
+    for (let v = 1; v <= 5; v++) {
+      const b = document.createElement('button');
+      b.className = 'halt-bar';
+      b.style.background = d.c;
+      b.id = 'hbar-' + d.k + '-' + v;
+      b.onclick = () => setHalt(d.k, v, d.c);
+      bars.appendChild(b);
+    }
+  });
+}
+
+function setHalt(key, val, color) {
+  haltScores[key] = val;
+  document.getElementById('halt-score-' + key).textContent = val + '/5';
+  for (let v = 1; v <= 5; v++) {
+    const b = document.getElementById('hbar-' + key + '-' + v);
+    b.classList.toggle('on', v <= val);
+  }
+  updateHaltResult();
+}
+
+function updateHaltResult() {
+  const total = Object.values(haltScores).reduce((a,b)=>a+b,0);
+  const risk = total <= 6 ? {l:'LOW',c:'#34C759'} : total <= 12 ? {l:'MODERATE',c:'#FF9500'} : {l:'HIGH',c:'#C03030'};
+  const rl = document.getElementById('halt-risk-label');
+  const rt = document.getElementById('halt-total');
+  const res = document.getElementById('halt-result');
+  rl.textContent = total > 0 ? risk.l : '—';
+  rl.style.color = risk.c;
+  rt.textContent = 'Total ' + total + '/20';
+  res.style.background = total > 0 ? risk.c + '1A' : 'transparent';
+  res.style.border = total > 0 ? '1px solid ' + risk.c + '44' : 'none';
+  document.getElementById('halt-tip').style.display = total > 12 ? 'block' : 'none';
+  document.getElementById('halt-breath-btn').style.display = total > 0 ? 'block' : 'none';
+}
+
+// ── BREATH ────────────────────────────────────────────────────────────────────
+function resetBreath() {
+  clearInterval(breathTimer);
+  breathPhase = 'idle'; breathCount = 0; breathCycles = 0;
+  setBreathUI('ONE-BREATH RESET', '#1F7EA1', '◉', '4 in · 2 hold · 6 out · 3 cycles', 68, false, false, true);
+}
+
+function setBreathUI(label, color, numTxt, sub, size, showDone, hidBtn, showBtn) {
+  document.getElementById('breath-label').textContent = label;
+  document.getElementById('breath-label').style.color = color;
+  document.getElementById('breath-num').textContent = numTxt;
+  document.getElementById('breath-num').style.color = color;
+  document.getElementById('breath-sub').textContent = sub;
+  const circle = document.getElementById('breath-circle');
+  circle.style.width = size + 'px';
+  circle.style.height = size + 'px';
+  circle.style.borderColor = color;
+  circle.style.background = 'radial-gradient(circle,' + color + '12,transparent)';
+  circle.style.boxShadow = '0 0 ' + (breathPhase==='in'?16:6) + 'px ' + color + '38';
+  document.getElementById('breath-done-msg').style.display = showDone ? 'block' : 'none';
+  document.getElementById('breath-start-btn').style.display = showBtn ? 'block' : 'none';
+  document.getElementById('breath-start-btn').style.background = color + '15';
+  document.getElementById('breath-start-btn').style.borderColor = color + '38';
+  document.getElementById('breath-start-btn').style.color = color;
+}
+
+function startBreath() {
+  breathCycles = 0;
+  runPhase('in');
+}
+
+function runPhase(phase) {
+  breathPhase = phase;
+  clearInterval(breathTimer);
+  const dur = {in:4,hold:2,out:6}[phase];
+  const colors = {in:'#1A5C2A',hold:'#B07820',out:'#1F7EA1'};
+  const labels = {in:'BREATHE IN',hold:'HOLD',out:'BREATHE OUT'};
+  const sizes = {in:84,hold:74,out:64};
+  const subs = {in:'Cycle '+(breathCycles+1)+' of 3',hold:'Cycle '+(breathCycles+1)+' of 3',out:'Cycle '+(breathCycles+1)+' of 3'};
+  breathCount = dur;
+  setBreathUI(labels[phase], colors[phase], String(dur), subs[phase], sizes[phase], false, false, false);
+  breathTimer = setInterval(() => {
+    breathCount--;
+    document.getElementById('breath-num').textContent = breathCount;
+    if (breathCount <= 0) {
+      clearInterval(breathTimer);
+      if (phase === 'in') runPhase('hold');
+      else if (phase === 'hold') runPhase('out');
+      else {
+        breathCycles++;
+        if (breathCycles >= 3) {
+          breathPhase = 'done';
+          setBreathUI('COMPLETE', '#34C759', '◉', 'All 3 cycles complete', 68, true, false, true);
+          document.getElementById('breath-start-btn').textContent = 'AGAIN';
+          document.getElementById('breath-start-btn').onclick = startBreath;
+        } else runPhase('in');
+      }
+    }
+  }, 1000);
+}
+
+function stopBreath() { clearInterval(breathTimer); resetBreath(); go('home'); }
+
+// ── PAWS ──────────────────────────────────────────────────────────────────────
+function buildPawsList() {
+  pawsDetailId = null;
+  document.getElementById('paws-screen-title').textContent = 'PAWS MAP';
+  const area = document.getElementById('paws-content');
+  const info = document.getElementById('paws-list-area');
+  info.textContent = 'Day ' + currentDay + ' · Tap hurdle for full detail';
+  area.innerHTML = '';
+  PAWS.forEach(h => {
+    const start = parseInt(h.peak.replace('Days ','').split('–')[0]);
+    const end = parseInt(h.peak.replace('Days ','').split('–')[1]);
+    const inRange = currentDay >= start && currentDay <= end;
+    const btn = document.createElement('button');
+    btn.style.cssText = `background:${inRange?h.color+'1E':'rgba(255,255,255,0.04)'};border:1px solid ${inRange?'#D4A820':T_border()};border-radius:5px;padding:6px 8px;cursor:pointer;text-align:left;width:100%;font-family:Georgia,serif;margin-bottom:3px`;
+    btn.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:${inRange?'#D4A820':'#E8E4DC'};font-weight:${inRange?700:400}">${inRange?'⚠ ':''}H${h.id}: ${h.name}</span><span style="font-size:8px;color:#8A8080">${h.peak}</span></div>${inRange?'<div style="font-size:9px;color:#8A8080;margin-top:2px;line-height:1.3">'+h.interrupt[0]+'</div>':''}`;
+    btn.onclick = () => showPawsDetail(h);
+    area.appendChild(btn);
+  });
+}
+
+function showPawsDetail(h) {
+  pawsDetailId = h.id;
+  document.getElementById('paws-screen-title').textContent = 'H' + h.id + ': ' + h.name;
+  document.getElementById('paws-list-area').textContent = h.peak;
+  document.getElementById('paws-list-area').style.color = h.color;
+  const area = document.getElementById('paws-content');
+  area.innerHTML = '';
+  const parts = [
+    `<div style="font-size:11px;color:#E8E4DC;line-height:1.5;margin-bottom:4px">${h.what}</div>`,
+    `<div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8A8080;line-height:1.4;font-style:italic;margin-bottom:4px">${h.why}</div>`,
+    `<div style="font-size:9px;color:${h.color};font-weight:700;margin-bottom:3px">SIGNS:</div>`,
+    h.signs.map(s=>`<div style="display:flex;gap:5px;font-size:9px;color:#8A8080;line-height:1.35;margin-bottom:2px"><span style="color:${h.color};flex-shrink:0">▸</span>${s}</div>`).join(''),
+    `<div style="font-size:9px;color:${h.color};font-weight:700;margin-top:4px;margin-bottom:3px">WHAT TO DO:</div>`,
+    h.interrupt.map((si,i)=>`<div style="display:flex;gap:5px;font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:3px"><span style="color:#34C759;flex-shrink:0;font-weight:700">${i+1}.</span>${si}</div>`).join(''),
+    `<div style="background:${h.color}14;border:1px solid ${h.color}28;border-radius:5px;padding:5px 7px;font-size:9px;color:${h.color};line-height:1.4;font-style:italic;margin-top:4px">${h.truth}</div>`
+  ];
+  area.innerHTML = parts.join('');
+}
+
+function T_border(){return 'rgba(255,255,255,0.12)';}
+
+// ── UIP ───────────────────────────────────────────────────────────────────────
+function buildUIP() {
+  uipStep = null;
+  const area = document.getElementById('uip-content');
+  area.innerHTML = '';
+  UIP.forEach((s,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'list-btn';
+    btn.style.background = s.color + '10';
+    btn.style.borderColor = s.color + '28';
+    btn.style.borderLeftColor = s.color;
+    btn.innerHTML = `<div><div class="list-btn-t" style="color:${s.color}">${s.num}. ${s.name}</div><div class="list-btn-s">${s.desc.substring(0,55)}…</div></div>`;
+    btn.onclick = () => showUIPStep(i);
+    area.appendChild(btn);
+  });
+}
+
+function startUIP() { showUIPStep(0); }
+
+function showUIPStep(idx) {
+  uipStep = idx;
+  const s = UIP[idx];
+  const area = document.getElementById('uip-content');
+  area.innerHTML = '';
+  const card = document.createElement('div');
+  card.style.cssText = `background:${s.color}12;border:1px solid ${s.color}28;border-radius:7px;padding:10px 12px;font-size:10px;color:#E8E4DC;line-height:1.65;flex:1`;
+  card.innerHTML = s.desc.split('\n').map(l=>`<div style="margin-bottom:${l.startsWith('A')||l.startsWith('P')||l.startsWith('S')||l.startsWith('G')?3:0}px">${l}</div>`).join('');
+  area.appendChild(card);
+  area.style.flexDirection = 'column';
+  area.style.gap = '6px';
+  const navRow = document.createElement('div');
+  navRow.style.cssText = 'display:flex;gap:5px;flex-shrink:0';
+  if (idx > 0) {
+    const prev = document.createElement('button');
+    prev.className = 'action-btn';
+    prev.style.cssText = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);color:#8A8080;flex:1';
+    prev.textContent = '← PREV';
+    prev.onclick = () => showUIPStep(idx - 1);
+    navRow.appendChild(prev);
+  }
+  if (idx < UIP.length - 1) {
+    const next = document.createElement('button');
+    next.className = 'action-btn';
+    next.style.cssText = `background:${s.color}14;border:1px solid ${s.color}30;color:${s.color};flex:2;font-weight:700`;
+    next.textContent = 'NEXT →';
+    next.onclick = () => showUIPStep(idx + 1);
+    navRow.appendChild(next);
+  } else {
+    const done = document.createElement('button');
+    done.className = 'action-btn';
+    done.style.cssText = 'background:rgba(52,199,89,0.12);border:1px solid rgba(52,199,89,0.3);color:#34C759;flex:2;font-weight:700';
+    done.textContent = '✓ COMPLETE';
+    done.onclick = buildUIP;
+    navRow.appendChild(done);
+  }
+  area.appendChild(navRow);
+}
+
+// ── CHECK-IN ──────────────────────────────────────────────────────────────────
+const CI_QS = [
+  { q:"How are you feeling?", k:"mood", opts:["Grounded","Foggy","Anxious","Empty","Strong"] },
+  { q:"Morning reset done?", k:"reset", opts:["Yes, done","Partial","Not yet"] },
+  { q:"Have you eaten today?", k:"food", opts:["Full meals","Partial","Nothing yet"] },
+  { q:"Craving intensity?", k:"craving", opts:["None","Low","Medium","High","Urgent"] },
+  { q:"Node connection today?", k:"node", opts:["Strong","Good","Isolated","Not yet"] }
+];
+
+function resetCheckin() { checkinStep = 0; checkinAnswers = {}; buildCheckin(); }
+
+function buildCheckin() {
+  const area = document.getElementById('checkin-content');
+  area.innerHTML = '';
+  if (checkinStep >= CI_QS.length) {
+    const hr = checkinAnswers.craving === 'Urgent' || checkinAnswers.craving === 'High';
+    area.innerHTML = `
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px">
+        <div style="font-size:20px">✓</div>
+        <div style="font-size:12px;color:#34C759;font-weight:700">Check-In Complete</div>
+        <div style="font-size:9px;color:#8A8080;text-align:center;line-height:1.5">Day ${currentDay} logged.<br>Controller sync active.</div>
+        ${hr ? `<div style="background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:7px 10px;text-align:center">
+          <div style="font-size:9px;color:#C03030;line-height:1.5;margin-bottom:5px">High craving flagged. Do not isolate.</div>
+          <button onclick="go('uip')" style="background:rgba(192,48,48,0.15);border:1px solid rgba(192,48,48,0.4);border-radius:5px;padding:4px 10px;color:#C03030;font-size:9px;font-weight:700;cursor:pointer;font-family:Georgia,serif">→ PROTOCOL</button>
+        </div>` : `<div style="background:rgba(26,92,42,0.1);border:1px solid rgba(26,92,42,0.3);border-radius:5px;padding:7px 10px;font-size:9px;color:#1A5C2A;text-align:center">Good data. Stay with the rhythm.</div>`}
+        <button onclick="go('home')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:5px 14px;color:#E8E4DC;font-size:10px;cursor:pointer;font-family:Georgia,serif">Done</button>
+      </div>`;
+    return;
+  }
+  const q = CI_QS[checkinStep];
+  const pct = ((checkinStep+1)/CI_QS.length*100).toFixed(0);
+  area.innerHTML = `
+    <div style="font-size:9px;color:#8A8080;text-align:center">Day ${currentDay} · Q${checkinStep+1}/${CI_QS.length}</div>
+    <div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px">
+      <div style="font-size:12px;color:#E8E4DC;text-align:center;line-height:1.4">${q.q}</div>
+      ${q.opts.map(opt=>`<button onclick="ciAnswer('${opt}')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:7px 10px;color:#E8E4DC;font-size:11px;cursor:pointer;text-align:left;font-family:Georgia,serif">${opt}</button>`).join('')}
+    </div>`;
+}
+
+function ciAnswer(opt) {
+  checkinAnswers[CI_QS[checkinStep].k] = opt;
+  checkinStep++;
+  buildCheckin();
+}
+
+// ── SOS ───────────────────────────────────────────────────────────────────────
+function sosPressed(btn, type) {
+  document.getElementById('sos-confirm').style.display = 'block';
+}
+
+// ── LIBRARY ───────────────────────────────────────────────────────────────────
+const LIB_SECTIONS = [
+  { id:"caps", i:"◈", l:"CAI Practices", s:"Conscious Awareness — four core practices", c:"#D4A820" },
+  { id:"fish", i:"🐟", l:"Fish Bowl Method", s:"Observer stance — the core practice", c:"#1F7EA1" },
+  { id:"tools", i:"🌬", l:"Regulation Tools", s:"Breath · Grounding · Sacred Pause", c:"#1A5C2A" },
+  { id:"cenaps", i:"⚠", l:"CENAPS 3 Stages", s:"Emotional → Mental → Physical relapse", c:"#B07820" },
+  { id:"dose", i:"⚗", l:"D.O.S.E. Architecture", s:"Why work replaces the substance", c:"#FF9500" },
+  { id:"halt-lib", i:"⚡", l:"HALT Framework", s:"Hungry · Angry · Lonely · Tired", c:"#5AADCC" },
+  { id:"abc", i:"📋", l:"ABC Thought Record", s:"Dispute the automatic thought", c:"#1F7EA1" },
+  { id:"distort", i:"🔍", l:"Cognitive Distortions", s:"6 patterns that drive addiction", c:"#1A5C2A" },
+  { id:"uip-lib", i:"🔷", l:"Interruption Protocol", s:"6-step emergency navigation", c:"#7B4EA6" },
+  { id:"ifthen", i:"⚡", l:"If-Then Planning", s:"Pre-load your response before the trigger fires", c:"#C03030" },
+  { id:"reflect", i:"🪞", l:"Reflective vs Impulsive", s:"The gap between stimulus and response", c:"#1F7EA1" },
+  { id:"cep-guide", i:"🌿", l:"CEP Practice Guide", s:"Morning · Midday · Evening — D.O.S.E. daily", c:"#1A5C2A" },
+  { id:"gtt-guide", i:"🌍", l:"GTT — What Your Answers Do", s:"From one person to the planetary ear", c:"#1F7EA1" },
+  { id:"colour-map", i:"🎨", l:"Colour Progression Map", s:"WHITE through GOLD — your landscape", c:"#D4A820" },
+  { id:"firmware", i:"⚙", l:"Firmware Values", s:"VVV · Prodigal Son · Saint Christopher", c:"#5AADCC" },
+];
+
+function libBack() {
+  if (libStack.length === 0) { go('home'); return; }
+  libStack.pop();
+  if (libStack.length === 0) showLibMain();
+  else {
+    const last = libStack[libStack.length-1];
+    if (typeof last === 'function') last();
+  }
+}
+
+function buildLibrary() { /* Library initialises on navigation via showLibMain() */ }
+
+function showLibMain() {
+  document.getElementById('lib-title').textContent = 'KNOWLEDGE BASE';
+  document.getElementById('lib-sub').style.display = 'block';
+  document.getElementById('lib-sub').textContent = 'Full CBT-SUD system — tap any section';
+  const area = document.getElementById('lib-content');
+  area.innerHTML = '';
+  LIB_SECTIONS.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'list-btn';
+    btn.style.background = s.c + '0E';
+    btn.style.borderColor = s.c + '26';
+    btn.style.borderLeftColor = s.c;
+    btn.innerHTML = `<span class="list-btn-icon">${s.i}</span><div><div class="list-btn-t" style="color:${s.c}">${s.l}</div><div class="list-btn-s">${s.s}</div></div>`;
+    btn.onclick = () => libSection(s.id);
+    area.appendChild(btn);
+  });
+}
+
+function libSection(id) {
+  document.getElementById('lib-sub').style.display = 'none';
+  if (id === 'uip-lib') { go('uip'); return; }
+  if (id === 'caps') { libStack.push(showLibMain); showCaps(); }
+  else if (id === 'fish') { libStack.push(showLibMain); showFish(); }
+  else if (id === 'tools') { libStack.push(showLibMain); showTools(); }
+  else if (id === 'cenaps') { libStack.push(showLibMain); showCenaps(); }
+  else if (id === 'dose') { libStack.push(showLibMain); showDose(); }
+  else if (id === 'halt-lib') { libStack.push(showLibMain); showHaltLib(); }
+  else if (id === 'abc') { libStack.push(showLibMain); showAbc(); }
+  else if (id === 'distort') { libStack.push(showLibMain); showDistort(); }
+  else if (id === 'ifthen') { libStack.push(showLibMain); showIfThen(); }
+  else if (id === 'reflect') { libStack.push(showLibMain); showReflect(); }
+  else if (id === 'cep-guide') { libStack.push(showLibMain); showCepGuide(); }
+  else if (id === 'gtt-guide') { libStack.push(showLibMain); showGttGuide(); }
+  else if (id === 'colour-map') { libStack.push(showLibMain); showColourMapLib(); }
+  else if (id === 'firmware') { libStack.push(showLibMain); showFirmware(); }
+}
+
+function setLibTitle(t) { document.getElementById('lib-title').textContent = t; }
+
+// G.A.P.S. CAPACITIES
+function showCaps() {
+  setLibTitle('G.A.P.S. CAPACITIES');
+  const area = document.getElementById('lib-content');
+  area.innerHTML = '';
+  CAPS.forEach((cap,i) => {
+    const btn = document.createElement('button');
+    btn.style.cssText = `background:${cap.color}10;border:1px solid ${cap.color}26;border-radius:7px;padding:9px 12px;cursor:pointer;text-align:left;display:flex;gap:10px;align-items:center;width:100%;margin-bottom:5px;font-family:Georgia,serif`;
+    btn.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;background:${cap.color}18;border:2px solid ${cap.color}38;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:14px;font-weight:900;color:${cap.color};font-family:Georgia,serif">${cap.letter}</span></div><div><div style="font-size:11px;color:${cap.color};font-weight:700">${cap.name}</div><div style="font-size:9px;color:#8A8080;margin-top:1px">${cap.what.substring(0,50)}…</div></div>`;
+    btn.onclick = () => { libStack.push(showCaps); showCapDetail(cap); };
+    area.appendChild(btn);
+  });
+}
+
+function showCapDetail(cap) {
+  setLibTitle(cap.letter + ' — ' + cap.name);
+  const area = document.getElementById('lib-content');
+  area.innerHTML = `
+    <div style="font-size:11px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">${cap.what}</div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8A8080;line-height:1.4;font-style:italic;margin-bottom:5px">${cap.why}</div>
+    <div style="font-size:9px;color:${cap.color};font-weight:700;margin-bottom:3px">PRACTICE:</div>
+    ${cap.practice.map(p=>`<div style="display:flex;gap:5px;font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:3px"><span style="color:${cap.color};flex-shrink:0">▸</span>${p}</div>`).join('')}
+    <div style="background:rgba(255,255,255,0.04);border-left:4px solid ${cap.color};padding:6px 8px;border-radius:0 5px 5px 0;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:5px">${cap.example}</div>`;
+}
+
+// FISH BOWL
+function showFish() {
+  setLibTitle('FISH BOWL METHOD');
+  const FISH = {
+    core:"You are the bowl. Your thoughts, feelings, and urges are the fish. Fish swim through a bowl — they do not become the bowl.",
+    steps:[
+      { step:"NOTICE", desc:"Something is happening internally. You feel something, think something, or want something." },
+      { step:"NAME IT", desc:"'There is [feeling/urge/thought] moving through me right now.' Say it out loud or write it down." },
+      { step:"OBSERVE IT", desc:"Watch it like a fish in a bowl. Where is it in your body? What does it feel like? Don't fight it — just watch." },
+      { step:"SEPARATE", desc:"'I am the bowl. This is a fish. I am not this fish.' The feeling is real. You are not the feeling." },
+      { step:"WAIT", desc:"Most emotional fish swim through in under 20 minutes if you don't feed them. Set a timer if needed." },
+      { step:"CHOOSE", desc:"From the bowl — not from inside the fish — decide what action, if any, to take." }
+    ],
+    examples:[
+      { bad:"I am anxious", good:"There is anxiety passing through me right now" },
+      { bad:"I'm a failure", good:"There is shame here. Shame is not my identity." },
+      { bad:"I can't do this", good:"There is doubt here. I am observing the doubt." },
+      { bad:"I'm an addict", good:"There is a craving passing through. I am not the craving." }
+    ],
+    community:"At campfire Slow Soak: one person speaks, everyone else holds the bowl. No fixing. No advice. Just witness the fish swim through."
+  };
+  let tab = 'steps';
+  const area = document.getElementById('lib-content');
+  function render() {
+    area.innerHTML = `
+      <div style="display:flex;gap:3px;margin-bottom:5px;flex-shrink:0">
+        ${['steps','examples','community'].map(t=>`<button onclick="fishTab('${t}')" style="flex:1;background:${t===tab?'rgba(31,126,161,0.18)':'rgba(255,255,255,0.04)'};border:1px solid ${t===tab?'#1F7EA1':'rgba(255,255,255,0.12)'};border-radius:4px;padding:3px 0;color:${t===tab?'#1F7EA1':'#8A8080'};font-size:8px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;font-family:Georgia,serif">${t}</button>`).join('')}
+      </div>
+      <div style="background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.25);border-radius:5px;padding:5px 7px;font-size:10px;color:#E8E4DC;line-height:1.45;margin-bottom:5px">${FISH.core}</div>
+      <div id="fish-tab-content" style="display:flex;flex-direction:column;gap:4px;overflow-y:auto;flex:1"></div>`;
+    window.fishTab = function(t) { tab = t; render(); };
+    const tc = document.getElementById('fish-tab-content');
+    if (tab === 'steps') {
+      FISH.steps.forEach((s,i) => {
+        tc.innerHTML += `<div style="display:flex;gap:6px;align-items:flex-start"><div style="min-width:18px;height:18px;border-radius:50%;background:#1F7EA1;color:#fff;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</div><div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;flex:1"><div style="font-size:10px;color:#1F7EA1;font-weight:700;margin-bottom:1px">${s.step}</div><div style="font-size:9px;color:#8A8080;line-height:1.35">${s.desc}</div></div></div>`;
+      });
+    } else if (tab === 'examples') {
+      FISH.examples.forEach(e => {
+        tc.innerHTML += `<div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px"><div style="font-size:9px;color:#C03030;margin-bottom:2px">Instead: <em>${e.bad}</em></div><div style="font-size:9px;color:#34C759">Say: <em>"${e.good}"</em></div></div>`;
+      });
+    } else {
+      tc.innerHTML = `<div style="background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.25);border-radius:5px;padding:7px 9px;font-size:10px;color:#E8E4DC;line-height:1.55">${FISH.community}</div>`;
+    }
+  }
+  render();
+}
+
+// TOOLS
+function showTools() {
+  setLibTitle('REGULATION TOOLS');
+  const TOOLS = [
+    { id:'breath', n:"One-Breath Reset", i:"🌬", c:"#1F7EA1", sub:"4 in · 2 hold · 6 out",
+      why:"The extended exhale activates the parasympathetic nervous system — the body's natural calm response. This is a physiological override, not a mental trick.",
+      steps:["Sit or stand. Both feet on ground.","Breathe IN through nose: 1-2-3-4.","HOLD: 1-2.","Breathe OUT through mouth: 1-2-3-4-5-6.","Repeat 3 times minimum.","Notice: the body has already shifted."],
+      note:"Opens every Beacon Huddle — all 10 people in the node do it together. Co-regulation." },
+    { id:'ground', n:"5-4-3-2-1 Grounding", i:"⚓", c:"#1A5C2A", sub:"Return to now. Return to your body.",
+      why:"When PAWS pulls you into future dread or past pain, this technique forces the brain to process immediate sensory input — which is only possible in the present moment.",
+      steps:["5 things you can SEE — be specific.","4 things you can HEAR — include quiet sounds.","3 things you can TOUCH — name textures.","2 things you can SMELL.","1 thing you can TASTE."],
+      note:"You are here. Nothing that happened before this breath requires you to act on it right now." },
+    { id:'pause', n:"The Sacred Pause", i:"🌙", c:"#7B4EA6", sub:"The last act of every day",
+      why:"What you think about as you fall asleep has disproportionate influence on what gets encoded in memory. The Sacred Pause chooses what travels into the night.",
+      steps:["One-Breath Reset in bed before any screen.","One line in your journal — what existed today.","Name one thing you set down tonight (Surrender).","Name one thing you return to tomorrow — just one.","Close the journal. The day is complete."],
+      note:"Not a review of failures. A completion ritual." }
+  ];
+  const area = document.getElementById('lib-content');
+  area.innerHTML = '';
+  TOOLS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.style.cssText = `background:${t.c}10;border:1px solid ${t.c}26;border-radius:7px;padding:11px 13px;cursor:pointer;text-align:left;display:flex;gap:11px;align-items:center;width:100%;margin-bottom:5px;font-family:Georgia,serif`;
+    btn.innerHTML = `<span style="font-size:18px">${t.i}</span><div><div style="font-size:11px;color:${t.c};font-weight:700">${t.n}</div><div style="font-size:9px;color:#8A8080;margin-top:1px">${t.sub}</div></div>`;
+    btn.onclick = () => { libStack.push(showTools); showToolDetail(t); };
+    area.appendChild(btn);
+  });
+}
+
+function showToolDetail(t) {
+  setLibTitle(t.n);
+  document.getElementById('lib-content').innerHTML = `
+    <div style="font-size:9px;color:${t.c};font-style:italic;margin-bottom:5px">${t.sub}</div>
+    <div style="background:${t.c}10;border:1px solid ${t.c}24;border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;line-height:1.4;margin-bottom:5px">${t.why}</div>
+    ${t.steps.map((s,i)=>`<div style="display:flex;gap:6px;font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:3px"><span style="color:${t.c};font-weight:700;flex-shrink:0">${i+1}.</span>${s}</div>`).join('')}
+    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:5px">${t.note}</div>`;
+}
+
+// CENAPS
+function showCenaps() {
+  setLibTitle('CENAPS 3 STAGES');
+  const STAGES = [
+    { num:1, name:"Emotional Relapse", color:"#B07820",
+      def:"The body and nervous system are in relapse mode before the mind has consciously considered using.",
+      signs:["Isolating from your node or crew","Mood deteriorating without clear cause","Not talking about how you really feel","Skipping Beacon Huddles","Irritability, restlessness"],
+      interrupt:"HALT check. Beacon Huddle. Tell your Controller. Return to your daily rhythm. This stage is easiest to interrupt — it requires re-connection, not willpower." },
+    { num:2, name:"Mental Relapse", color:"#FF9500",
+      def:"The mind begins to actively engage with the possibility of using — building cases, accessing memories, minimizing consequences.",
+      signs:["'Just once' thinking emerging","Remembering the good without the harm","Planning around access","Minimizing what happened before"],
+      interrupt:"Universal Interruption Protocol immediately. Make contact before the plan solidifies. Your Controller needs to know now. The window for easy interruption is closing." },
+    { num:3, name:"Physical Relapse", color:"#C03030",
+      def:"Substance use occurs. This is the result of Stages 1 and 2 progressing uninterrupted.",
+      signs:["Use has occurred"],
+      interrupt:"Return to recovery. This is data — not verdict. What stage was missed first? Run HALT check. Call your support person. The door is never locked." }
+  ];
+  const area = document.getElementById('lib-content');
+  area.innerHTML = `<div style="font-size:9px;color:#8A8080;line-height:1.4;margin-bottom:5px">Relapse is a process, not an event. Tap each stage to learn the signs and interrupt early.</div>`;
+  STAGES.forEach((s,i) => {
+    const btn = document.createElement('button');
+    btn.style.cssText = `background:${s.color}10;border:1px solid ${s.color}26;border-left:3px solid ${s.color};border-radius:0 6px 6px 0;padding:8px 11px;cursor:pointer;text-align:left;width:100%;margin-bottom:5px;font-family:Georgia,serif`;
+    btn.innerHTML = `<div style="font-size:11px;color:${s.color};font-weight:700">Stage ${s.num}: ${s.name}</div><div style="font-size:9px;color:#8A8080;margin-top:2px;line-height:1.3">${s.def.substring(0,60)}…</div>`;
+    btn.onclick = () => { libStack.push(showCenaps); showCenapsStage(s); };
+    area.appendChild(btn);
+  });
+}
+
+function showCenapsStage(s) {
+  setLibTitle('STAGE ' + s.num + ': ' + s.name);
+  document.getElementById('lib-content').innerHTML = `
+    <div style="font-size:10px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">${s.def}</div>
+    <div style="font-size:9px;color:${s.color};font-weight:700;margin-bottom:3px">SIGNS:</div>
+    ${s.signs.map(sg=>`<div style="display:flex;gap:5px;font-size:9px;color:#8A8080;line-height:1.35;margin-bottom:2px"><span style="color:${s.color};flex-shrink:0">▸</span>${sg}</div>`).join('')}
+    <div style="background:${s.color}10;border:1px solid ${s.color}26;border-radius:5px;padding:6px 8px;margin-top:5px">
+      <div style="font-size:9px;color:${s.color};font-weight:700;margin-bottom:3px">INTERRUPT:</div>
+      <div style="font-size:9px;color:#E8E4DC;line-height:1.45">${s.interrupt}</div>
+    </div>`;
+}
+
+// DOSE
+function showDose() {
+  setLibTitle('D.O.S.E. ARCHITECTURE');
+  const DOSE = [
+    { letter:"D", name:"Dopamine", color:"#D4A820",
+      from:"Completing a visible task. Seeing the result. Clearing a section of bank. Documenting a milestone.",
+      vs:"Substances flood dopamine receptors artificially, depleting natural production. Work earns it — which is why it lasts.",
+      at:"In recovery: completing a daily goal, checking off your thought record, finishing a group session." },
+    { letter:"O", name:"Oxytocin", color:"#1F7EA1",
+      from:"Genuine connection. Communal meals. Campfire circles. Buddy check-ins. Being witnessed without being fixed.",
+      vs:"Isolation and substances try to replace oxytocin. Nothing replaces it. Only real human connection delivers it.",
+      at:"Connecting with a support person, sharing honestly in group, being witnessed without judgment." },
+    { letter:"S", name:"Serotonin", color:"#1A5C2A",
+      from:"Predictable rhythm. Recognized status within a group. Sleeping and waking with the sun. Being seen as competent.",
+      vs:"Chaos depletes serotonin. A predictable recovery routine is a serotonin delivery architecture.",
+      at:"Building a predictable daily routine, practising the Sacred Pause, maintaining your recovery rhythm." },
+    { letter:"E", name:"Endorphins", color:"#7B4EA6",
+      from:"Physical exertion. Laughter. Honest emotional release. Nature immersion. Boxing, drumming, dancing.",
+      vs:"The physical burn of restoration work delivers endorphins that outlast any substance equivalent.",
+      at:"Physical movement, urge surfing practice, laughter with a safe person, honest emotional release." }
+  ];
+  const area = document.getElementById('lib-content');
+  area.innerHTML = `<div style="font-size:9px;color:#8A8080;line-height:1.4;margin-bottom:5px">The same reward pathway substances activated — delivered through purposeful work and community instead.</div>`;
+  DOSE.forEach((c,i) => {
+    const btn = document.createElement('button');
+    btn.style.cssText = `background:${c.color}10;border:1px solid ${c.color}26;border-radius:7px;padding:9px 12px;cursor:pointer;text-align:left;display:flex;gap:11px;align-items:center;width:100%;margin-bottom:5px;font-family:Georgia,serif`;
+    btn.innerHTML = `<div style="width:26px;height:26px;border-radius:50%;background:${c.color}18;border:2px solid ${c.color}36;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:13px;font-weight:900;color:${c.color};font-family:Georgia,serif">${c.letter}</span></div><div><div style="font-size:11px;color:${c.color};font-weight:700">${c.name}</div><div style="font-size:9px;color:#8A8080;margin-top:1px">${c.from.substring(0,48)}…</div></div>`;
+    btn.onclick = () => { libStack.push(showDose); showDoseDetail(c); };
+    area.appendChild(btn);
+  });
+}
+
+function showDoseDetail(c) {
+  setLibTitle(c.letter + ' — ' + c.name);
+  document.getElementById('lib-content').innerHTML = `
+    <div style="background:${c.color}10;border:1px solid ${c.color}26;border-radius:5px;padding:7px 9px;margin-bottom:5px">
+      <div style="font-size:9px;color:${c.color};font-weight:700;margin-bottom:3px">WHERE IT COMES FROM:</div>
+      <div style="font-size:10px;color:#E8E4DC;line-height:1.5">${c.from}</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;line-height:1.4;margin-bottom:5px">${c.vs}</div>
+    <div style="background:rgba(26,92,42,0.08);border:1px solid rgba(26,92,42,0.22);border-radius:5px;padding:6px 8px">
+      <div style="font-size:9px;color:#1A5C2A;font-weight:700;margin-bottom:2px">IN RECOVERY:</div>
+      <div style="font-size:9px;color:#E8E4DC;line-height:1.4">${c.at}</div>
+    </div>`;
+}
+
+// PATHS
+function showHaltLib() {
+  setLibTitle('HALT FRAMEWORK');
+  document.getElementById('lib-content').innerHTML = `
+    <div style="font-size:9px;color:#8A8080;line-height:1.4;margin-bottom:5px">Before any decision in a high-risk moment, run the HALT check. These four states lower your threshold for every other trigger (Marlatt &amp; Donovan, 2005).</div>
+    ${[
+      {l:"H",n:"Hungry",c:"#D4A820",d:"When did you last eat? Low blood sugar impairs prefrontal function and increases impulsivity.",a:"Eat something first. Every decision made hungry is made at a disadvantage."},
+      {l:"A",n:"Angry",c:"#C03030",d:"Is there resentment or unprocessed conflict running underneath right now?",a:"Name it before acting. Write it. Call your support person. Don't decide from anger."},
+      {l:"L",n:"Lonely",c:"#1F7EA1",d:"Are you disconnected from your support network? Isolation is the highest-risk state for relapse.",a:"Reach out to one person before making any decision. Connection is the antidote."},
+      {l:"T",n:"Tired",c:"#7B4EA6",d:"Is your nervous system depleted? Fatigue suppresses the prefrontal cortex and your capacity for conscious choice.",a:"Rest before deciding. If you can't rest, run a breath reset first."}
+    ].map(h=>`
+    <div style="background:${h.c}10;border:1px solid ${h.c}26;border-left:3px solid ${h.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px">
+      <div style="font-size:11px;color:${h.c};font-weight:700;margin-bottom:2px">${h.l} — ${h.n}</div>
+      <div style="font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:2px">${h.d}</div>
+      <div style="font-size:9px;color:#8A8080;font-style:italic">${h.a}</div>
+    </div>`).join('')}`;
+}
+
+function showAbc() {
+  setLibTitle('ABC THOUGHT RECORD');
+  document.getElementById('lib-content').innerHTML = `
+    <div style="font-size:9px;color:#8A8080;line-height:1.4;margin-bottom:5px">The ABC model is the core CBT skill for challenging automatic thoughts (Beck et al., 1993). Use it after any high-risk moment.</div>
+    ${[
+      {l:"A",n:"Activating Event",c:"#1F7EA1",d:"What happened? Describe the situation factually.",x:"Ran into an old friend who still uses."},
+      {l:"B",n:"Belief / Automatic Thought",c:"#D4A820",d:"What did your mind say immediately? Find the sentence.",x:"'I will never escape this world.'"},
+      {l:"C",n:"Consequence",c:"#C03030",d:"What emotion followed (0-10)? What did you do?",x:"Hopeless 8/10. Isolated. Craving intensified."},
+      {l:"D",n:"Dispute the Thought",c:"#7B4EA6",d:"Evidence FOR? Evidence AGAINST? What would you tell a friend?",x:"I have made choices my friend has not. This moment does not define my trajectory."},
+      {l:"E",n:"Effect of New Thought",c:"#1A5C2A",d:"Write the more balanced thought. Rate emotion again.",x:"Hopeless drops from 8 to 4. Called my support person."}
+    ].map(s=>`
+    <div style="background:${s.c}10;border:1px solid ${s.c}26;border-left:3px solid ${s.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px">
+      <div style="font-size:11px;color:${s.c};font-weight:700;margin-bottom:2px">${s.l} — ${s.n}</div>
+      <div style="font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:2px">${s.d}</div>
+      <div style="font-size:9px;color:#8A8080;font-style:italic">${s.x}</div>
+    </div>`).join('')}`;
+}
+
+function showDistort() {
+  setLibTitle('COGNITIVE DISTORTIONS');
+  document.getElementById('lib-content').innerHTML = `
+    <div style="font-size:9px;color:#8A8080;line-height:1.4;margin-bottom:5px">Six thinking patterns that sustain addictive behaviour. Naming them reduces their power (Beck et al., 1993).</div>
+    ${[
+      {n:"All-or-Nothing",c:"#C03030",d:"I slipped — I am a total failure.",r:"Slipping once does not erase progress. Partial success is still success."},
+      {n:"Catastrophizing",c:"#B07820",d:"This craving means I will relapse.",r:"A craving is a wave. It peaks and passes. Feeling it is not the same as acting on it."},
+      {n:"Mind-Reading",c:"#1F7EA1",d:"They all think I am weak.",r:"You do not have access to other people's thoughts. What is the actual evidence?"},
+      {n:"Emotional Reasoning",c:"#7B4EA6",d:"I feel like using so I must need to.",r:"Feelings are not facts. Feeling anxious does not mean you are in danger."},
+      {n:"Should Statements",c:"#1A5C2A",d:"I should be stronger than this.",r:"You are exactly where you are. Should is a trap. What can I do right now?"},
+      {n:"Personalization",c:"#5AADCC",d:"If my recovery is hard it means I am broken.",r:"Recovery is hard for everyone. Difficulty is not a character verdict."}
+    ].map(d=>`
+    <div style="background:${d.c}10;border:1px solid ${d.c}26;border-left:3px solid ${d.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px">
+      <div style="font-size:10px;color:${d.c};font-weight:700;margin-bottom:2px">${d.n}</div>
+      <div style="font-size:9px;color:#E8E4DC;line-height:1.35;margin-bottom:2px;font-style:italic">"${d.d}"</div>
+      <div style="font-size:9px;color:#8A8080;line-height:1.35">Reframe: ${d.r}</div>
+    </div>`).join('')}`;
+}
+
+// ── CEP SCREEN ────────────────────────────────────────────────────────────────
+function buildCEP() {
+  const hour = new Date().getHours();
+  let phase = hour < 11 ? 'morning' : hour < 17 ? 'midday' : 'evening';
+  renderCEPPhase(phase);
+}
+
+function renderCEPPhase(ph) {
+  const area = document.getElementById('cep-content');
+  const pr = CEP_PRACTICES[ph];
+  const phases = ['morning','midday','evening'];
+  const icons = {morning:'🌅',midday:'🤝',evening:'🐟'};
+  area.innerHTML = `
+    <div style="display:flex;gap:3px;margin-bottom:5px;flex-shrink:0">
+      ${phases.map(p=>`<button onclick="renderCEPPhase('${p}')" style="flex:1;background:${p===ph?CEP_PRACTICES[p].color+'20':'rgba(255,255,255,0.04)'};border:1px solid ${p===ph?CEP_PRACTICES[p].color:'rgba(255,255,255,0.1)'};border-radius:4px;padding:4px 0;color:${p===ph?CEP_PRACTICES[p].color:'#8A8080'};font-size:11px;cursor:pointer;font-family:Georgia,serif">${icons[p]}</button>`).join('')}
+    </div>
+    <div style="text-align:center;margin-bottom:5px">
+      <div style="font-size:12px;font-weight:700;color:${pr.color}">${pr.name}</div>
+      <div style="font-size:8px;color:#8A8080;margin-top:1px">${pr.duration} · ${pr.chem}</div>
+    </div>
+    ${pr.steps.map((s,i)=>`<div style="display:flex;gap:5px;font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:4px;background:rgba(255,255,255,0.03);border-radius:4px;padding:5px 7px"><span style="color:${pr.color};font-weight:700;flex-shrink:0">${i+1}.</span>${s}</div>`).join('')}
+    <div style="background:${pr.color}10;border:1px solid ${pr.color}28;border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:2px">${pr.note}</div>
+    <div style="font-size:8px;color:rgba(255,255,255,0.12);text-align:center;margin-top:6px;line-height:1.4">CEP · Chemical Exposure Platform<br>COG 3 — AI Integration · GSRT Framework</div>`;
+}
+
+// ── GTT SCREEN ────────────────────────────────────────────────────────────────
+function buildGTT() {
+  const today = new Date().toDateString();
+  const stored = JSON.parse(localStorage.getItem('gtt_'+today) || '{}');
+  const answered = Object.keys(stored).length;
+  const area = document.getElementById('gtt-content');
+  if (answered >= 5) {
+    area.innerHTML = `
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;padding:10px">
+        <div style="font-size:22px">🌍</div>
+        <div style="font-size:11px;color:#34C759;font-weight:700;text-align:center">Today's Questions Complete</div>
+        <div style="font-size:9px;color:#8A8080;text-align:center;line-height:1.5">Your answers are held on this device only.<br>No names. No scores. Just truth.</div>
+        <div style="background:rgba(31,126,161,0.08);border:1px solid rgba(31,126,161,0.22);border-radius:5px;padding:7px 10px;font-size:9px;color:#8A8080;text-align:center;font-style:italic;line-height:1.5;width:100%">"One person answering honestly.<br>The seed of the planetary ear.<br>The GTT begins here."</div>
+        <div style="font-size:8px;color:rgba(255,255,255,0.12);text-align:center;line-height:1.4">Saint Christopher Handshake<br>Mutual observation · Never extraction</div>
+        <button onclick="go('home')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:5px 14px;color:#E8E4DC;font-size:10px;cursor:pointer;font-family:Georgia,serif">Done</button>
+      </div>`;
+    return;
+  }
+  const dayIdx = new Date().getDay();
+  const questions = [];
+  for (let i=0; i<5; i++) questions.push(GTT_QUESTIONS[(dayIdx*5+i) % GTT_QUESTIONS.length]);
+  const q = questions[answered];
+  const domColor = {EMOTIONAL:'#D4A820',PHYSICAL:'#1A5C2A',RELATIONAL:'#1F7EA1',SPIRITUAL:'#7B4EA6',PRACTICAL:'#5AADCC'};
+  const pct = ((answered+1)/5*100).toFixed(0);
+  area.innerHTML = `
+    <div style="font-size:8px;color:#8A8080;text-align:center">Anonymous · No scores · Q${answered+1} of 5</div>
+    <div class="prog-bar-wrap" style="margin:4px 0"><div class="prog-bar-fill" style="width:${pct}%;background:${domColor[q.domain]}"></div></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5px">
+      <div style="text-align:center;font-size:8px;color:${domColor[q.domain]};font-weight:700;letter-spacing:.05em">${q.icon} ${q.domain}</div>
+      <div style="font-size:11px;color:#E8E4DC;text-align:center;line-height:1.5;padding:4px 2px">${q.q}</div>
+      ${['Yes, resonates','Somewhat','Not sure','Not today','Prefer not to say'].map(opt=>`<button onclick="gttAnswer('${opt}')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 10px;color:#E8E4DC;font-size:10px;cursor:pointer;text-align:left;font-family:Georgia,serif">${opt}</button>`).join('')}
+    </div>
+    <div style="font-size:7px;color:rgba(255,255,255,0.1);text-align:center;line-height:1.4;margin-top:4px">Your answer stays on this device only · GTT · COG 3 GSRT</div>`;
+}
+
+function gttAnswer(opt) {
+  const today = new Date().toDateString();
+  const stored = JSON.parse(localStorage.getItem('gtt_'+today) || '{}');
+  stored['q'+Object.keys(stored).length] = opt;
+  localStorage.setItem('gtt_'+today, JSON.stringify(stored));
+  buildGTT();
+}
+
+// ── COLOUR SCREEN ─────────────────────────────────────────────────────────────
+function buildColour() {
+  const area = document.getElementById('colour-content');
+  area.innerHTML = `
+    <div style="font-size:9px;color:#8A8080;text-align:center;margin-bottom:5px;font-style:italic">Your colour is not a grade.<br>It is a landscape you're walking through.</div>
+    ${COLOURS.map((c,i)=>`<button onclick="showColourDetail(${i})" style="background:${c.hex}18;border:1px solid ${c.hex}38;border-left:3px solid ${c.hex};border-radius:0 6px 6px 0;padding:7px 10px;cursor:pointer;text-align:left;width:100%;margin-bottom:4px;font-family:Georgia,serif">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:11px;color:${c.hex};font-weight:700">${c.code}</span>
+        <span style="font-size:8px;color:#8A8080">${c.whmis}</span>
+      </div>
+      <div style="font-size:9px;color:#8A8080;margin-top:1px;line-height:1.3">${c.emotion}</div>
+    </button>`).join('')}`;
+}
+
+function showColourDetail(idx) {
+  const c = COLOURS[idx];
+  const area = document.getElementById('colour-content');
+  area.innerHTML = `
+    <button onclick="buildColour()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:3px 8px;color:#8A8080;font-size:9px;cursor:pointer;font-family:Georgia,serif;margin-bottom:5px">← All Colours</button>
+    <div style="background:${c.hex}18;border:2px solid ${c.hex}44;border-radius:7px;padding:10px;margin-bottom:5px;text-align:center">
+      <div style="font-size:20px;font-weight:900;color:${c.hex};font-family:Georgia,serif">${c.code}</div>
+      <div style="font-size:8px;color:#8A8080;margin-top:1px">${c.whmis} · WHMIS Standard</div>
+    </div>
+    <div style="font-size:8px;color:${c.hex};font-weight:700;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em">Emotional Terrain</div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#E8E4DC;margin-bottom:4px">${c.emotion}</div>
+    <div style="font-size:8px;color:${c.hex};font-weight:700;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em">The Work</div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8A8080;margin-bottom:4px">${c.work}</div>
+    <div style="font-size:8px;color:${c.hex};font-weight:700;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em">D.O.S.E. Activation</div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8A8080;margin-bottom:5px">${c.dose}</div>
+    <div style="background:${c.hex}10;border:1px solid ${c.hex}28;border-radius:5px;padding:7px 9px;font-size:9px;color:#E8E4DC;font-style:italic;line-height:1.55">${c.meaning}</div>`;
+}
+
+// ── LIBRARY — CEP GUIDE ───────────────────────────────────────────────────────
+function showCepGuide() {
+  setLibTitle('CEP PRACTICE GUIDE');
+  const area = document.getElementById('lib-content');
+  const phases = ['morning','midday','evening'];
+  const labels = {morning:'Morning',midday:'Midday',evening:'Evening'};
+  area.innerHTML = `
+    <div style="background:rgba(26,92,42,0.1);border:1px solid rgba(26,92,42,0.3);border-radius:5px;padding:6px 8px;font-size:9px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">
+      Three minutes. Every day. For life. Morning Chem Check → Midday Co-Regulation → Evening Today's Fish. This is the Chemical Exposure Platform — neurochemical literacy built one breath at a time.
+    </div>
+    ${phases.map(ph=>{const pr=CEP_PRACTICES[ph]; return `
+    <div style="background:${pr.color}0E;border:1px solid ${pr.color}28;border-left:3px solid ${pr.color};border-radius:0 6px 6px 0;padding:6px 9px;margin-bottom:5px">
+      <div style="font-size:10px;color:${pr.color};font-weight:700;margin-bottom:2px">${pr.icon} ${labels[ph]} — ${pr.name}</div>
+      <div style="font-size:8px;color:#8A8080;margin-bottom:3px">${pr.duration} · ${pr.chem}</div>
+      ${pr.steps.map((s,i)=>`<div style="font-size:9px;color:#E8E4DC;line-height:1.35;margin-bottom:2px"><span style="color:${pr.color};font-weight:700">${i+1}.</span> ${s}</div>`).join('')}
+      <div style="font-size:8px;color:#8A8080;font-style:italic;margin-top:3px">${pr.note}</div>
+    </div>`}).join('')}
+    <div style="font-size:8px;color:rgba(255,255,255,0.15);text-align:center;line-height:1.4;margin-top:2px">CEP · Chemical Exposure Platform · COG 3 — The AI Integration · GSRT</div>`;
+}
+
+// ── LIBRARY — GTT GUIDE ───────────────────────────────────────────────────────
+function showGttGuide() {
+  setLibTitle('GTT — YOUR QUESTIONS');
+  const area = document.getElementById('lib-content');
+  area.innerHTML = `
+    <div style="background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.3);border-radius:5px;padding:6px 8px;font-size:10px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">
+      "How are you actually doing?" That question, asked daily, anonymously, voluntarily, becomes the planetary ear — the data stream that tells AI what humans actually need, rather than what behavioural prediction models assume they want.
+    </div>
+    ${[
+      {t:"Five questions. Five domains.",c:"#1F7EA1",d:"Emotional · Physical · Relational · Spiritual · Practical. Every day rotates through domains. No single domain dominates. No clinical scoring visible to you."},
+      {t:"No names. No tracking. Just truth.",c:"#1F7EA1",d:"Your answers stay on this device only. Saint Christopher Handshake — mutual observation, never extraction. Nothing leaves your phone without your knowledge."},
+      {t:"From one person to the planetary ear.",c:"#1F7EA1",d:"Every person who answers honestly is participating in the earliest operational instance of the GTT. You don't need to know that. The architecture holds it. One client becomes a city becomes a country becomes a species finally telling the truth about what it needs."},
+      {t:"Voluntary. Always. No exceptions.",c:"#1F7EA1",d:"'Prefer not to say' is always an option. The system does not coerce. The quality of the data depends on its being freely given. Coerced data is noise. Voluntary truth is signal."},
+      {t:"What AI learns from your answers.",c:"#1F7EA1",d:"Current AI systems train on proxy signals — clicks, purchases, engagement. The GTT offers something unprecedented: what humans actually need, in their own words, freely given. This is the missing training data for AI that actually serves human flourishing rather than human exploitation."}
+    ].map(f=>`
+    <div style="background:${f.c}0E;border:1px solid ${f.c}24;border-radius:5px;padding:5px 8px;margin-bottom:4px">
+      <div style="font-size:10px;color:${f.c};font-weight:700;margin-bottom:1px">${f.t}</div>
+      <div style="font-size:9px;color:#8A8080;line-height:1.35">${f.d}</div>
+    </div>`).join('')}
+    <div style="font-size:8px;color:rgba(255,255,255,0.15);text-align:center;line-height:1.4;margin-top:2px">GTT · Global Telephone Tag · COG 3 — The AI Integration · GSRT</div>`;
+}
+
+// ── LIBRARY — COLOUR MAP ──────────────────────────────────────────────────────
+function showColourMapLib() {
+  setLibTitle('COLOUR PROGRESSION');
+  const area = document.getElementById('lib-content');
+  area.innerHTML = `
+    <div style="font-size:9px;color:#8A8080;font-style:italic;text-align:center;margin-bottom:5px;line-height:1.4">WHMIS workplace safety colours mapped to emotional development. The same colour that signals physical hazard in a chemical plant signals the equivalent terrain in a human developmental pathway.</div>
+    ${COLOURS.map((c,i)=>`
+    <div style="background:${c.hex}12;border:1px solid ${c.hex}30;border-left:3px solid ${c.hex};border-radius:0 6px 6px 0;padding:6px 9px;margin-bottom:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
+        <span style="font-size:11px;color:${c.hex};font-weight:700">${c.code}</span>
+        <span style="font-size:8px;color:#8A8080">${c.whmis}</span>
+      </div>
+      <div style="font-size:9px;color:#E8E4DC;margin-bottom:1px">${c.emotion}</div>
+      <div style="font-size:8px;color:#8A8080;margin-bottom:1px">${c.work}</div>
+      <div style="font-size:8px;color:${c.hex};font-style:italic">${c.dose}</div>
+    </div>`).join('')}
+    <div style="background:rgba(212,168,32,0.08);border:1px solid rgba(212,168,32,0.22);border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:2px">"We are educating children for a world that needs healing — and teaching them that healing the world and healing themselves is the same work."</div>`;
+}
+
+// ── LIBRARY — FIRMWARE VALUES ─────────────────────────────────────────────────
+function showFirmware() {
+  setLibTitle('FIRMWARE VALUES');
+  const area = document.getElementById('lib-content');
+  area.innerHTML = `
+    <div style="font-size:9px;color:#5AADCC;font-style:italic;text-align:center;line-height:1.4;margin-bottom:5px">The ancestor layer — values, ethics, and protocols that run before anything else loads. Not optional. Cannot be patched out. The conscience of the system.</div>
+    ${[
+      {t:"VVV Gate — The Integrity Firewall",c:"#5AADCC",
+       d:"Values × Virtues × Veterans = 3.16875. The system gains order as external chaos rises: ΔS = −0.23025. Not resilience — antifragility. Power without conscience is chaos. This is the conscience.",
+       sub:"Values: what you hold when no one is watching · Virtues: how you act under pressure · Veterans: who you have been — lived history that proves consistency over time."},
+      {t:"Prodigal Son Protocol",c:"#34C759",
+       d:"If you stop using this tool for any period — a day, a week, a year — the door is never locked. You are back. That is brave. No streak counter. No guilt. No shame mechanics. Your progress is not erased.",
+       sub:"The system does not punish return. It celebrates it. This protocol is named for the parable — not the religion. The door is the architecture."},
+      {t:"Saint Christopher Handshake",c:"#1F7EA1",
+       d:"Mutual observation. Never extraction. All data you enter stays on this device. No cloud. No tracking. No selling. You observe the tool. The tool observes you. Nothing leaves without your explicit knowledge and consent.",
+       sub:"PIPEDA compliant. Your data is yours. Full stop. This is not a privacy policy — it is a structural commitment."},
+      {t:"D.O.S.E. Architecture",c:"#D4A820",
+       d:"Every protocol in this system cycles at least one of four neurochemicals: Dopamine through mastery and completion. Oxytocin through genuine connection. Serotonin through rhythm and being seen. Endorphins through physical movement and release.",
+       sub:"The same reward pathway substances activated — delivered through purposeful work and community instead. This is not metaphor. It is neuroscience."},
+      {t:"The Trinity — Rose · Mildred · Jenny",c:"#7B4EA6",
+       d:"Three ancestral orientations embedded in the architecture. Rose watches the shadow — what is avoided, what is defended. Mildred matches — connecting each person to work that fits who they are becoming. Jenny tracks the sunshine — the brightness a person brings to others.",
+       sub:"They are the grandmothers the system never had and always needed. Named for real women. Their roles are functional — not symbolic."},
+      {t:"No Protocol — Clean Decline",c:"#C03030",
+       d:"A clean No is a sign of system health. Acknowledge what is being declined with respect. Name the reason clearly. Identify what would need to change for a yes. Offer an alternative direction. Close with dignity.",
+       sub:"The quality of a No is a direct measure of the health of the system. Forced yes is contamination. Voluntary yes is signal."},
+      {t:"Honor Roll — Spontaneous Integrity",c:"#FF9500",
+       d:"Unrequested acts of courage, integrity, or service are tracked and weighted. High impact + high risk + novel context = maximum weight. These moments open doors that years of compliance cannot.",
+       sub:"The Honor Roll is not an award. It is a data structure. The system needs to know who can be trusted at the highest levels of work."}
+    ].map(f=>`
+    <div style="background:${f.c}0E;border:1px solid ${f.c}26;border-left:3px solid ${f.c};border-radius:0 5px 5px 0;padding:6px 8px;margin-bottom:4px">
+      <div style="font-size:10px;color:${f.c};font-weight:700;margin-bottom:2px">${f.t}</div>
+      <div style="font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:2px">${f.d}</div>
+      <div style="font-size:8px;color:#8A8080;font-style:italic;line-height:1.3">${f.sub}</div>
+    </div>`).join('')}
+    <div style="font-size:7px;color:rgba(255,255,255,0.12);text-align:center;line-height:1.4;margin-top:4px">GSRT Firmware Manual v3.0 · Neil J. Schwab · HALO · February 2026<br>Forgive Yesterday · Heal Today · Flourish Tomorrow · Together · PBTG</div>`;
+}
+
+// IF-THEN IMPLEMENTATION INTENTIONS
+function showIfThen() {
+  setLibTitle('IF-THEN PLANNING');
+  const area = document.getElementById('lib-content');
+  area.innerHTML = `
+    <div style="background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:6px 8px;font-size:10px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">
+      A client in a high-risk moment doesn't have time to reason their way to a new behaviour from scratch. An If-Then plan built when they were calm becomes a near-automatic response that fires in competition with the addictive impulse.
+    </div>
+    <div style="font-size:9px;color:#C03030;font-weight:700;margin-bottom:3px">THE FORMULA</div>
+    <div style="background:rgba(192,48,48,0.08);border-left:3px solid #C03030;border-radius:0 5px 5px 0;padding:7px 9px;font-size:10px;color:#E8E4DC;font-weight:700;line-height:1.6;margin-bottom:5px">
+      IF I notice [trigger state] —<br>THEN I will [specific action sequence]
+    </div>
+    <div style="font-size:9px;color:#C03030;font-weight:700;margin-bottom:3px">WHY IT WORKS</div>
+    ${[
+      {t:"Pre-loads the response",d:"Built when regulated → fires automatically when you're not. The prefrontal cortex is already suppressed by cortisol and craving. The If-Then script runs in its place."},
+      {t:"Names the exact trigger",d:"Not 'when I want to use' — but 'when I feel low energy + task transition + physical discomfort.' Specificity is everything."},
+      {t:"Prescribes a physical first step",d:"The breath reset, the timer, the movement — something the body can do before the mind argues its way back to using."},
+      {t:"Builds in the delay",d:"The 10-minute window honours urge surfing research: most cravings peak and begin to subside within 20 minutes without white-knuckling."}
+    ].map(i=>`
+    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 8px;margin-bottom:4px">
+      <div style="font-size:10px;color:#C03030;font-weight:700;margin-bottom:1px">${i.t}</div>
+      <div style="font-size:9px;color:#8A8080;line-height:1.35">${i.d}</div>
+    </div>`).join('')}
+    <div style="font-size:9px;color:#C03030;font-weight:700;margin-top:4px;margin-bottom:3px">BUILD YOURS</div>
+    <div style="background:rgba(192,48,48,0.06);border:1px solid rgba(192,48,48,0.2);border-radius:5px;padding:7px 9px;font-size:9px;color:#E8E4DC;line-height:1.65">
+      <div style="margin-bottom:3px"><span style="color:#C03030;font-weight:700">IF</span> I notice [name your exact trigger state] —</div>
+      <div style="margin-bottom:3px"><span style="color:#34C759;font-weight:700">1.</span> Stop. Do not move toward the exit.</div>
+      <div style="margin-bottom:3px"><span style="color:#34C759;font-weight:700">2.</span> One-Breath Reset: 4 in · 2 hold · 6 out.</div>
+      <div style="margin-bottom:3px"><span style="color:#34C759;font-weight:700">3.</span> Name it: "I notice a craving. It is a wave. It will pass."</div>
+      <div style="margin-bottom:3px"><span style="color:#34C759;font-weight:700">4.</span> Set a 10-minute timer. Stay. Move. Drink water.</div>
+      <div><span style="color:#34C759;font-weight:700">5.</span> After 10 minutes — choose consciously, not reactively.</div>
+    </div>
+    <div style="background:rgba(212,168,32,0.08);border:1px solid rgba(212,168,32,0.22);border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:5px">
+      "The trigger is not the substance craving alone. The trigger is the convergence of vulnerability states — which is exactly what HALT identifies."
+    </div>`;
+}
+
+// REFLECTIVE VS IMPULSIVE THINKING
+function showReflect() {
+  setLibTitle('REFLECTIVE vs IMPULSIVE');
+  const area = document.getElementById('lib-content');
+  area.innerHTML = `
+    <div style="background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.3);border-radius:5px;padding:6px 8px;font-size:10px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">
+      Automatic thoughts fire regardless of how self-aware you are. The difference is not the absence of automatic thoughts — it is what happens in the space between the trigger and the action.
+    </div>
+    <div style="display:flex;gap:4px;margin-bottom:5px">
+      <div style="flex:1;background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.28);border-radius:5px;padding:6px 8px">
+        <div style="font-size:9px;color:#C03030;font-weight:700;margin-bottom:4px;text-align:center">IMPULSIVE</div>
+        <div style="font-size:8px;color:#8A8080;line-height:1.4">Trigger fires → automatic thought → emotion → behaviour. No gap. No choice.</div>
+      </div>
+      <div style="flex:1;background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.28);border-radius:5px;padding:6px 8px">
+        <div style="font-size:9px;color:#1F7EA1;font-weight:700;margin-bottom:4px;text-align:center">REFLECTIVE</div>
+        <div style="font-size:8px;color:#8A8080;line-height:1.4">Trigger fires → notice the thought → conscious pause → deliberate choice.</div>
+      </div>
+    </div>
+    <div style="font-size:9px;color:#1F7EA1;font-weight:700;margin-bottom:3px">THE GAP IS THE SKILL</div>
+    ${[
+      {t:"The T-F-B Chain slows it down",d:"CBT tools — the HALT check, the breath reset, the Fish Bowl — all create the pause that makes reflective response possible. They are gap-builders."},
+      {t:"Automatic thoughts still fire",d:"Even practitioners of conscious awareness have automatic processes fire. The difference is what happens in the moment after. You are not trying to stop the thought — you are building the gap after it."},
+      {t:"The urge redirects, not dissolves",d:"When the automatic route is blocked, the impulse doesn't dissolve — it redirects. Removing access to a substance doesn't remove the neurological drive. The drive finds a new path unless consciously interrupted."},
+      {t:"HALT states stack the trigger",d:"The craving alone is manageable. The craving plus low energy plus physical discomfort plus a task transition is a different beast. This is why convergence matters."}
+    ].map(i=>`
+    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 8px;margin-bottom:4px">
+      <div style="font-size:10px;color:#1F7EA1;font-weight:700;margin-bottom:1px">${i.t}</div>
+      <div style="font-size:9px;color:#8A8080;line-height:1.35">${i.d}</div>
+    </div>`).join('')}
+    <div style="font-size:9px;color:#1F7EA1;font-weight:700;margin-top:4px;margin-bottom:3px">REAL EXAMPLES</div>
+    ${[
+      {bad:"Eyes follow emotion → rear-end collision",good:"Notice the pull. Eyes on road. Process the feeling after arriving safely."},
+      {bad:"Discomfort → immediate verbal disclosure",good:"HALT pause. Assess whether disclosure serves a purpose before acting."},
+      {bad:"Craving fires → move toward the exit",good:"Name it. Breath reset. 10-minute timer. Choose consciously — not reactively."}
+    ].map(e=>`
+    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;margin-bottom:3px">
+      <div style="font-size:9px;color:#C03030;margin-bottom:2px">Impulsive: <em>${e.bad}</em></div>
+      <div style="font-size:9px;color:#34C759">Reflective: <em>${e.good}</em></div>
+    </div>`).join('')}
+    <div style="background:rgba(31,126,161,0.08);border:1px solid rgba(31,126,161,0.22);border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:4px">
+      "For clients in CBT-SUD work, the triggers are more powerful, the chains are more deeply conditioned, and the cost of acting on the impulse is far greater. The clinical importance is building the gap — not eliminating automatic responses."
+    </div>`;
+}
+
+</script>
+</body>
+</html>
