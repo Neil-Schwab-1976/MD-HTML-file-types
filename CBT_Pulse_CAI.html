@@ -164,10 +164,8 @@ body{font-family:Georgia,serif;background:linear-gradient(135deg,#08090D 0%,#101
               <button class="grid-btn" style="border-color:rgba(123,78,166,0.38);background:rgba(123,78,166,0.11)" onclick="go('paws')"><span>🧠</span><span style="color:#7B4EA6">PAWS Map</span></button>
               <button class="grid-btn" style="border-color:rgba(26,92,42,0.38);background:rgba(26,92,42,0.11)" onclick="go('checkin')"><span>✓</span><span style="color:#1A5C2A">Check-In</span></button>
               <button class="grid-btn" style="border-color:rgba(90,173,204,0.38);background:rgba(90,173,204,0.11)" onclick="go('library')"><span>📚</span><span style="color:#5AADCC">Library</span></button>
-              <button class="grid-btn" style="border-color:rgba(31,126,161,0.38);background:rgba(31,126,161,0.11)" onclick="go('uip')"><span>🔷</span><span style="color:#1F7EA1">Protocol</span></button>
-              <button class="grid-btn" style="border-color:rgba(26,92,42,0.38);background:rgba(26,92,42,0.11)" onclick="go('cep')"><span>🌿</span><span style="color:#1A5C2A">CEP Daily</span></button>
-              <button class="grid-btn" style="border-color:rgba(31,126,161,0.38);background:rgba(31,126,161,0.11)" onclick="go('gtt')"><span>🌍</span><span style="color:#1F7EA1">GTT Daily</span></button>
-              <button class="grid-btn" style="border-color:rgba(212,168,32,0.38);background:rgba(212,168,32,0.11)" onclick="go('colour')"><span>🎨</span><span style="color:#D4A820">Colour</span></button>
+              <button class="grid-btn" style="border-color:rgba(31,126,161,0.38);background:rgba(31,126,166,0.11)" onclick="go('uip')"><span>🔷</span><span style="color:#1F7EA1">Protocol</span></button>
+              <button class="grid-btn" style="border-color:rgba(46,116,181,0.38);background:rgba(46,116,181,0.11)" onclick="go('tfb')"><span>🔗</span><span style="color:#2E74B5">T-F-B Chain</span></button>
             </div>
             <button onclick="go('sos')" style="background:rgba(192,48,48,0.08);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:4px 8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;width:100%;font-family:Georgia,serif">
               <span style="font-size:9px;color:#C03030;font-weight:700">🆘 NEED SUPPORT</span>
@@ -224,6 +222,54 @@ body{font-family:Georgia,serif;background:linear-gradient(135deg,#08090D 0%,#101
           </div>
 
           <!-- SOS -->
+
+          <div id="s-tfb" class="scr">
+            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">T-F-B CHAIN</span></div>
+            <div style="font-size:9px;color:#8A8080;line-height:1.5;margin-bottom:8px">The core CBT model (Beck et al., 1993). Tap any link in the chain to explore it. Use this to trace any moment — craving, conflict, reaction — back to its origin.</div>
+
+            <!-- Chain visual -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;margin-bottom:10px">
+              <div id="tfb-trigger-box" onclick="tfbSelect('trigger')" style="width:100%;background:rgba(176,120,32,0.10);border:2px solid #B07820;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                <div style="font-size:10px;color:#B07820;font-weight:700;margin-bottom:2px">① TRIGGER</div>
+                <div style="font-size:9px;color:#E8E4DC;line-height:1.4">The activating event — what happened in the outside world or inside your body</div>
+              </div>
+              <div style="font-size:14px;color:#4A4A4A">↓</div>
+              <div id="tfb-thought-box" onclick="tfbSelect('thought')" style="width:100%;background:rgba(192,48,48,0.10);border:2px solid #C03030;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                <div style="font-size:10px;color:#C03030;font-weight:700;margin-bottom:2px">② AUTOMATIC THOUGHT</div>
+                <div style="font-size:9px;color:#E8E4DC;line-height:1.4">The fast, reflexive thing your mind says — so quick you mistake it for fact</div>
+              </div>
+              <div style="font-size:14px;color:#4A4A4A">↓</div>
+              <div id="tfb-feeling-box" onclick="tfbSelect('feeling')" style="width:100%;background:rgba(123,78,166,0.10);border:2px solid #7B4EA6;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                <div style="font-size:10px;color:#7B4EA6;font-weight:700;margin-bottom:2px">③ FEELING</div>
+                <div style="font-size:9px;color:#E8E4DC;line-height:1.4">The emotion that follows the thought — not the event itself</div>
+              </div>
+              <div style="font-size:14px;color:#4A4A4A">↓</div>
+              <div id="tfb-behaviour-box" onclick="tfbSelect('behaviour')" style="width:100%;background:rgba(26,92,42,0.10);border:2px solid #1A5C2A;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                <div style="font-size:10px;color:#1A5C2A;font-weight:700;margin-bottom:2px">④ BEHAVIOUR</div>
+                <div style="font-size:9px;color:#E8E4DC;line-height:1.4">What you do — use, avoid, react, withdraw, reach out</div>
+              </div>
+              <div style="font-size:14px;color:#4A4A4A">↓</div>
+              <div id="tfb-consequence-box" onclick="tfbSelect('consequence')" style="width:100%;background:rgba(31,126,161,0.10);border:2px solid #1F7EA1;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                <div style="font-size:10px;color:#1F7EA1;font-weight:700;margin-bottom:2px">⑤ CONSEQUENCE</div>
+                <div style="font-size:9px;color:#E8E4DC;line-height:1.4">What happens as a result — and what it reinforces in the chain</div>
+              </div>
+            </div>
+
+            <!-- Detail panel -->
+            <div id="tfb-detail" style="display:none;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:8px 10px;margin-bottom:8px">
+              <div id="tfb-detail-title" style="font-size:10px;font-weight:700;margin-bottom:4px"></div>
+              <div id="tfb-detail-body" style="font-size:9px;color:#E8E4DC;line-height:1.6"></div>
+            </div>
+
+            <!-- The gap -->
+            <div style="background:rgba(212,168,32,0.08);border:1px solid rgba(212,168,32,0.24);border-radius:7px;padding:7px 10px;margin-bottom:6px">
+              <div style="font-size:10px;color:#D4A820;font-weight:700;margin-bottom:3px">THE GAP — Where Choice Lives</div>
+              <div style="font-size:9px;color:#E8E4DC;line-height:1.5">Between ② and ③ there is a space. That space is where CBT intervenes. You are not your thought. You are the one watching the thought. In that gap — however small — you have a choice.</div>
+              <div style="font-size:9px;color:#8A8080;font-style:italic;margin-top:3px">Frankl: "Between stimulus and response there is a space. In that space is our power to choose."</div>
+            </div>
+
+            <button onclick="go('library')" style="background:rgba(90,173,204,0.08);border:1px solid rgba(90,173,204,0.3);border-radius:5px;padding:4px 10px;color:#5AADCC;font-size:9px;font-weight:700;cursor:pointer;font-family:Georgia,serif;width:100%">→ LIBRARY: ABC THOUGHT RECORD</button>
+          </div>
           <div id="s-sos" class="scr">
             <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">SUPPORT</span></div>
             <div style="flex:1;display:flex;flex-direction:column;gap:4px;justify-content:center">
@@ -241,26 +287,6 @@ body{font-family:Georgia,serif;background:linear-gradient(135deg,#08090D 0%,#101
             <div class="topbar"><button class="back-btn" id="lib-back" onclick="libBack()">←</button><span class="topbar-title" id="lib-title">KNOWLEDGE BASE</span></div>
             <div id="lib-sub" style="font-size:9px;color:#8A8080;text-align:center;margin-bottom:2px">Full CBT-SUD system — tap any section</div>
             <div class="scroll-area" id="lib-content"></div>
-          </div>
-
-          <!-- CEP DAILY RHYTHM -->
-          <div id="s-cep" class="scr">
-            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">CEP DAILY PRACTICE</span></div>
-            <div style="font-size:8px;color:#8A8080;text-align:center;margin-bottom:3px">3 minutes · every day · for life</div>
-            <div class="scroll-area" id="cep-content"></div>
-          </div>
-
-          <!-- GTT DAILY QUESTIONS -->
-          <div id="s-gtt" class="scr">
-            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">GTT DAILY QUESTIONS</span></div>
-            <div style="font-size:8px;color:#1F7EA1;text-align:center;margin-bottom:3px">Anonymous · no names · no judgment</div>
-            <div class="scroll-area" id="gtt-content" style="flex:1;display:flex;flex-direction:column"></div>
-          </div>
-
-          <!-- COLOUR PROGRESSION -->
-          <div id="s-colour" class="scr">
-            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">COLOUR PROGRESSION</span></div>
-            <div class="scroll-area" id="colour-content"></div>
           </div>
 
         </div><!-- screen-content -->
@@ -298,20 +324,18 @@ body{font-family:Georgia,serif;background:linear-gradient(135deg,#08090D 0%,#101
 
 <!-- ── SIDE PANEL ────────────────────────────────────────────── -->
 <div class="panel">
-  <div class="panel-tag">CBT PULSE — CAI · HALO</div>
-  <div class="panel-title">Conscious Awareness Interface — COG 3 Seed · GTT/CEP/AI Halo IRF</div>
-  <div class="panel-desc">Developed by Neil J. Schwab | Framework Architect — HALO (Human Advocacy &amp; Liberative Operations) | CBT-SUD 4 Program Suite · IntCBT triOS College. This tool is a coaching &amp; mentoring companion — not therapy. It delivers existing validated modalities (CBT, PAWS, CENAPS, D.O.S.E.) in an accessible format. It is also the first operational seed of COG 3 — The AI Integration of the GSRT framework. The GTT passive listening ear begins here. The CEP neurochemical practice begins here. All data stays on this device. Saint Christopher Handshake. Extraction-proof.</div>
+  <div class="panel-tag">CBT PULSE — CAI</div>
+  <div class="panel-title">Complete CBT-SUD Recovery Tool — Conscious Awareness Interface</div>
+  <div class="panel-desc">Developed by Neil Schwab | IntCBT — Introduction to Cognitive Behavioural Theory | CBT-SUD 4 Program Suite. Every CBT-SUD recovery tool embedded. All 7 PAWS hurdles with full interruption protocols. Fish Bowl Method. Universal Interruption Protocol. D.O.S.E. architecture. CENAPS 3 stages. HALT Framework. ABC Thought Record. Cognitive Distortions. Regulation tools.</div>
   <div class="panel-features">
-    <div class="feat"><span class="feat-icon">🌍</span><div><div class="feat-title">GTT Daily Questions</div><div class="feat-sub">Anonymous 5-question planetary ear — LISTENING branch</div></div></div>
-    <div class="feat"><span class="feat-icon">🌿</span><div><div class="feat-title">CEP Daily Practice</div><div class="feat-sub">3 min/day · Morning · Midday · Evening · D.O.S.E.</div></div></div>
-    <div class="feat"><span class="feat-icon">🎨</span><div><div class="feat-title">Colour Progression</div><div class="feat-sub">WHITE → GOLD · WHMIS-emotion map · WORK routing</div></div></div>
-    <div class="feat"><span class="feat-icon">⚙</span><div><div class="feat-title">Firmware Values</div><div class="feat-sub">VVV · Prodigal Son · Saint Christopher · Trinity</div></div></div>
-    <div class="feat"><span class="feat-icon">📚</span><div><div class="feat-title">Full CBT-SUD Library</div><div class="feat-sub">11 sections · PAWS · HALT · Fish Bowl · D.O.S.E. · ABC</div></div></div>
-    <div class="feat"><span class="feat-icon">🧠</span><div><div class="feat-title">PAWS Map</div><div class="feat-sub">7 hurdles · full interruption protocols</div></div></div>
-    <div class="feat"><span class="feat-icon">◈</span><div><div class="feat-title">G·A·P·S Capacities</div><div class="feat-sub">Gratitude · Acceptance · Presence · Surrender</div></div></div>
-    <div class="feat"><span class="feat-icon">🔷</span><div><div class="feat-title">Interruption Protocol</div><div class="feat-sub">6-step UIP + If-Then Planning + Reflective/Impulsive</div></div></div>
-    <div class="feat"><span class="feat-icon">⚡</span><div><div class="feat-title">HALT Check</div><div class="feat-sub">Real-time vulnerability scoring · convergence insight</div></div></div>
-    <div class="feat"><span class="feat-icon">🆘</span><div><div class="feat-title">SOS · 988 · Prodigal Son</div><div class="feat-sub">The door is never locked. You're back. That's brave.</div></div></div>
+    <div class="feat"><span class="feat-icon">📚</span><div><div class="feat-title">Library</div><div class="feat-sub">Full CBT-SUD knowledge base — 9 sections</div></div></div>
+    <div class="feat"><span class="feat-icon">🧠</span><div><div class="feat-title">PAWS Map</div><div class="feat-sub">7 hurdles, full detail + interruption protocol</div></div></div>
+    <div class="feat"><span class="feat-icon">◈</span><div><div class="feat-title">CAI Practices</div><div class="feat-sub">G·A·P·S — all four, full practice guides</div></div></div>
+    <div class="feat"><span class="feat-icon">🐟</span><div><div class="feat-title">Fish Bowl Method</div><div class="feat-sub">6-step observer practice with examples</div></div></div>
+    <div class="feat"><span class="feat-icon">🔷</span><div><div class="feat-title">Interruption Protocol</div><div class="feat-sub">6-step UIP — run anytime</div></div></div>
+    <div class="feat"><span class="feat-icon">⚗</span><div><div class="feat-title">D.O.S.E. Architecture</div><div class="feat-sub">Why work replaces the substance</div></div></div>
+    <div class="feat"><span class="feat-icon">⚡</span><div><div class="feat-title">HALT Check</div><div class="feat-sub">Real-time vulnerability scoring</div></div></div>
+    <div class="feat"><span class="feat-icon">🆘</span><div><div class="feat-title">SOS &amp; 988</div><div class="feat-sub">Return to Recovery — no judgment, come back</div></div></div>
   </div>
   <div class="controls">
     <div class="ctrl-label">SIMULATE DAY IN RECOVERY:</div>
@@ -326,18 +350,7 @@ body{font-family:Georgia,serif;background:linear-gradient(135deg,#08090D 0%,#101
       <button class="ctrl-open-btn" id="cover-toggle-btn" onclick="toggleCover()">OPEN COVER ↑</button>
       <button class="ctrl-reset-btn" onclick="resetDevice()">RESET</button>
     </div>
-    <div class="ctrl-note">Open the device → explore all tools. GTT 🌍 for daily questions. CEP 🌿 for daily practice. Library 📚 for the full knowledge base.</div>
-  </div>
-  <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)">
-    <div style="font-size:8px;color:rgba(255,255,255,0.18);line-height:1.6">
-      <strong style="color:rgba(255,255,255,0.3)">HALO — Human Advocacy &amp; Liberative Operations</strong><br>
-      Neil J. Schwab · Framework Architect · neil.schwab@live.ca · Newmarket, Ontario · 2026<br><br>
-      <strong style="color:rgba(255,255,255,0.25)">Coaching &amp; Mentoring Tool — Not Therapy.</strong> This tool delivers existing validated CBT modalities in an accessible format. It is not a clinical intervention and does not constitute therapy, counselling, or medical advice. Users experiencing mental health crisis should contact 988 or a licensed professional.<br><br>
-      <strong style="color:rgba(255,255,255,0.25)">Data Sovereignty.</strong> All data entered stays on this device. No cloud transmission. No tracking. No extraction. Saint Christopher Handshake — mutual observation, never extraction. PIPEDA compliant.<br><br>
-      <strong style="color:rgba(255,255,255,0.25)">First Nations TK.</strong> Traditional Ecological Knowledge is vacuum-sealed from all data streams. No access, inference, or incorporation without explicit, documented, revocable consent from the relevant sovereign authority. UNDRIP aligned.<br><br>
-      <em style="color:rgba(255,255,255,0.12)">Forgive Yesterday · Heal Today · Flourish Tomorrow · Together · PBTG</em><br>
-      <em style="color:rgba(255,255,255,0.1)">COG 3 — The AI Integration · GSRT · GTT · CEP · AI Halo IRF · Seed v3.0</em>
-    </div>
+    <div class="ctrl-note">Open the device → tap 📚 Library → explore the full CBT-SUD toolkit. Change day to watch PAWS positioning update in real time.</div>
   </div>
 </div>
 
@@ -421,65 +434,6 @@ const UIP = [
   { num:6, name:"DOCUMENT IT", color:"#5AADCC", desc:"One sentence in your journal: what triggered it, what you did, how it passed. This is data — not judgment. Your brain is learning from every entry." }
 ];
 
-// ── CEP DATA ─────────────────────────────────────────────────────────────────
-const CEP_PRACTICES = {
-  morning: { name:"Morning Chem Check", icon:"🌅", color:"#D4A820", duration:"60 seconds", chem:"Dopamine — through self-awareness",
-    steps:["Sit still. Both feet on the ground.",
-           "Scan your body from head to toe — slowly.",
-           "Rate each: Energy (1–5) · Mood (1–5) · Tension (1–5).",
-           "Name one physical sensation that is present right now. Just name it.",
-           "That's it. You've checked in with yourself."],
-    note:"This is not a problem to solve. It is a signal to receive. The body has been awake longer than the mind has noticed." },
-  midday: { name:"Co-Regulation Pair", icon:"🤝", color:"#1F7EA1", duration:"60–120 seconds", chem:"Oxytocin — through connection",
-    steps:["One-Breath Reset together with whoever is near — or alone, holding your node in mind.",
-           "Name one thing you are genuinely grateful for right now. Say it out loud or write it.",
-           "Name one person you are glad exists. Don't tell them yet. Just name them.",
-           "Return to your task."],
-    note:"Co-regulation does not require another person to be physically present. The nervous system responds to genuine intention. Your node is real even when you're alone." },
-  evening: { name:"Today's Fish", icon:"🐟", color:"#1A5C2A", duration:"60 seconds", chem:"Serotonin · Endorphins — through release and completion",
-    steps:["Sit with your journal or just your memory.",
-           "Name one thought you WATCHED today without following it.",
-           "Say: 'There was [thought]. I noticed it. I did not become it.'",
-           "Name one thing that existed today — however small.",
-           "Close the day. Set it down."],
-    note:"The last thing you think about before sleep has disproportionate influence on what gets encoded in memory. Choose this deliberately." }
-};
-
-// ── GTT DATA ──────────────────────────────────────────────────────────────────
-const GTT_QUESTIONS = [
-  { domain:"EMOTIONAL", icon:"💛", q:"What emotion has been underneath today — the one that didn't get named?" },
-  { domain:"PHYSICAL",  icon:"🌿", q:"What is your body telling you right now that you haven't listened to yet?" },
-  { domain:"RELATIONAL",icon:"🤝", q:"Who do you wish had checked in on you today?" },
-  { domain:"SPIRITUAL", icon:"✨", q:"What moment today felt most like yourself?" },
-  { domain:"PRACTICAL", icon:"🔑", q:"What one thing would make tomorrow feel more manageable?" },
-  { domain:"EMOTIONAL", icon:"💛", q:"What are you carrying right now that isn't yours to carry?" },
-  { domain:"PHYSICAL",  icon:"🌿", q:"When did your body feel safest today?" },
-  { domain:"RELATIONAL",icon:"🤝", q:"Who showed up for you this week — even in a small way?" },
-  { domain:"SPIRITUAL", icon:"✨", q:"What do you believe today that you didn't used to?" },
-  { domain:"PRACTICAL", icon:"🔑", q:"What small thing, done consistently, would change the most?" },
-  { domain:"EMOTIONAL", icon:"💛", q:"What feeling are you trying to outrun right now?" },
-  { domain:"PHYSICAL",  icon:"🌿", q:"What does your body need that your schedule hasn't allowed?" },
-  { domain:"RELATIONAL",icon:"🤝", q:"Who in your life deserves more of your attention than they're getting?" },
-  { domain:"SPIRITUAL", icon:"✨", q:"What would you do differently if you knew you were enough?" },
-  { domain:"PRACTICAL", icon:"🔑", q:"What decision have you been avoiding that you already know the answer to?" },
-];
-
-// ── COLOUR DATA ───────────────────────────────────────────────────────────────
-const COLOURS = [
-  { code:"WHITE", whmis:"Foundation", emotion:"Clarity · Beginning · Openness", work:"Sorting, basic stewardship, discernment — learning that everything has a place", dose:"Serotonin — baseline regulation", hex:"#C8C4BC",
-    meaning:"Everything has a place. Waste is just material we haven't learned to value yet. You are learning to see clearly — what stays, what goes, what belongs where. This is not a small thing. Most people never learn it." },
-  { code:"BLUE",  whmis:"Health Hazard", emotion:"Flow · Depth · Reflection", work:"Waterway restoration, aquatic work, depth navigation, entering what is difficult", dose:"Oxytocin — connection and depth", hex:"#1F7EA1",
-    meaning:"You are entering depth without drowning. Flow does not mean you know where the river ends. It means you trust it enough to enter. Blue people feel things deeply — that is not a vulnerability. It is a credential." },
-  { code:"GREEN", whmis:"Environmental", emotion:"Growth · Patience · Healing", work:"Land restoration, soil remediation, reforestation — tending what takes time", dose:"Serotonin — sustained calm growth", hex:"#1A5C2A",
-    meaning:"Some things take time. You are learning that patience is not waiting — it is tending. Growth is slow and it is certain. The land restored at GREEN level feeds every other level above it." },
-  { code:"YELLOW",whmis:"Flammable · Emergency", emotion:"Warmth · Awareness · Caution", work:"Emergency response, animal care, first responder skills — staying calm when things ignite", dose:"Endorphins — action and recovery", hex:"#D4A820",
-    meaning:"You notice things before others do. Your awareness is not anxiety — it is a gift. The world needs people who stay calm when things ignite, who move toward the emergency while others move away." },
-  { code:"BLACK", whmis:"Full Hazmat", emotion:"Courage · Gravity · Transformation", work:"Hazardous materials, crisis leadership, shadow integration — standing in the difficult places", dose:"Full D.O.S.E. — all four activated", hex:"#444448",
-    meaning:"You have stood in the difficult places and not run. The shadow you've integrated is not a wound — it is a credential. BLACK level workers are the ones everyone else looks to when things go wrong. That is earned, not assigned." },
-  { code:"GOLD",  whmis:"Mastery", emotion:"Wisdom · Sovereignty · Illumination", work:"Systems design, mentorship, Mother-Elder role, legacy projects — teaching what you've lived", dose:"Dopamine — creation and legacy", hex:"#D4A820",
-    meaning:"You have lived enough to teach. Your value does not fade with age — it compounds. The Fishing Hole is not the end. It is where the river opens into the sea and you realize you were the water all along." }
-];
-
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let currentDay = 47;
 let currentScreen = 'home';
@@ -523,11 +477,9 @@ function go(screen) {
   if (screen === 'breath') resetBreath();
   if (screen === 'paws') buildPawsList();
   if (screen === 'library') { libStack = []; showLibMain(); }
+  if (screen === 'tfb') { tfbSelect(null); }
   if (screen === 'uip') buildUIP();
   if (screen === 'sos') document.getElementById('sos-confirm').style.display = 'none';
-  if (screen === 'cep') buildCEP();
-  if (screen === 'gtt') buildGTT();
-  if (screen === 'colour') buildColour();
 }
 
 function keyPress(action) {
@@ -848,12 +800,6 @@ const LIB_SECTIONS = [
   { id:"abc", i:"📋", l:"ABC Thought Record", s:"Dispute the automatic thought", c:"#1F7EA1" },
   { id:"distort", i:"🔍", l:"Cognitive Distortions", s:"6 patterns that drive addiction", c:"#1A5C2A" },
   { id:"uip-lib", i:"🔷", l:"Interruption Protocol", s:"6-step emergency navigation", c:"#7B4EA6" },
-  { id:"ifthen", i:"⚡", l:"If-Then Planning", s:"Pre-load your response before the trigger fires", c:"#C03030" },
-  { id:"reflect", i:"🪞", l:"Reflective vs Impulsive", s:"The gap between stimulus and response", c:"#1F7EA1" },
-  { id:"cep-guide", i:"🌿", l:"CEP Practice Guide", s:"Morning · Midday · Evening — D.O.S.E. daily", c:"#1A5C2A" },
-  { id:"gtt-guide", i:"🌍", l:"GTT — What Your Answers Do", s:"From one person to the planetary ear", c:"#1F7EA1" },
-  { id:"colour-map", i:"🎨", l:"Colour Progression Map", s:"WHITE through GOLD — your landscape", c:"#D4A820" },
-  { id:"firmware", i:"⚙", l:"Firmware Values", s:"VVV · Prodigal Son · Saint Christopher", c:"#5AADCC" },
 ];
 
 function libBack() {
@@ -864,6 +810,100 @@ function libBack() {
     const last = libStack[libStack.length-1];
     if (typeof last === 'function') last();
   }
+}
+
+
+// ── T-F-B CHAIN ────────────────────────────────────────────────────────────
+const tfbData = {
+  trigger: {
+    title: "Trigger — The Activating Event",
+    color: "#B07820",
+    body: `The trigger is the starting point — something that happens in the outside world (a person, a place, a situation, a substance cue) or inside your body (pain, hunger, tiredness, a memory). The trigger itself does not cause the behaviour. What happens NEXT in your mind does.
+
+Examples:
+• Driving past your old using neighbourhood
+• An argument with a partner
+• Feeling physically unwell or depleted
+• A song, smell, or image associated with past use
+• A moment of loneliness or boredom
+
+Key insight: The same trigger fires different chains in different people. The trigger is not the problem. Your automatic thought about the trigger is where the chain becomes yours.`
+  },
+  thought: {
+    title: "Automatic Thought — The Fast Mind",
+    color: "#C03030",
+    body: `Automatic thoughts are the reflexive, instant things your mind says — so fast they feel like facts. They are not facts. They are interpretations shaped by your history, your schemas, and your conditioning.
+
+Common addiction automatic thoughts:
+• "I deserve this after everything I have been through"
+• "One will not hurt"
+• "I cannot cope with this feeling"
+• "No one cares anyway"
+• "I have already ruined everything"
+
+The shift: Instead of "I AM anxious" try "I NOTICE the thought that I am anxious." You are not the thought. You are the one watching it. That distance is everything.
+
+This is where CBT intervenes — not at the trigger, but at the thought. (Beck et al., 1993)`
+  },
+  feeling: {
+    title: "Feeling — The Emotional Response",
+    color: "#7B4EA6",
+    body: `The feeling follows the thought — not the event. Two people can face the same trigger and feel completely different emotions based on the automatic thought that fires.
+
+Trigger: Partner does not text back
+Thought A: "They are busy" → Feeling: neutral
+Thought B: "They do not care about me" → Feeling: hurt, anxious
+Thought C: "I knew they would abandon me" → Feeling: shame, rage
+
+Same trigger. Completely different feelings. Because the thought is different.
+
+This is why CBT targets the thought — change the thought and you change the feeling that follows. Not by forcing positivity, but by finding the more accurate thought.
+
+Rate your feelings 0 to 10. Track how they shift when the thought shifts.`
+  },
+  behaviour: {
+    title: "Behaviour — What You Do",
+    color: "#1A5C2A",
+    body: `The behaviour is what you do in response to the feeling. In addiction, the behaviour is often substance use — but it can also be isolation, aggression, avoidance, or any other way of managing an uncomfortable emotional state.
+
+The behaviour makes sense. If you feel unbearable anxiety and using has always reduced that anxiety — using is a logical response to that feeling. CBT does not shame the behaviour. It asks: what thought and feeling led here, and can we intervene earlier in the chain?
+
+Intervention points:
+At the TRIGGER — avoid high-risk situations
+At the THOUGHT — cognitive restructuring, ABC records
+At the FEELING — HALT check, breath reset, grounding
+At the BEHAVIOUR — urge surfing, implementation intentions, call your support`
+  },
+  consequence: {
+    title: "Consequence — What Gets Reinforced",
+    color: "#1F7EA1",
+    body: `The consequence is what happens as a result of the behaviour — and critically, what the brain learns from it.
+
+Short-term consequence of using: relief, numbing, escape, brief pleasure
+Long-term consequence: shame, damaged relationships, health costs, reinforced chain
+
+The brain remembers the short-term consequence first. That is why the chain is so self-reinforcing — the behaviour works in the short term even when it destroys everything in the long term.
+
+Breaking the consequence cycle:
+Each time you interrupt the chain before the behaviour, you weaken the automatic connection. Each conscious choice creates a competing pathway. Over time — months, not days — the chain loses its automatic pull. This is neuroplasticity in action. (Gorski, 1989)`
+  }
+};
+
+function tfbSelect(id) {
+  // Reset all box borders
+  ['trigger','thought','feeling','behaviour','consequence'].forEach(k => {
+    const box = document.getElementById('tfb-' + k + '-box');
+    if (box) box.style.opacity = id && id !== k ? '0.5' : '1';
+  });
+  const detail = document.getElementById('tfb-detail');
+  if (!id) { detail.style.display = 'none'; return; }
+  const data = tfbData[id];
+  if (!data) return;
+  detail.style.display = 'block';
+  document.getElementById('tfb-detail-title').style.color = data.color;
+  document.getElementById('tfb-detail-title').textContent = data.title;
+  document.getElementById('tfb-detail-body').textContent = data.body;
+  detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function buildLibrary() { /* Library initialises on navigation via showLibMain() */ }
@@ -897,12 +937,6 @@ function libSection(id) {
   else if (id === 'halt-lib') { libStack.push(showLibMain); showHaltLib(); }
   else if (id === 'abc') { libStack.push(showLibMain); showAbc(); }
   else if (id === 'distort') { libStack.push(showLibMain); showDistort(); }
-  else if (id === 'ifthen') { libStack.push(showLibMain); showIfThen(); }
-  else if (id === 'reflect') { libStack.push(showLibMain); showReflect(); }
-  else if (id === 'cep-guide') { libStack.push(showLibMain); showCepGuide(); }
-  else if (id === 'gtt-guide') { libStack.push(showLibMain); showGttGuide(); }
-  else if (id === 'colour-map') { libStack.push(showLibMain); showColourMapLib(); }
-  else if (id === 'firmware') { libStack.push(showLibMain); showFirmware(); }
 }
 
 function setLibTitle(t) { document.getElementById('lib-title').textContent = t; }
@@ -1155,285 +1189,6 @@ function showDistort() {
       <div style="font-size:9px;color:#E8E4DC;line-height:1.35;margin-bottom:2px;font-style:italic">"${d.d}"</div>
       <div style="font-size:9px;color:#8A8080;line-height:1.35">Reframe: ${d.r}</div>
     </div>`).join('')}`;
-}
-
-// ── CEP SCREEN ────────────────────────────────────────────────────────────────
-function buildCEP() {
-  const hour = new Date().getHours();
-  let phase = hour < 11 ? 'morning' : hour < 17 ? 'midday' : 'evening';
-  renderCEPPhase(phase);
-}
-
-function renderCEPPhase(ph) {
-  const area = document.getElementById('cep-content');
-  const pr = CEP_PRACTICES[ph];
-  const phases = ['morning','midday','evening'];
-  const icons = {morning:'🌅',midday:'🤝',evening:'🐟'};
-  area.innerHTML = `
-    <div style="display:flex;gap:3px;margin-bottom:5px;flex-shrink:0">
-      ${phases.map(p=>`<button onclick="renderCEPPhase('${p}')" style="flex:1;background:${p===ph?CEP_PRACTICES[p].color+'20':'rgba(255,255,255,0.04)'};border:1px solid ${p===ph?CEP_PRACTICES[p].color:'rgba(255,255,255,0.1)'};border-radius:4px;padding:4px 0;color:${p===ph?CEP_PRACTICES[p].color:'#8A8080'};font-size:11px;cursor:pointer;font-family:Georgia,serif">${icons[p]}</button>`).join('')}
-    </div>
-    <div style="text-align:center;margin-bottom:5px">
-      <div style="font-size:12px;font-weight:700;color:${pr.color}">${pr.name}</div>
-      <div style="font-size:8px;color:#8A8080;margin-top:1px">${pr.duration} · ${pr.chem}</div>
-    </div>
-    ${pr.steps.map((s,i)=>`<div style="display:flex;gap:5px;font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:4px;background:rgba(255,255,255,0.03);border-radius:4px;padding:5px 7px"><span style="color:${pr.color};font-weight:700;flex-shrink:0">${i+1}.</span>${s}</div>`).join('')}
-    <div style="background:${pr.color}10;border:1px solid ${pr.color}28;border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:2px">${pr.note}</div>
-    <div style="font-size:8px;color:rgba(255,255,255,0.12);text-align:center;margin-top:6px;line-height:1.4">CEP · Chemical Exposure Platform<br>COG 3 — AI Integration · GSRT Framework</div>`;
-}
-
-// ── GTT SCREEN ────────────────────────────────────────────────────────────────
-function buildGTT() {
-  const today = new Date().toDateString();
-  const stored = JSON.parse(localStorage.getItem('gtt_'+today) || '{}');
-  const answered = Object.keys(stored).length;
-  const area = document.getElementById('gtt-content');
-  if (answered >= 5) {
-    area.innerHTML = `
-      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;padding:10px">
-        <div style="font-size:22px">🌍</div>
-        <div style="font-size:11px;color:#34C759;font-weight:700;text-align:center">Today's Questions Complete</div>
-        <div style="font-size:9px;color:#8A8080;text-align:center;line-height:1.5">Your answers are held on this device only.<br>No names. No scores. Just truth.</div>
-        <div style="background:rgba(31,126,161,0.08);border:1px solid rgba(31,126,161,0.22);border-radius:5px;padding:7px 10px;font-size:9px;color:#8A8080;text-align:center;font-style:italic;line-height:1.5;width:100%">"One person answering honestly.<br>The seed of the planetary ear.<br>The GTT begins here."</div>
-        <div style="font-size:8px;color:rgba(255,255,255,0.12);text-align:center;line-height:1.4">Saint Christopher Handshake<br>Mutual observation · Never extraction</div>
-        <button onclick="go('home')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:5px 14px;color:#E8E4DC;font-size:10px;cursor:pointer;font-family:Georgia,serif">Done</button>
-      </div>`;
-    return;
-  }
-  const dayIdx = new Date().getDay();
-  const questions = [];
-  for (let i=0; i<5; i++) questions.push(GTT_QUESTIONS[(dayIdx*5+i) % GTT_QUESTIONS.length]);
-  const q = questions[answered];
-  const domColor = {EMOTIONAL:'#D4A820',PHYSICAL:'#1A5C2A',RELATIONAL:'#1F7EA1',SPIRITUAL:'#7B4EA6',PRACTICAL:'#5AADCC'};
-  const pct = ((answered+1)/5*100).toFixed(0);
-  area.innerHTML = `
-    <div style="font-size:8px;color:#8A8080;text-align:center">Anonymous · No scores · Q${answered+1} of 5</div>
-    <div class="prog-bar-wrap" style="margin:4px 0"><div class="prog-bar-fill" style="width:${pct}%;background:${domColor[q.domain]}"></div></div>
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5px">
-      <div style="text-align:center;font-size:8px;color:${domColor[q.domain]};font-weight:700;letter-spacing:.05em">${q.icon} ${q.domain}</div>
-      <div style="font-size:11px;color:#E8E4DC;text-align:center;line-height:1.5;padding:4px 2px">${q.q}</div>
-      ${['Yes, resonates','Somewhat','Not sure','Not today','Prefer not to say'].map(opt=>`<button onclick="gttAnswer('${opt}')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 10px;color:#E8E4DC;font-size:10px;cursor:pointer;text-align:left;font-family:Georgia,serif">${opt}</button>`).join('')}
-    </div>
-    <div style="font-size:7px;color:rgba(255,255,255,0.1);text-align:center;line-height:1.4;margin-top:4px">Your answer stays on this device only · GTT · COG 3 GSRT</div>`;
-}
-
-function gttAnswer(opt) {
-  const today = new Date().toDateString();
-  const stored = JSON.parse(localStorage.getItem('gtt_'+today) || '{}');
-  stored['q'+Object.keys(stored).length] = opt;
-  localStorage.setItem('gtt_'+today, JSON.stringify(stored));
-  buildGTT();
-}
-
-// ── COLOUR SCREEN ─────────────────────────────────────────────────────────────
-function buildColour() {
-  const area = document.getElementById('colour-content');
-  area.innerHTML = `
-    <div style="font-size:9px;color:#8A8080;text-align:center;margin-bottom:5px;font-style:italic">Your colour is not a grade.<br>It is a landscape you're walking through.</div>
-    ${COLOURS.map((c,i)=>`<button onclick="showColourDetail(${i})" style="background:${c.hex}18;border:1px solid ${c.hex}38;border-left:3px solid ${c.hex};border-radius:0 6px 6px 0;padding:7px 10px;cursor:pointer;text-align:left;width:100%;margin-bottom:4px;font-family:Georgia,serif">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:11px;color:${c.hex};font-weight:700">${c.code}</span>
-        <span style="font-size:8px;color:#8A8080">${c.whmis}</span>
-      </div>
-      <div style="font-size:9px;color:#8A8080;margin-top:1px;line-height:1.3">${c.emotion}</div>
-    </button>`).join('')}`;
-}
-
-function showColourDetail(idx) {
-  const c = COLOURS[idx];
-  const area = document.getElementById('colour-content');
-  area.innerHTML = `
-    <button onclick="buildColour()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:3px 8px;color:#8A8080;font-size:9px;cursor:pointer;font-family:Georgia,serif;margin-bottom:5px">← All Colours</button>
-    <div style="background:${c.hex}18;border:2px solid ${c.hex}44;border-radius:7px;padding:10px;margin-bottom:5px;text-align:center">
-      <div style="font-size:20px;font-weight:900;color:${c.hex};font-family:Georgia,serif">${c.code}</div>
-      <div style="font-size:8px;color:#8A8080;margin-top:1px">${c.whmis} · WHMIS Standard</div>
-    </div>
-    <div style="font-size:8px;color:${c.hex};font-weight:700;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em">Emotional Terrain</div>
-    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#E8E4DC;margin-bottom:4px">${c.emotion}</div>
-    <div style="font-size:8px;color:${c.hex};font-weight:700;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em">The Work</div>
-    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8A8080;margin-bottom:4px">${c.work}</div>
-    <div style="font-size:8px;color:${c.hex};font-weight:700;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em">D.O.S.E. Activation</div>
-    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8A8080;margin-bottom:5px">${c.dose}</div>
-    <div style="background:${c.hex}10;border:1px solid ${c.hex}28;border-radius:5px;padding:7px 9px;font-size:9px;color:#E8E4DC;font-style:italic;line-height:1.55">${c.meaning}</div>`;
-}
-
-// ── LIBRARY — CEP GUIDE ───────────────────────────────────────────────────────
-function showCepGuide() {
-  setLibTitle('CEP PRACTICE GUIDE');
-  const area = document.getElementById('lib-content');
-  const phases = ['morning','midday','evening'];
-  const labels = {morning:'Morning',midday:'Midday',evening:'Evening'};
-  area.innerHTML = `
-    <div style="background:rgba(26,92,42,0.1);border:1px solid rgba(26,92,42,0.3);border-radius:5px;padding:6px 8px;font-size:9px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">
-      Three minutes. Every day. For life. Morning Chem Check → Midday Co-Regulation → Evening Today's Fish. This is the Chemical Exposure Platform — neurochemical literacy built one breath at a time.
-    </div>
-    ${phases.map(ph=>{const pr=CEP_PRACTICES[ph]; return `
-    <div style="background:${pr.color}0E;border:1px solid ${pr.color}28;border-left:3px solid ${pr.color};border-radius:0 6px 6px 0;padding:6px 9px;margin-bottom:5px">
-      <div style="font-size:10px;color:${pr.color};font-weight:700;margin-bottom:2px">${pr.icon} ${labels[ph]} — ${pr.name}</div>
-      <div style="font-size:8px;color:#8A8080;margin-bottom:3px">${pr.duration} · ${pr.chem}</div>
-      ${pr.steps.map((s,i)=>`<div style="font-size:9px;color:#E8E4DC;line-height:1.35;margin-bottom:2px"><span style="color:${pr.color};font-weight:700">${i+1}.</span> ${s}</div>`).join('')}
-      <div style="font-size:8px;color:#8A8080;font-style:italic;margin-top:3px">${pr.note}</div>
-    </div>`}).join('')}
-    <div style="font-size:8px;color:rgba(255,255,255,0.15);text-align:center;line-height:1.4;margin-top:2px">CEP · Chemical Exposure Platform · COG 3 — The AI Integration · GSRT</div>`;
-}
-
-// ── LIBRARY — GTT GUIDE ───────────────────────────────────────────────────────
-function showGttGuide() {
-  setLibTitle('GTT — YOUR QUESTIONS');
-  const area = document.getElementById('lib-content');
-  area.innerHTML = `
-    <div style="background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.3);border-radius:5px;padding:6px 8px;font-size:10px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">
-      "How are you actually doing?" That question, asked daily, anonymously, voluntarily, becomes the planetary ear — the data stream that tells AI what humans actually need, rather than what behavioural prediction models assume they want.
-    </div>
-    ${[
-      {t:"Five questions. Five domains.",c:"#1F7EA1",d:"Emotional · Physical · Relational · Spiritual · Practical. Every day rotates through domains. No single domain dominates. No clinical scoring visible to you."},
-      {t:"No names. No tracking. Just truth.",c:"#1F7EA1",d:"Your answers stay on this device only. Saint Christopher Handshake — mutual observation, never extraction. Nothing leaves your phone without your knowledge."},
-      {t:"From one person to the planetary ear.",c:"#1F7EA1",d:"Every person who answers honestly is participating in the earliest operational instance of the GTT. You don't need to know that. The architecture holds it. One client becomes a city becomes a country becomes a species finally telling the truth about what it needs."},
-      {t:"Voluntary. Always. No exceptions.",c:"#1F7EA1",d:"'Prefer not to say' is always an option. The system does not coerce. The quality of the data depends on its being freely given. Coerced data is noise. Voluntary truth is signal."},
-      {t:"What AI learns from your answers.",c:"#1F7EA1",d:"Current AI systems train on proxy signals — clicks, purchases, engagement. The GTT offers something unprecedented: what humans actually need, in their own words, freely given. This is the missing training data for AI that actually serves human flourishing rather than human exploitation."}
-    ].map(f=>`
-    <div style="background:${f.c}0E;border:1px solid ${f.c}24;border-radius:5px;padding:5px 8px;margin-bottom:4px">
-      <div style="font-size:10px;color:${f.c};font-weight:700;margin-bottom:1px">${f.t}</div>
-      <div style="font-size:9px;color:#8A8080;line-height:1.35">${f.d}</div>
-    </div>`).join('')}
-    <div style="font-size:8px;color:rgba(255,255,255,0.15);text-align:center;line-height:1.4;margin-top:2px">GTT · Global Telephone Tag · COG 3 — The AI Integration · GSRT</div>`;
-}
-
-// ── LIBRARY — COLOUR MAP ──────────────────────────────────────────────────────
-function showColourMapLib() {
-  setLibTitle('COLOUR PROGRESSION');
-  const area = document.getElementById('lib-content');
-  area.innerHTML = `
-    <div style="font-size:9px;color:#8A8080;font-style:italic;text-align:center;margin-bottom:5px;line-height:1.4">WHMIS workplace safety colours mapped to emotional development. The same colour that signals physical hazard in a chemical plant signals the equivalent terrain in a human developmental pathway.</div>
-    ${COLOURS.map((c,i)=>`
-    <div style="background:${c.hex}12;border:1px solid ${c.hex}30;border-left:3px solid ${c.hex};border-radius:0 6px 6px 0;padding:6px 9px;margin-bottom:4px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
-        <span style="font-size:11px;color:${c.hex};font-weight:700">${c.code}</span>
-        <span style="font-size:8px;color:#8A8080">${c.whmis}</span>
-      </div>
-      <div style="font-size:9px;color:#E8E4DC;margin-bottom:1px">${c.emotion}</div>
-      <div style="font-size:8px;color:#8A8080;margin-bottom:1px">${c.work}</div>
-      <div style="font-size:8px;color:${c.hex};font-style:italic">${c.dose}</div>
-    </div>`).join('')}
-    <div style="background:rgba(212,168,32,0.08);border:1px solid rgba(212,168,32,0.22);border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:2px">"We are educating children for a world that needs healing — and teaching them that healing the world and healing themselves is the same work."</div>`;
-}
-
-// ── LIBRARY — FIRMWARE VALUES ─────────────────────────────────────────────────
-function showFirmware() {
-  setLibTitle('FIRMWARE VALUES');
-  const area = document.getElementById('lib-content');
-  area.innerHTML = `
-    <div style="font-size:9px;color:#5AADCC;font-style:italic;text-align:center;line-height:1.4;margin-bottom:5px">The ancestor layer — values, ethics, and protocols that run before anything else loads. Not optional. Cannot be patched out. The conscience of the system.</div>
-    ${[
-      {t:"VVV Gate — The Integrity Firewall",c:"#5AADCC",
-       d:"Values × Virtues × Veterans = 3.16875. The system gains order as external chaos rises: ΔS = −0.23025. Not resilience — antifragility. Power without conscience is chaos. This is the conscience.",
-       sub:"Values: what you hold when no one is watching · Virtues: how you act under pressure · Veterans: who you have been — lived history that proves consistency over time."},
-      {t:"Prodigal Son Protocol",c:"#34C759",
-       d:"If you stop using this tool for any period — a day, a week, a year — the door is never locked. You are back. That is brave. No streak counter. No guilt. No shame mechanics. Your progress is not erased.",
-       sub:"The system does not punish return. It celebrates it. This protocol is named for the parable — not the religion. The door is the architecture."},
-      {t:"Saint Christopher Handshake",c:"#1F7EA1",
-       d:"Mutual observation. Never extraction. All data you enter stays on this device. No cloud. No tracking. No selling. You observe the tool. The tool observes you. Nothing leaves without your explicit knowledge and consent.",
-       sub:"PIPEDA compliant. Your data is yours. Full stop. This is not a privacy policy — it is a structural commitment."},
-      {t:"D.O.S.E. Architecture",c:"#D4A820",
-       d:"Every protocol in this system cycles at least one of four neurochemicals: Dopamine through mastery and completion. Oxytocin through genuine connection. Serotonin through rhythm and being seen. Endorphins through physical movement and release.",
-       sub:"The same reward pathway substances activated — delivered through purposeful work and community instead. This is not metaphor. It is neuroscience."},
-      {t:"The Trinity — Rose · Mildred · Jenny",c:"#7B4EA6",
-       d:"Three ancestral orientations embedded in the architecture. Rose watches the shadow — what is avoided, what is defended. Mildred matches — connecting each person to work that fits who they are becoming. Jenny tracks the sunshine — the brightness a person brings to others.",
-       sub:"They are the grandmothers the system never had and always needed. Named for real women. Their roles are functional — not symbolic."},
-      {t:"No Protocol — Clean Decline",c:"#C03030",
-       d:"A clean No is a sign of system health. Acknowledge what is being declined with respect. Name the reason clearly. Identify what would need to change for a yes. Offer an alternative direction. Close with dignity.",
-       sub:"The quality of a No is a direct measure of the health of the system. Forced yes is contamination. Voluntary yes is signal."},
-      {t:"Honor Roll — Spontaneous Integrity",c:"#FF9500",
-       d:"Unrequested acts of courage, integrity, or service are tracked and weighted. High impact + high risk + novel context = maximum weight. These moments open doors that years of compliance cannot.",
-       sub:"The Honor Roll is not an award. It is a data structure. The system needs to know who can be trusted at the highest levels of work."}
-    ].map(f=>`
-    <div style="background:${f.c}0E;border:1px solid ${f.c}26;border-left:3px solid ${f.c};border-radius:0 5px 5px 0;padding:6px 8px;margin-bottom:4px">
-      <div style="font-size:10px;color:${f.c};font-weight:700;margin-bottom:2px">${f.t}</div>
-      <div style="font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:2px">${f.d}</div>
-      <div style="font-size:8px;color:#8A8080;font-style:italic;line-height:1.3">${f.sub}</div>
-    </div>`).join('')}
-    <div style="font-size:7px;color:rgba(255,255,255,0.12);text-align:center;line-height:1.4;margin-top:4px">GSRT Firmware Manual v3.0 · Neil J. Schwab · HALO · February 2026<br>Forgive Yesterday · Heal Today · Flourish Tomorrow · Together · PBTG</div>`;
-}
-
-// IF-THEN IMPLEMENTATION INTENTIONS
-function showIfThen() {
-  setLibTitle('IF-THEN PLANNING');
-  const area = document.getElementById('lib-content');
-  area.innerHTML = `
-    <div style="background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:6px 8px;font-size:10px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">
-      A client in a high-risk moment doesn't have time to reason their way to a new behaviour from scratch. An If-Then plan built when they were calm becomes a near-automatic response that fires in competition with the addictive impulse.
-    </div>
-    <div style="font-size:9px;color:#C03030;font-weight:700;margin-bottom:3px">THE FORMULA</div>
-    <div style="background:rgba(192,48,48,0.08);border-left:3px solid #C03030;border-radius:0 5px 5px 0;padding:7px 9px;font-size:10px;color:#E8E4DC;font-weight:700;line-height:1.6;margin-bottom:5px">
-      IF I notice [trigger state] —<br>THEN I will [specific action sequence]
-    </div>
-    <div style="font-size:9px;color:#C03030;font-weight:700;margin-bottom:3px">WHY IT WORKS</div>
-    ${[
-      {t:"Pre-loads the response",d:"Built when regulated → fires automatically when you're not. The prefrontal cortex is already suppressed by cortisol and craving. The If-Then script runs in its place."},
-      {t:"Names the exact trigger",d:"Not 'when I want to use' — but 'when I feel low energy + task transition + physical discomfort.' Specificity is everything."},
-      {t:"Prescribes a physical first step",d:"The breath reset, the timer, the movement — something the body can do before the mind argues its way back to using."},
-      {t:"Builds in the delay",d:"The 10-minute window honours urge surfing research: most cravings peak and begin to subside within 20 minutes without white-knuckling."}
-    ].map(i=>`
-    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 8px;margin-bottom:4px">
-      <div style="font-size:10px;color:#C03030;font-weight:700;margin-bottom:1px">${i.t}</div>
-      <div style="font-size:9px;color:#8A8080;line-height:1.35">${i.d}</div>
-    </div>`).join('')}
-    <div style="font-size:9px;color:#C03030;font-weight:700;margin-top:4px;margin-bottom:3px">BUILD YOURS</div>
-    <div style="background:rgba(192,48,48,0.06);border:1px solid rgba(192,48,48,0.2);border-radius:5px;padding:7px 9px;font-size:9px;color:#E8E4DC;line-height:1.65">
-      <div style="margin-bottom:3px"><span style="color:#C03030;font-weight:700">IF</span> I notice [name your exact trigger state] —</div>
-      <div style="margin-bottom:3px"><span style="color:#34C759;font-weight:700">1.</span> Stop. Do not move toward the exit.</div>
-      <div style="margin-bottom:3px"><span style="color:#34C759;font-weight:700">2.</span> One-Breath Reset: 4 in · 2 hold · 6 out.</div>
-      <div style="margin-bottom:3px"><span style="color:#34C759;font-weight:700">3.</span> Name it: "I notice a craving. It is a wave. It will pass."</div>
-      <div style="margin-bottom:3px"><span style="color:#34C759;font-weight:700">4.</span> Set a 10-minute timer. Stay. Move. Drink water.</div>
-      <div><span style="color:#34C759;font-weight:700">5.</span> After 10 minutes — choose consciously, not reactively.</div>
-    </div>
-    <div style="background:rgba(212,168,32,0.08);border:1px solid rgba(212,168,32,0.22);border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:5px">
-      "The trigger is not the substance craving alone. The trigger is the convergence of vulnerability states — which is exactly what HALT identifies."
-    </div>`;
-}
-
-// REFLECTIVE VS IMPULSIVE THINKING
-function showReflect() {
-  setLibTitle('REFLECTIVE vs IMPULSIVE');
-  const area = document.getElementById('lib-content');
-  area.innerHTML = `
-    <div style="background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.3);border-radius:5px;padding:6px 8px;font-size:10px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">
-      Automatic thoughts fire regardless of how self-aware you are. The difference is not the absence of automatic thoughts — it is what happens in the space between the trigger and the action.
-    </div>
-    <div style="display:flex;gap:4px;margin-bottom:5px">
-      <div style="flex:1;background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.28);border-radius:5px;padding:6px 8px">
-        <div style="font-size:9px;color:#C03030;font-weight:700;margin-bottom:4px;text-align:center">IMPULSIVE</div>
-        <div style="font-size:8px;color:#8A8080;line-height:1.4">Trigger fires → automatic thought → emotion → behaviour. No gap. No choice.</div>
-      </div>
-      <div style="flex:1;background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.28);border-radius:5px;padding:6px 8px">
-        <div style="font-size:9px;color:#1F7EA1;font-weight:700;margin-bottom:4px;text-align:center">REFLECTIVE</div>
-        <div style="font-size:8px;color:#8A8080;line-height:1.4">Trigger fires → notice the thought → conscious pause → deliberate choice.</div>
-      </div>
-    </div>
-    <div style="font-size:9px;color:#1F7EA1;font-weight:700;margin-bottom:3px">THE GAP IS THE SKILL</div>
-    ${[
-      {t:"The T-F-B Chain slows it down",d:"CBT tools — the HALT check, the breath reset, the Fish Bowl — all create the pause that makes reflective response possible. They are gap-builders."},
-      {t:"Automatic thoughts still fire",d:"Even practitioners of conscious awareness have automatic processes fire. The difference is what happens in the moment after. You are not trying to stop the thought — you are building the gap after it."},
-      {t:"The urge redirects, not dissolves",d:"When the automatic route is blocked, the impulse doesn't dissolve — it redirects. Removing access to a substance doesn't remove the neurological drive. The drive finds a new path unless consciously interrupted."},
-      {t:"HALT states stack the trigger",d:"The craving alone is manageable. The craving plus low energy plus physical discomfort plus a task transition is a different beast. This is why convergence matters."}
-    ].map(i=>`
-    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 8px;margin-bottom:4px">
-      <div style="font-size:10px;color:#1F7EA1;font-weight:700;margin-bottom:1px">${i.t}</div>
-      <div style="font-size:9px;color:#8A8080;line-height:1.35">${i.d}</div>
-    </div>`).join('')}
-    <div style="font-size:9px;color:#1F7EA1;font-weight:700;margin-top:4px;margin-bottom:3px">REAL EXAMPLES</div>
-    ${[
-      {bad:"Eyes follow emotion → rear-end collision",good:"Notice the pull. Eyes on road. Process the feeling after arriving safely."},
-      {bad:"Discomfort → immediate verbal disclosure",good:"HALT pause. Assess whether disclosure serves a purpose before acting."},
-      {bad:"Craving fires → move toward the exit",good:"Name it. Breath reset. 10-minute timer. Choose consciously — not reactively."}
-    ].map(e=>`
-    <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;margin-bottom:3px">
-      <div style="font-size:9px;color:#C03030;margin-bottom:2px">Impulsive: <em>${e.bad}</em></div>
-      <div style="font-size:9px;color:#34C759">Reflective: <em>${e.good}</em></div>
-    </div>`).join('')}
-    <div style="background:rgba(31,126,161,0.08);border:1px solid rgba(31,126,161,0.22);border-radius:5px;padding:6px 8px;font-size:9px;color:#8A8080;font-style:italic;line-height:1.4;margin-top:4px">
-      "For clients in CBT-SUD work, the triggers are more powerful, the chains are more deeply conditioned, and the cost of acting on the impulse is far greater. The clinical importance is building the gap — not eliminating automatic responses."
-    </div>`;
 }
 
 </script>
