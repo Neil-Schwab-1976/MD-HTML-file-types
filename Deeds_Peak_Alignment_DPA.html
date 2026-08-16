@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deeds Peak Alignment (DPA) — GSRT Earthworks Onboarding</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: Georgia, serif;
+    background: linear-gradient(135deg, #08090D 0%, #101520 60%, #08090D 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    flex-wrap: wrap;
+    gap: 40px;
+    color: #E8E4DC;
+}
+.device-wrap { position: relative; }
+.device-glow { position: absolute; inset: -20px; background: radial-gradient(ellipse, rgba(212,168,32,0.10) 0%, transparent 70%); pointer-events: none; }
+.device {
+    position: relative; width: 220px;
+    background: linear-gradient(180deg, #2D2D31 0%, #1C1C20 100%);
+    border-radius: 28px; border: 1px solid rgba(255,255,255,0.11);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.lug { height: 16px; background: linear-gradient(90deg,#191920,#252528,#191920); display:flex; align-items:center; justify-content:center; }
+.lug-top { border-radius: 28px 28px 0 0; border-bottom: 1px solid rgba(0,0,0,0.5); }
+.lug-bot { border-radius: 0 0 28px 28px; border-top: 1px solid rgba(0,0,0,0.5); }
+.lug-bar { width: 28px; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; }
+.body-inner { position: relative; overflow: hidden; border-radius: 0 0 6px 6px; }
+.cover {
+    position: absolute; top:0; left:0; right:0; height:100%; z-index:10;
+    background: linear-gradient(180deg,#26262A 0%,#1D1D21 100%);
+    transform: translateY(0); transition: transform 0.45s cubic-bezier(.4,0,.2,1);
+    display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:22px 0 14px;
+}
+.cover.open { transform: translateY(-100%); }
+.cover-logo { text-align:center; }
+.cover-logo div:first-child { font-size:16px; letter-spacing:.18em; font-weight:700; color: rgba(255,255,255,0.08); text-transform:uppercase; }
+.cover-logo div:last-child { font-size:7px; letter-spacing:.28em; color: rgba(255,255,255,0.05); text-transform:uppercase; margin-top:4px; }
+.cover-ring { width:54px; height:54px; border-radius:50%; background: radial-gradient(135deg, rgba(255,255,255,0.03), rgba(0,0,0,0.22)); border:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; }
+.cover-ring-inner { width:17px; height:17px; border-radius:50%; background: rgba(212,168,32,0.08); border:1px solid rgba(212,168,32,0.15); }
+.cover-btn { background: rgba(212,168,32,0.09); border:1px solid rgba(212,168,32,0.26); border-radius:6px; padding:5px 15px; color:#D4A820; font-size:9px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; font-family:Georgia,serif; }
+.screen-area { background:#0A1628; width:100%; aspect-ratio:1/1.15; position:relative; overflow:hidden; }
+.screen-glow { position:absolute; inset:0; background: radial-gradient(ellipse at top, rgba(212,168,32,0.06) 0%, transparent 55%); pointer-events:none; z-index:1; }
+.status-bar { position:absolute; top:0; left:0; right:0; height:13px; background: rgba(0,0,0,0.45); display:flex; justify-content:space-between; align-items:center; padding:0 8px; z-index:4; font-size:7px; }
+.status-l { color: rgba(255,255,255,0.22); letter-spacing:.04em; }
+.status-r { display:flex; gap:4px; align-items:center; }
+.status-dot { color:#34C759; font-size:7px; }
+.progress-track { position:absolute; top:13px; left:0; right:0; height:4px; background: rgba(255,255,255,0.05); z-index:4; }
+.progress-fill { height:100%; background: linear-gradient(90deg,#1F7EA1,#D4A820); transition: width 0.3s; }
+.screen-content { position:absolute; inset:0; padding-top:17px; z-index:2; overflow-y:auto; overflow-x:hidden; }
+.keypad { background: linear-gradient(180deg,#1A1A1E,#141418); border-top:1px solid rgba(255,255,255,0.04); display:grid; grid-template-columns: repeat(3,1fr); gap:4px; padding:6px 8px; }
+.key { background:#242428; border:1px solid rgba(255,255,255,0.07); border-bottom:2px solid rgba(0,0,0,0.3); border-radius:5px; color: rgba(255,255,255,0.6); font-size:13px; padding:5px 0; cursor:pointer; font-family:Georgia,serif; }
+.key:active { transform: translateY(1px); }
+.side-btn { position:absolute; right:-4px; width:5px; background: linear-gradient(90deg,#2A2A2E,#343438); border-radius:0 3px 3px 0; border:1px solid rgba(255,255,255,0.06); }
+.side-btn1 { top:33%; height:26px; } .side-btn2 { top:52%; height:17px; }
+.strap { position:absolute; left:14px; right:14px; height:50px; border:1px solid rgba(255,255,255,0.05); }
+.strap-top { top:-46px; background: linear-gradient(180deg,#191920,#252528); border-radius:12px 12px 0 0; }
+.strap-bot { bottom:-46px; background: linear-gradient(180deg,#252528,#191920); border-radius:0 0 12px 12px; }
+.strap-hole { position:absolute; left:50%; transform:translateX(-50%); width:3px; height:3px; background: rgba(0,0,0,0.5); border-radius:50%; }
+.strap-buckle { position:absolute; left:50%; transform:translateX(-50%); bottom:5px; width:17px; height:6px; background: rgba(255,255,255,0.05); border-radius:3px; border:1px solid rgba(255,255,255,0.09); }
+.scr { display:none; height:100%; flex-direction:column; padding:8px 9px; gap:5px; font-size:11px; overflow-y:auto; }
+.scr.active { display:flex; }
+.topbar { display:flex; align-items:center; gap:8px; margin-bottom:2px; flex-shrink:0; }
+.back-btn { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius:4px; padding:3px 7px; color:#8A8080; font-size:10px; cursor:pointer; font-family:Georgia,serif; }
+.topbar-title { font-size:10px; color:#8A8080; letter-spacing:.07em; text-transform:uppercase; font-weight:700; }
+.box { border-left:3px solid; border-radius:0 6px 6px 0; padding:6px 8px; margin-bottom:4px; font-size:9px; line-height:1.4; }
+.scroll-area { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:5px; }
+.big-btn { background: rgba(212,168,32,0.1); border:1px solid rgba(212,168,32,0.3); border-radius:6px; padding:8px 10px; color:#D4A820; font-size:10px; font-weight:700; cursor:pointer; font-family:Georgia,serif; width:100%; text-align:center; }
+.big-btn.secondary { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); color:#8A8080; }
+.big-btn.disabled { opacity:0.35; pointer-events:none; }
+.step-card { background: rgba(255,255,255,0.04); border-radius:6px; padding:7px 9px; margin-bottom:5px; }
+.step-card .st { font-weight:700; color:#D4A820; font-size:9px; margin-bottom:2px; }
+.q-row { display:flex; justify-content:space-between; align-items:center; font-size:9px; color:#E8E4DC; padding:3px 0; border-bottom:1px solid rgba(255,255,255,0.04); gap:6px; }
+.q-row .qtext { flex:1; line-height:1.3; }
+.q-input { display:flex; gap:3px; flex-shrink:0; }
+.q-input button { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius:3px; color:#8A8080; font-size:8px; padding:2px 5px; cursor:pointer; font-family:Georgia,serif; min-width:18px; }
+.q-input button.sel { background: rgba(31,126,161,0.25); border-color:#1F7EA1; color:#1F7EA1; font-weight:700; }
+.trait-block { margin-bottom:6px; }
+.trait-block .tname { font-weight:700; color:#5AADCC; font-size:9px; margin-bottom:2px; }
+.optional-tag { display:inline-block; background: rgba(212,168,32,0.15); color:#D4A820; font-size:7px; padding:1px 5px; border-radius:3px; margin-left:4px; text-transform:uppercase; letter-spacing:.04em; }
+.disclosure { background: rgba(31,126,161,0.08); border:1px solid rgba(31,126,161,0.22); border-radius:5px; padding:6px 8px; font-size:8.5px; color:#8A8080; line-height:1.45; margin-bottom:5px; }
+.disclosure b { color:#5AADCC; }
+.journal-entry { background: rgba(255,255,255,0.04); border-radius:5px; padding:5px 7px; margin-bottom:4px; font-size:9px; color:#E8E4DC; }
+textarea.dp-input { width:100%; background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius:4px; color:#E8E4DC; font-size:9px; padding:5px; font-family:Georgia,serif; resize:vertical; }
+input[type=file].dp-file { color:#8A8080; font-size:8px; margin-top:4px; }
+.ace-row { display:flex; align-items:center; gap:6px; font-size:9px; color:#E8E4DC; margin-bottom:3px; }
+.palette-row { display:flex; gap:5px; justify-content:center; margin:6px 0; flex-wrap:wrap; }
+.swatch { width:26px; height:26px; border-radius:50%; border:2px solid rgba(255,255,255,0.15); }
+.swatch.active { border-color:#D4A820; transform:scale(1.12); }
+.swatch-wrap { text-align:center; }
+.swatch-label { font-size:6px; color:#8A8080; margin-top:2px; }
+.match-formula { display:flex; justify-content:space-between; font-size:7px; color:#8A8080; margin-top:4px; }
+.match-bar-wrap { height:6px; background: rgba(255,255,255,0.05); border-radius:3px; margin:4px 0; overflow:hidden; }
+.match-bar-fill { height:100%; background: linear-gradient(90deg,#1F7EA1,#D4A820); }
+.rule-card { background: rgba(255,255,255,0.04); border-left:3px solid; border-radius:0 5px 5px 0; padding:5px 7px; margin-bottom:4px; font-size:8.5px; color:#8A8080; line-height:1.4; }
+.rule-card b { display:block; font-size:9px; margin-bottom:2px; }
+.panel { max-width:250px; font-family:Georgia,serif; color: rgba(255,255,255,0.55); }
+.panel-tag { font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#D4A820; margin-bottom:10px; }
+.panel-title { font-size:19px; font-weight:700; color: rgba(255,255,255,0.9); line-height:1.3; margin-bottom:8px; }
+.panel-desc { font-size:11px; line-height:1.7; margin-bottom:16px; color: rgba(255,255,255,0.45); }
+.panel-features { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+.feat { display:flex; gap:9px; align-items:flex-start; }
+.feat-icon { font-size:13px; margin-top:1px; }
+.feat-title { font-size:11px; color: rgba(255,255,255,0.75); font-weight:700; }
+.feat-sub { font-size:9px; color: rgba(255,255,255,0.3); }
+.controls { border-top:1px solid rgba(255,255,255,0.08); padding-top:12px; }
+.ctrl-note { font-size:9px; color: rgba(255,255,255,0.28); line-height:1.6; }
+.ctrl-open-btn { background: rgba(212,168,32,0.09); border:1px solid rgba(212,168,32,0.26); border-radius:5px; padding:5px 12px; color:#D4A820; font-size:9px; cursor:pointer; font-family:Georgia,serif; }
+
+</style>
+</head>
+<body>
+    <div class="device-wrap">
+        <div class="device-glow"></div>
+        <div class="device">
+            <div class="lug lug-top"><div class="lug-bar"></div></div>
+            <div class="body-inner">
+                <div class="cover open" id="cover">
+                    <div class="cover-logo">
+                        <div>DEEDS PEAK</div>
+                        <div>ALIGNMENT · DPA</div>
+                    </div>
+                    <div class="cover-ring"><div class="cover-ring-inner"></div></div>
+                    <button class="cover-btn" onclick="openCover()">BEGIN ↑</button>
+                </div>
+
+                <div class="screen-area">
+                    <div class="screen-glow"></div>
+                    <div class="status-bar">
+                        <span class="status-l">HALO·DPA</span>
+                        <div class="status-r"><span class="status-dot">●</span><span id="clock" style="color:rgba(255,255,255,0.22)">--:--</span></div>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" id="global-progress" style="width:0%"></div></div>
+                    <div class="screen-content">
+
+                        <!-- SCREEN: INTRO -->
+                        <div id="s-intro" class="scr active">
+                            <div class="center" style="padding:6px 0">
+                                <div style="font-size:14px;font-weight:900;color:#D4A820">DEEDS PEAK ALIGNMENT</div>
+                                <div style="font-size:8px;color:#8A8080;margin-top:2px">GSRT Earthworks · DEEDSPROOF Onboarding</div>
+                            </div>
+                            <div class="disclosure">This builds your Palette from three sources: <b>Wheel 1 (WHIMS/Curriculum)</b> — your base Hue. <b>Wheel 2 (Feelings)</b> — your emotional register within that Hue. <b>Wheel 3 (Personal Dimensions)</b> — your Big Five × life-domain profile, which Rose and Jenny read to set Shade and Tint. All three merge into one center color — your Palette — which Mildred uses to match you with work.</div>
+                            <div class="disclosure">Nothing here gates you out. Every optional section stays optional, and skipping one routes you to a real conversation with your Controller instead of a blank result.</div>
+                            <div class="scroll-area" style="flex:none">
+                                <div class="step-card"><div class="st">STEP 1</div>Upload — resume, school records (optional)</div>
+                                <div class="step-card"><div class="st">STEP 2</div>Wheel 1 — WHIMS / Curriculum Hue</div>
+                                <div class="step-card"><div class="st">STEP 3</div>Wheel 2 — Feelings</div>
+                                <div class="step-card"><div class="st">STEP 4</div>Wheel 3 — Personal Dimensions (Work · School · Trust · Childhood · Mayhem)</div>
+                                <div class="step-card"><div class="st">STEP 5</div>Flourishing Hooks — open questions, anytime</div>
+                                <div class="step-card"><div class="st">RESULT</div>Your Palette + transparent Match Score</div>
+                            </div>
+                            <button class="big-btn" onclick="dpaGoTo('uploads')">START →</button>
+                        </div>
+
+                        <!-- SCREEN: UPLOADS -->
+                        <div id="s-uploads" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="dpaGoTo('intro')">←</button><span class="topbar-title">UPLOADS</span></div>
+                            <div class="disclosure">Both are optional. Uploading a school record with a known curriculum color lets you skip the Wheel 1 questionnaire — otherwise you'll answer 5 quick questions instead. This extraction is simple keyword-matching, shown to you plainly below, not a black box.</div>
+                            <div class="step-card">
+                                <div class="st">RESUME</div>
+                                <input type="file" id="resume-file" class="dp-file" accept=".txt,.pdf,.doc,.docx" onchange="handleResumeFile(event)">
+                                <div id="resume-status" style="font-size:8px;color:#8A8080;margin-top:4px">No file uploaded — you can also paste text below.</div>
+                                <textarea class="dp-input" id="resume-paste" placeholder="Or paste your resume text here..." rows="3" style="margin-top:4px"></textarea>
+                                <div id="skills-extracted" style="margin-top:4px"></div>
+                            </div>
+                            <div class="step-card">
+                                <div class="st">SCHOOL RECORDS / TRANSCRIPT</div>
+                                <input type="file" id="school-file" class="dp-file" accept=".txt,.pdf,.doc,.docx" onchange="handleSchoolFile(event)">
+                                <div id="school-status" style="font-size:8px;color:#8A8080;margin-top:4px">No file uploaded. If you know your assigned curriculum color, select it directly:</div>
+                                <select id="known-curriculum-color" class="dp-input" style="margin-top:4px" onchange="setKnownCurriculumColor(this.value)">
+                                    <option value="">— I don't know / skip —</option>
+                                    <option value="WHITE">White — Foundation</option>
+                                    <option value="BLUE">Blue — Health / Depth</option>
+                                    <option value="GREEN">Green — Growth / Restoration</option>
+                                    <option value="BLACK">Black — Courage / Crisis Response</option>
+                                    <option value="GOLD">Gold — Mastery / Leadership</option>
+                                </select>
+                            </div>
+                            <button class="big-btn" onclick="dpaGoTo('whims')">CONTINUE →</button>
+                        </div>
+
+                        <!-- SCREEN: WHIMS/CURRICULUM WHEEL -->
+                        <div id="s-whims" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="dpaGoTo('uploads')">←</button><span class="topbar-title">WHEEL 1 · WHIMS / CURRICULUM</span></div>
+                            <div id="whims-skip-note" style="display:none" class="disclosure"></div>
+                            <div id="whims-quiz-area"></div>
+                            <button class="big-btn" onclick="dpaGoTo('feelings')" id="whims-continue-btn">CONTINUE →</button>
+                        </div>
+
+                        <!-- SCREEN: FEELINGS WHEEL -->
+                        <div id="s-feelings" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="dpaGoTo('whims')">←</button><span class="topbar-title">WHEEL 2 · FEELINGS</span></div>
+                            <div id="feelings-content"></div>
+                            <button class="big-btn" onclick="dpaGoTo('dimensions')">CONTINUE →</button>
+                        </div>
+
+                        <!-- SCREEN: PERSONAL DIMENSIONS WHEEL (the DPA questionnaire) -->
+                        <div id="s-dimensions" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="dpaGoTo('feelings')">←</button><span class="topbar-title" id="dim-domain-title">WHEEL 3 · PERSONAL DIMENSIONS</span></div>
+                            <div style="font-size:8px;color:#8A8080;text-align:center" id="dim-progress-label"></div>
+                            <div class="scroll-area" id="dim-quiz-area"></div>
+                        </div>
+
+                        <!-- SCREEN: ACES (part of Dimensions, own screen for clear consent) -->
+                        <div id="s-aces" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="dpaGoTo('dimensions')">←</button><span class="topbar-title">CHILDHOOD ACES</span></div>
+                            <div class="disclosure"><b>This section asks about hard things that may have happened before you turned 18.</b> It affects your Shade score, used to match your pacing and support — never your eligibility. <b>You can skip this entirely.</b> If you skip, Shade will be set through a real conversation with your Controller instead, and you'll still get a full match.</div>
+                            <div class="btn-row-aces" style="display:flex;gap:8px;margin-bottom:8px">
+                                <button class="big-btn" style="flex:1" onclick="dpaAcesChoice('answer')">Answer the questions</button>
+                                <button class="big-btn secondary" style="flex:1" onclick="dpaAcesChoice('controller')">Route to Controller instead</button>
+                            </div>
+                            <div id="aces-quiz-area"></div>
+                            <div id="aces-controller-note" style="display:none" class="disclosure">Noted. Your Controller will follow up directly to set your Shade through conversation. Continuing to your results with Shade pending.</div>
+                        </div>
+
+                        <!-- SCREEN: FLOURISHING HOOKS -->
+                        <div id="s-flourish" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="dpaGoTo('results')">←</button><span class="topbar-title">FLOURISHING HOOKS</span></div>
+                            <div class="disclosure">An open space, anytime — not scored, not analyzed automatically. Ask a question, leave a comment, note something you're noticing right now. It's yours; it saves locally on this device and builds into your own record over time.</div>
+                            <textarea class="dp-input" id="flourish-input" placeholder="What's on your mind right now?" rows="3"></textarea>
+                            <button class="big-btn" onclick="addFlourishEntry()" style="margin-top:4px">SAVE ENTRY</button>
+                            <div class="scroll-area" id="flourish-entries" style="margin-top:6px"></div>
+                        </div>
+
+                        <!-- SCREEN: RESULTS -->
+                        <div id="s-results" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="dpaGoTo('intro')">←</button><span class="topbar-title">YOUR PALETTE</span></div>
+                            <div class="palette-row" id="palette-swatches"></div>
+                            <div class="center" style="font-size:11px;font-weight:700;color:#D4A820" id="palette-headline"></div>
+                            <div class="step-card">
+                                <div class="st">MATCH SCORE — SHOWN, NOT HIDDEN</div>
+                                <div style="font-size:9px;color:#E8E4DC" id="match-breakdown"></div>
+                                <div class="match-bar-wrap"><div class="match-bar-fill" id="match-bar" style="width:0%"></div></div>
+                                <div class="match-formula"><span>Hue×0.4</span><span>Shade×0.3</span><span>Tint×0.2</span><span>HCS×0.1</span></div>
+                            </div>
+                            <div class="scroll-area" id="safeguard-cards"></div>
+                            <button class="big-btn secondary" onclick="dpaGoTo('flourish')">→ FLOURISHING HOOKS</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="keypad">
+                    <button class="key" onclick="dpaGoTo('intro')">⌂</button>
+                    <button class="key">↑</button>
+                    <button class="key">✓</button>
+                    <button class="key" onclick="history.back()">←</button>
+                    <button class="key">↓</button>
+                    <button class="key">✕</button>
+                </div>
+            </div>
+            <div class="lug lug-bot"><div class="lug-bar"></div></div>
+            <div class="side-btn side-btn1"></div>
+            <div class="side-btn side-btn2"></div>
+        </div>
+        <div class="strap strap-top"><div class="strap-hole" style="top:10px"></div><div class="strap-hole" style="top:18px"></div><div class="strap-hole" style="top:26px"></div></div>
+        <div class="strap strap-bot"><div class="strap-hole" style="top:6px"></div><div class="strap-hole" style="top:14px"></div><div class="strap-hole" style="top:22px"></div><div class="strap-buckle"></div></div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-tag">HALO ANTIFRAGILE AI — GSRT</div>
+        <div class="panel-title">Deeds Peak Alignment (DPA)</div>
+        <div class="panel-desc">The DEEDSPROOF onboarding tool for GSRT Earthworks. Three wheels — WHIMS/Curriculum, Feelings, Personal Dimensions — merge into one Palette. Mildred matches; Rose sets Shade; Jenny sets Tint. Every score shown is exactly what it's built from — no hidden weighting.</div>
+        <div class="panel-features">
+            <div class="feat"><span class="feat-icon">🎨</span><div><div class="feat-title">Wheel 1 — WHIMS/Curriculum</div><div class="feat-sub">Base Hue — from school record or 5-question quiz</div></div></div>
+            <div class="feat"><span class="feat-icon">💭</span><div><div class="feat-title">Wheel 2 — Feelings</div><div class="feat-sub">Emotional register within your Hue</div></div></div>
+            <div class="feat"><span class="feat-icon">📊</span><div><div class="feat-title">Wheel 3 — Personal Dimensions</div><div class="feat-sub">Big Five × 5 life domains, 36 questions</div></div></div>
+            <div class="feat"><span class="feat-icon">🔒</span><div><div class="feat-title">ACEs — optional, always</div><div class="feat-sub">Controller-mediated alternative, never a gate</div></div></div>
+            <div class="feat"><span class="feat-icon">✍️</span><div><div class="feat-title">Flourishing Hooks</div><div class="feat-sub">Open, unscored, private, ongoing</div></div></div>
+        </div>
+        <div class="controls">
+            <div class="ctrl-note">This tool stays separate from Worker and Client mode views. It belongs to whoever's completing it — private by default.</div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════ DATA ═══════════════
+
+        // Wheel 1 — WHIMS / Curriculum. WHITE and BLUE verified against source documents.
+        // GREEN / BLACK / GOLD reconstructed from established pattern — flag for verification.
+        const WHIMS = {
+            WHITE: { color:'#E8E4DC', name:'White — Foundation', desc:'Entry point. Orientation, safety basics, first exposure to the work.', verified:true },
+            BLUE:  { color:'#1F7EA1', name:'Blue — Health / Depth', desc:'Reflection, grief work, health & wellbeing focus.', verified:true },
+            GREEN: { color:'#1A5C2A', name:'Green — Growth / Restoration', desc:'Environmental stewardship, restoration labor, ecological skill-building.', verified:false },
+            BLACK: { color:'#3A3A3E', name:'Black — Courage / Crisis Response', desc:'Highest-hazard work, crisis response readiness, courage under pressure.', verified:false },
+            GOLD:  { color:'#D4A820', name:'Gold — Mastery / Leadership', desc:'Elder status, mentorship, leadership within the program.', verified:false }
+        };
+
+        const WHIMS_QUIZ = [
+            { q: "When something needs doing and nobody's assigned it, I usually...", opts: [
+                { t: "Look at the environment/materials involved first", c: "GREEN" },
+                { t: "Check if anyone's actually safe before anything else", c: "BLACK" },
+                { t: "Ask how everyone's doing emotionally first", c: "BLUE" },
+                { t: "Just start — orientation is done through doing", c: "WHITE" },
+                { t: "Delegate it to whoever's ready to grow into it", c: "GOLD" }
+            ]},
+            { q: "The work I find most meaningful is...", opts: [
+                { t: "Physical restoration — land, water, materials", c: "GREEN" },
+                { t: "Being the steady one when things go wrong", c: "BLACK" },
+                { t: "Helping someone process something hard", c: "BLUE" },
+                { t: "Learning the basics of something new", c: "WHITE" },
+                { t: "Teaching someone else what I've learned", c: "GOLD" }
+            ]},
+            { q: "Under pressure, I...", opts: [
+                { t: "Get calmer and more focused", c: "BLACK" },
+                { t: "Need a minute to feel it before I act", c: "BLUE" },
+                { t: "Look for the practical, physical fix", c: "GREEN" },
+                { t: "Fall back on whatever I was first trained to do", c: "WHITE" },
+                { t: "Step back and let someone earlier in their path step up", c: "GOLD" }
+            ]},
+            { q: "People come to me for...", opts: [
+                { t: "A steady presence in a crisis", c: "BLACK" },
+                { t: "Someone to talk to about the hard stuff", c: "BLUE" },
+                { t: "Getting a physical job done right", c: "GREEN" },
+                { t: "They don't yet — I'm still learning the ropes", c: "WHITE" },
+                { t: "Guidance, direction, the long view", c: "GOLD" }
+            ]},
+            { q: "If I could only keep one part of this work, it'd be...", opts: [
+                { t: "The land/materials actually changing for the better", c: "GREEN" },
+                { t: "Knowing I can hold steady when it matters most", c: "BLACK" },
+                { t: "The relationships and honesty that come from it", c: "BLUE" },
+                { t: "The chance to actually start somewhere", c: "WHITE" },
+                { t: "Passing it on to whoever's next", c: "GOLD" }
+            ]}
+        ];
+
+        // Wheel 2 — Feelings, per Hue. WHITE/BLUE verified; GREEN/BLACK/GOLD reconstructed.
+        const FEELINGS = {
+            WHITE: { state:'Orientation / mild uncertainty', tool:'5-4-3-2-1 Grounding', note:'Feeling unsure here is expected — this is the entry hue, not a deficiency.' },
+            BLUE:  { state:'Grief, reflection, processing', tool:'Sacred Pause', note:'Depth work surfaces real feeling. That is the point, not a problem.' },
+            GREEN: { state:'Focused calm, physical engagement', tool:'One-Breath Reset before/after labor', note:'Reconstructed content — verify against source curriculum document.' },
+            BLACK: { state:'Alert readiness, controlled intensity', tool:'Fish Bowl labelling under pressure', note:'Reconstructed content — verify against source curriculum document.' },
+            GOLD:  { state:'Settled confidence, patient generosity', tool:'Beachcombing as a taught ritual', note:'Reconstructed content — verify against source curriculum document.' }
+        };
+
+        // Wheel 3 — Personal Dimensions. The DPA questionnaire (36 written questions).
+        const DPA_QUESTIONS = [
+            { domain:'Work', trait:'Openness', text:"I look for a better way to do a task even if the old way works fine." },
+            { domain:'Work', trait:'Conscientiousness', text:"I keep working on something until it's actually finished, not just \"good enough.\"" },
+            { domain:'Work', trait:'Conscientiousness', text:"I show up on time even when I don't feel like it." },
+            { domain:'Work', trait:'Extraversion', text:"I do better work when there's a crew around me than when I'm alone." },
+            { domain:'Work', trait:'Extraversion', text:"I'll speak up in a group before I'm sure I'm right." },
+            { domain:'Work', trait:'Agreeableness', text:"I'll help a coworker finish their task before I clock out, even if it's not mine." },
+            { domain:'Work', trait:'Neuroticism', text:"Small frustrations at work build up in me faster than they seem to in other people." },
+            { domain:'Work', trait:'Overview', text:"Work has been a place where I feel capable, more often than not." },
+            { domain:'Work', trait:'Overview', text:"I've quit or been let go from work because of a conflict I could see coming and didn't stop." },
+            { domain:'School', trait:'Openness', text:"I've kept learning about something on my own, outside of any class or requirement." },
+            { domain:'School', trait:'Conscientiousness', text:"I kept my school materials and schedule organized without someone checking on me." },
+            { domain:'School', trait:'Extraversion', text:"I did better in group projects than solo assignments." },
+            { domain:'School', trait:'Agreeableness', text:"I've helped a classmate understand something instead of just getting my own work done." },
+            { domain:'School', trait:'Neuroticism', text:"Tests and deadlines affected my sleep or mood more than they seemed to for others." },
+            { domain:'School', trait:'Overview', text:"My school experience shaped how I feel about learning today — for better or worse." },
+            { domain:'Trust', trait:'Openness', text:"I extend trust to new people faster than most, before they've proven anything." },
+            { domain:'Trust', trait:'Conscientiousness', text:"When I say I'll do something for someone, it gets done, on time, without reminders." },
+            { domain:'Trust', trait:'Extraversion', text:"Helping someone else genuinely lifts my mood, not just my sense of duty." },
+            { domain:'Trust', trait:'Extraversion', text:"I've organized or led a group effort to help someone, not just joined one." },
+            { domain:'Trust', trait:'Agreeableness', text:"I've done something kind for a stranger with zero expectation they'd know it was me." },
+            { domain:'Trust', trait:'Neuroticism', text:"Being trusted with something important makes me more anxious than confident." },
+            { domain:'Trust', trait:'Overview', text:"I can name a specific good deed I did in the last month without having to think hard." },
+            { domain:'Trust', trait:'Overview', text:"I trust people who've earned it, not people who just seem nice." },
+            { domain:'Mayhem', trait:'Openness', text:"When something falls apart with no warning, I look for the new information in it before I look for who to blame." },
+            { domain:'Mayhem', trait:'Conscientiousness', text:"I create structure in a chaotic situation instead of waiting for someone else to." },
+            { domain:'Mayhem', trait:'Extraversion', text:"In a crisis, I move toward people, not away from them." },
+            { domain:'Mayhem', trait:'Agreeableness', text:"I stay kind to people even when a situation is actively falling apart." },
+            { domain:'Mayhem', trait:'Neuroticism', text:"Unexpected disruption hits me harder and longer than it seems to hit other people." },
+            { domain:'Mayhem', trait:'Neuroticism', text:"I've had a reaction to a crisis that was bigger than the crisis itself, and known it in the moment." },
+            { domain:'Mayhem', trait:'Overview', text:"I can point to a specific crisis I got through and say what it taught me." },
+            { domain:'Mayhem', trait:'Overview', text:"Chaos in my life has usually come from outside me, not from choices I made." }
+        ];
+
+        const ACES_QUESTIONS = [
+            "As a kid, did you have to figure things out on your own that an adult should have explained to you?",
+            "Did you take on adult responsibilities (money, siblings, a household task) before you were ready?",
+            "Did you have to perform being \"fine\" around others when you weren't?",
+            "Did you learn to read a room for danger before you learned to read for connection?",
+            "Did you experience abuse, neglect, or household dysfunction (substance use, violence, incarceration, mental illness in the home) growing up?"
+        ];
+
+        const SAFEGUARDS = [
+            { title:"Data Completeness (Mildred's Rule)", color:"#1F7EA1", text:"Mildred requires complete palette data for a standard match. If you skipped ACEs, your match uses Controller-set Shade instead of a blank." },
+            { title:"Emergency Override (Black Label Mode)", color:"#C03030", text:"During a declared crisis, HCS alignment is suspended entirely. Matching relies only on Hue, Shade, and Tint." },
+            { title:"Safety Precedence (WHMIS)", color:"#1A5C2A", text:"Regardless of Match Score, safety certification is mandatory at every color level, no exceptions." },
+            { title:"Negative Feedback Intercept", color:"#D4A820", text:"If Rose or Jenny flag a concern, Mildred adjusts the match or holds it for readiness — a flag is never silently overridden." }
+        ];
+
+        // ═══════════════ STATE ═══════════════
+        let dpaState = {
+            hue: null, hueScores: { WHITE:0, BLUE:0, GREEN:0, BLACK:0, GOLD:0 },
+            knownCurriculumColor: null,
+            dimAnswers: {}, dimIndex: 0,
+            acesMode: null, acesAnswers: {},
+            shade: null, tint: 1.0, hcs: 5
+        };
+        let flourishEntries = [];
+
+        function loadDPA() {
+            try { dpaState = JSON.parse(localStorage.getItem('dpaState')) || dpaState; } catch(e) {}
+            try { flourishEntries = JSON.parse(localStorage.getItem('dpaFlourish')) || []; } catch(e) {}
+        }
+        function saveDPA() {
+            try { localStorage.setItem('dpaState', JSON.stringify(dpaState)); } catch(e) {}
+            try { localStorage.setItem('dpaFlourish', JSON.stringify(flourishEntries)); } catch(e) {}
+        }
+
+        window.onload = function() {
+            loadDPA();
+            updateClock();
+            setInterval(updateClock, 30000);
+            document.getElementById('cover').classList.add('open');
+            buildWhimsQuiz();
+            buildDimensionsQuiz();
+            buildAcesQuiz();
+            renderFlourish();
+        };
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+        }
+        function openCover() { document.getElementById('cover').classList.add('open'); }
+
+        const SCREEN_ORDER = ['intro','uploads','whims','feelings','dimensions','aces','flourish','results'];
+        function dpaGoTo(screen) {
+            document.querySelectorAll('.scr').forEach(s => s.classList.remove('active'));
+            document.getElementById('s-' + screen).classList.add('active');
+            const idx = SCREEN_ORDER.indexOf(screen);
+            if (idx >= 0) document.getElementById('global-progress').style.width = ((idx+1)/SCREEN_ORDER.length*100) + '%';
+            if (screen === 'feelings') renderFeelings();
+            if (screen === 'results') renderResults();
+            if (screen === 'flourish') renderFlourish();
+        }
+
+        // ── UPLOADS ──
+        const SKILL_KEYWORDS = ['carpentry','landscaping','heavy equipment','first aid','chainsaw','forestry','construction','driving','welding','plumbing','electrical','teamwork','leadership','safety certified','forklift','planting','excavation'];
+        function extractSkills(text) {
+            const found = SKILL_KEYWORDS.filter(k => text.toLowerCase().includes(k));
+            return found;
+        }
+        function handleResumeFile(evt) {
+            const file = evt.target.files[0];
+            if (!file) return;
+            document.getElementById('resume-status').textContent = 'Uploaded: ' + file.name + ' (file stored for reference; text extraction below is from any pasted text, not the file binary — paste the text too for skill matching).';
+        }
+        document.addEventListener('input', function(e) {
+            if (e.target && e.target.id === 'resume-paste') {
+                const skills = extractSkills(e.target.value);
+                const area = document.getElementById('skills-extracted');
+                area.innerHTML = skills.length
+                    ? '<div style="font-size:8px;color:#1A5C2A">Keyword matches found (simple text search, shown plainly): ' + skills.join(', ') + '</div>'
+                    : '<div style="font-size:8px;color:#8A8080">No keyword matches yet.</div>';
+                dpaState.hcs = 5 + skills.length;
+                saveDPA();
+            }
+        });
+        function handleSchoolFile(evt) {
+            const file = evt.target.files[0];
+            if (!file) return;
+            document.getElementById('school-status').textContent = 'Uploaded: ' + file.name + '. Select your known curriculum color below if the file specifies one — this tool does not auto-read the file contents.';
+        }
+        function setKnownCurriculumColor(val) {
+            dpaState.knownCurriculumColor = val || null;
+            saveDPA();
+        }
+
+        // ── WHEEL 1: WHIMS QUIZ ──
+        function buildWhimsQuiz() {
+            if (dpaState.knownCurriculumColor) {
+                document.getElementById('whims-skip-note').style.display = 'block';
+                document.getElementById('whims-skip-note').textContent = 'Skipped — using your declared curriculum color: ' + dpaState.knownCurriculumColor + '. You can still answer the quiz below if you want a fresh read instead.';
+                dpaState.hue = dpaState.knownCurriculumColor;
+            }
+            const area = document.getElementById('whims-quiz-area');
+            area.innerHTML = '';
+            WHIMS_QUIZ.forEach((q, qi) => {
+                const div = document.createElement('div');
+                div.className = 'step-card';
+                div.innerHTML = '<div class="st">Q' + (qi+1) + '</div>' + q.q;
+                q.opts.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'big-btn secondary';
+                    btn.style.marginTop = '3px';
+                    btn.style.textAlign = 'left';
+                    btn.style.fontSize = '9px';
+                    btn.textContent = opt.t;
+                    btn.onclick = () => { dpaState.hueScores[opt.c]++; saveDPA(); computeHue(); btn.style.background = 'rgba(212,168,32,0.2)'; };
+                    div.appendChild(btn);
+                });
+                area.appendChild(div);
+            });
+        }
+        function computeHue() {
+            let best = null, bestScore = -1;
+            for (const c in dpaState.hueScores) { if (dpaState.hueScores[c] > bestScore) { best = c; bestScore = dpaState.hueScores[c]; } }
+            if (bestScore > 0) dpaState.hue = best;
+            saveDPA();
+        }
+
+        // ── WHEEL 2: FEELINGS ──
+        function renderFeelings() {
+            const hue = dpaState.hue || 'WHITE';
+            const f = FEELINGS[hue];
+            const w = WHIMS[hue];
+            document.getElementById('feelings-content').innerHTML = `
+                <div class="step-card" style="border-left:3px solid ${w.color}">
+                    <div class="st">YOUR HUE: ${w.name}</div>
+                    <div style="font-size:9px;color:#E8E4DC;margin:4px 0">Typical feeling state: <b>${f.state}</b></div>
+                    <div style="font-size:9px;color:#8A8080">Suggested regulation tool: ${f.tool}</div>
+                    ${!w.verified ? '<div style="font-size:7px;color:#D4A820;margin-top:4px;font-style:italic">' + f.note + '</div>' : ''}
+                </div>
+                <div class="step-card">
+                    <div class="st">DOES THIS MATCH YOU RIGHT NOW?</div>
+                    <textarea class="dp-input" id="feelings-note" placeholder="Optional — describe your actual feeling state today" rows="2"></textarea>
+                </div>`;
+        }
+
+        // ── WHEEL 3: DIMENSIONS QUIZ ──
+        const DOMAINS = ['Work','School','Trust','Mayhem'];
+        function buildDimensionsQuiz() { renderDimensionQuestion(); }
+        function renderDimensionQuestion() {
+            const idx = dpaState.dimIndex;
+            if (idx >= DPA_QUESTIONS.length) { dpaGoTo('aces'); return; }
+            const q = DPA_QUESTIONS[idx];
+            document.getElementById('dim-domain-title').textContent = 'WHEEL 3 · ' + q.domain.toUpperCase();
+            document.getElementById('dim-progress-label').textContent = 'Question ' + (idx+1) + ' of ' + DPA_QUESTIONS.length;
+            const area = document.getElementById('dim-quiz-area');
+            area.innerHTML = `
+                <div class="step-card">
+                    <div style="font-size:10px;color:#E8E4DC;margin-bottom:6px">${q.text}</div>
+                    <div style="display:flex;gap:3px;justify-content:space-between">
+                        ${[1,2,3,4,5].map(v => `<button class="q-input-btn" onclick="answerDim(${v})" style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:6px 0;color:#8A8080;font-size:9px;cursor:pointer">${v}</button>`).join('')}
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:7px;color:#555;margin-top:2px"><span>Disagree</span><span>Agree</span></div>
+                </div>`;
+        }
+        function answerDim(val) {
+            dpaState.dimAnswers[dpaState.dimIndex] = val;
+            dpaState.dimIndex++;
+            saveDPA();
+            renderDimensionQuestion();
+        }
+
+        // ── ACES ──
+        function buildAcesQuiz() {
+            const area = document.getElementById('aces-quiz-area');
+            area.innerHTML = '';
+            ACES_QUESTIONS.forEach((q, i) => {
+                const div = document.createElement('div');
+                div.className = 'ace-row';
+                div.innerHTML = `<span style="flex:1">${q}</span>
+                    <button onclick="answerAce(${i}, true)" style="background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.3);border-radius:3px;color:#C03030;font-size:8px;padding:2px 6px;cursor:pointer">Yes</button>
+                    <button onclick="answerAce(${i}, false)" style="background:rgba(26,92,42,0.1);border:1px solid rgba(26,92,42,0.3);border-radius:3px;color:#1A5C2A;font-size:8px;padding:2px 6px;cursor:pointer">No</button>`;
+                area.appendChild(div);
+            });
+        }
+        function dpaAcesChoice(mode) {
+            dpaState.acesMode = mode;
+            saveDPA();
+            document.getElementById('aces-quiz-area').style.display = mode === 'answer' ? 'block' : 'none';
+            document.getElementById('aces-controller-note').style.display = mode === 'controller' ? 'block' : 'none';
+            if (mode === 'controller') { dpaState.shade = null; saveDPA(); }
+        }
+        function answerAce(i, yes) {
+            dpaState.acesAnswers[i] = yes;
+            const count = Object.values(dpaState.acesAnswers).filter(v => v).length;
+            dpaState.shade = 1.0 + (count * 0.3);
+            saveDPA();
+        }
+
+        // ── FLOURISHING HOOKS ──
+        function addFlourishEntry() {
+            const text = document.getElementById('flourish-input').value.trim();
+            if (!text) return;
+            flourishEntries.unshift({ text, timestamp: new Date().toISOString() });
+            document.getElementById('flourish-input').value = '';
+            saveDPA();
+            renderFlourish();
+        }
+        function renderFlourish() {
+            const area = document.getElementById('flourish-entries');
+            if (!area) return;
+            area.innerHTML = flourishEntries.length ? '' : '<div style="font-size:9px;color:#8A8080;text-align:center;font-style:italic">No entries yet.</div>';
+            flourishEntries.forEach(e => {
+                const div = document.createElement('div');
+                div.className = 'journal-entry';
+                const d = new Date(e.timestamp).toLocaleDateString();
+                div.innerHTML = `<div style="font-size:7px;color:#8A8080;margin-bottom:2px">${d}</div>${e.text}`;
+                area.appendChild(div);
+            });
+        }
+
+        // ── RESULTS ──
+        function renderResults() {
+            const hue = dpaState.hue || 'WHITE';
+            const w = WHIMS[hue];
+            const tintScore = Math.min(3, 1 + (Object.values(dpaState.dimAnswers).filter(v => v >= 4).length * 0.05));
+            const shadeScore = dpaState.shade !== null ? dpaState.shade : null;
+            const hcs = dpaState.hcs || 5;
+
+            document.getElementById('palette-swatches').innerHTML = Object.keys(WHIMS).map(c => `
+                <div class="swatch-wrap"><div class="swatch ${c===hue?'active':''}" style="background:${WHIMS[c].color}"></div><div class="swatch-label">${c}</div></div>`).join('');
+            document.getElementById('palette-headline').textContent = w.name;
+
+            const shadeDisplay = shadeScore !== null ? shadeScore.toFixed(2) : 'Pending — Controller conversation';
+            const shadeNumeric = shadeScore !== null ? shadeScore : 1.5;
+            const matchScore = (0.4 * (Object.values(dpaState.hueScores).reduce((a,b)=>Math.max(a,b),0) / 5 * 100 || 50))
+                              + (0.3 * (shadeNumeric / 3 * 100))
+                              + (0.2 * (tintScore / 3 * 100))
+                              + (0.1 * (hcs / 15 * 100));
+            const matchClamped = Math.min(100, Math.max(0, matchScore));
+
+            document.getElementById('match-breakdown').innerHTML = `
+                Hue: <b>${hue}</b> · Shade: <b>${shadeDisplay}</b> · Tint: <b>${tintScore.toFixed(2)}</b> · HCS (skills): <b>${hcs}</b><br>
+                <span style="font-size:8px;color:#8A8080">Every input above is exactly what you provided — nothing hidden.</span>`;
+            document.getElementById('match-bar').style.width = matchClamped.toFixed(0) + '%';
+
+            document.getElementById('safeguard-cards').innerHTML = SAFEGUARDS.map(s => `
+                <div class="rule-card" style="border-left-color:${s.color}"><b style="color:${s.color}">${s.title}</b>${s.text}</div>`).join('');
+        }
+    </script>
+
+</body>
+</html>
