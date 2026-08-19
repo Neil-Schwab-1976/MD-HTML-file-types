@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LRP 🌉 'N G.A.P.S.</title>
+    <style>
+        /* ── RESET & BASE ─────────────────────────────────────────────── */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Georgia, serif;
+            background: #f5f2ed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            flex-wrap: wrap;
+            gap: 48px;
+            color: #1e1e2a;
+        }
+
+        /* ── DEVICE SHELL ─────────────────────────────────────────────── */
+        .device-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .device-glow {
+            position: absolute;
+            inset: -30px;
+            background: radial-gradient(ellipse at 50% 30%, rgba(30, 60, 90, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .device {
+            position: relative;
+            width: 240px;
+            background: linear-gradient(165deg, #2c2c34 0%, #1a1a22 100%);
+            border-radius: 36px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            padding: 8px;
+        }
+
+        .device-inner {
+            background: #0d111a;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        }
+
+        /* ── COVER ──────────────────────────────────────────────────────── */
+        .cover {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            background: linear-gradient(160deg, #1e222d 0%, #141820 100%);
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 32px 16px 22px;
+            transform: translateY(0);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        }
+
+        .cover.open {
+            transform: translateY(-101%);
+        }
+
+        .cover-brand {
+            text-align: center;
+            margin-top: 4px;
+        }
+        .cover-brand .title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.07);
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+        }
+        .cover-brand .sub {
+            font-size: 7px;
+            letter-spacing: 0.25em;
+            color: rgba(255, 255, 255, 0.05);
+            text-transform: uppercase;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .cover-ring {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+        .cover-ring-inner {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 40%, rgba(212, 168, 32, 0.15), rgba(212, 168, 32, 0.02));
+            border: 1px solid rgba(212, 168, 32, 0.12);
+        }
+
+        .cover-btn {
+            background: rgba(212, 168, 32, 0.08);
+            border: 1px solid rgba(212, 168, 32, 0.2);
+            border-radius: 8px;
+            padding: 7px 18px;
+            color: #d4a820;
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .cover-btn:hover {
+            background: rgba(212, 168, 32, 0.15);
+            border-color: rgba(212, 168, 32, 0.35);
+        }
+
+        /* ── SCREEN AREA ──────────────────────────────────────────────── */
+        .screen {
+            background: #0d111a;
+            width: 100%;
+            aspect-ratio: 1 / 1.12;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 10%, rgba(31, 126, 161, 0.06) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ── STATUS BAR ────────────────────────────────────────────────── */
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+            z-index: 4;
+            font-size: 7px;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .status-l {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .status-dot {
+            color: #34c759;
+            font-size: 8px;
+        }
+        .status-r {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        /* ── MODE TOGGLE ───────────────────────────────────────────────── */
+        .mode-toggle {
+            position: absolute;
+            top: 16px;
+            right: 10px;
+            z-index: 5;
+            display: flex;
+            gap: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .mode-btn {
+            background: transparent;
+            border: none;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 7px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background: rgba(31, 126, 161, 0.2);
+            color: #1f7ea1;
+            box-shadow: 0 0 8px rgba(31, 126, 161, 0.15);
+        }
+        .mode-btn:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* ── SCREEN CONTENT ───────────────────────────────────────────── */
+        .screen-content {
+            position: absolute;
+            inset: 0;
+            padding-top: 14px;
+            z-index: 2;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 14px 8px 8px;
+        }
+
+        /* ── KEYPAD ────────────────────────────────────────────────────── */
+        .keypad {
+            background: linear-gradient(180deg, #1a1a1e, #141418);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            padding: 6px 8px;
+        }
+        .key {
+            background: #242428;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            padding: 5px 0;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            transition: transform 0.1s;
+        }
+        .key:active {
+            transform: translateY(1px);
+        }
+
+        /* ── SIDE BUTTONS ─────────────────────────────────────────────── */
+        .side-btn {
+            position: absolute;
+            right: -4px;
+            width: 5px;
+            background: linear-gradient(90deg, #2a2a2e, #343438);
+            border-radius: 0 3px 3px 0;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.4);
+        }
+        .side-btn1 {
+            top: 33%;
+            height: 26px;
+        }
+        .side-btn2 {
+            top: 52%;
+            height: 17px;
+        }
+
+        /* ── STRAPS ────────────────────────────────────────────────────── */
+        .strap {
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            height: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .strap-top {
+            top: -46px;
+            background: linear-gradient(180deg, #191920, #252528);
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.4);
+        }
+        .strap-bot {
+            bottom: -46px;
+            background: linear-gradient(180deg, #252528, #191920);
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+        .strap-hole {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .strap-buckle {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 5px;
+            width: 17px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        /* ── COMMON SCREEN STYLES ────────────────────────────────────── */
+        .scr {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            padding: 6px 6px 8px;
+            gap: 4px;
+            font-size: 11px;
+            overflow-y: auto;
+        }
+        .scr.active {
+            display: flex;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            flex-shrink: 0;
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            padding: 2px 7px;
+            color: #8a8080;
+            font-size: 10px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .topbar-title {
+            font-size: 10px;
+            color: #8a8080;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .box {
+            border-left: 3px solid;
+            border-radius: 0 6px 6px 0;
+            padding: 5px 8px;
+            margin-bottom: 4px;
+            font-size: 9px;
+            line-height: 1.4;
+        }
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+        }
+        .grid-btn {
+            border: 1px solid;
+            border-radius: 7px;
+            padding: 6px 4px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .grid-btn span:first-child {
+            font-size: 13px;
+        }
+        .grid-btn span:last-child {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .list-btn {
+            border: 1px solid;
+            border-left: 3px solid;
+            border-radius: 0 5px 5px 0;
+            padding: 6px 9px;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            color: #e8e4dc;
+            width: 100%;
+        }
+        .list-btn-icon {
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+        .list-btn-t {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 1px;
+        }
+        .list-btn-s {
+            font-size: 9px;
+            color: #8a8080;
+        }
+
+        .scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .action-btn {
+            border: 1px solid;
+            border-radius: 5px;
+            padding: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            background: transparent;
+        }
+        .label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .detail {
+            font-size: 9px;
+            color: #8a8080;
+            line-height: 1.4;
+        }
+        .body-text {
+            font-size: 10px;
+            color: #e8e4dc;
+            line-height: 1.5;
+        }
+        .center {
+            text-align: center;
+        }
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        /* ── CLIENT MODE SPECIFICS ────────────────────────────────────── */
+        .client-journal {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            font-size: 9px;
+            line-height: 1.5;
+        }
+        .client-journal-entry {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 4px 0;
+            color: #c8c4dc;
+        }
+        .client-journal-entry .who {
+            font-weight: 600;
+            color: #d4a820;
+        }
+
+        .shared-breath {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 0;
+        }
+        .breath-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #1f7ea1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 1s ease-in-out;
+            background: radial-gradient(circle, rgba(31, 126, 161, 0.1), transparent);
+        }
+        .breath-circle span {
+            font-size: 22px;
+            font-weight: 900;
+            color: #1f7ea1;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ── PANEL (side info) ────────────────────────────────────────── */
+        .panel {
+            max-width: 260px;
+            font-family: 'Inter', sans-serif;
+            color: rgba(0, 0, 0, 0.6);
+        }
+        .panel-tag {
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #1f7ea1;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .panel-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1e1e2a;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+        .panel-desc {
+            font-size: 11px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            color: rgba(0, 0, 0, 0.55);
+        }
+        .panel-features {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+        .feat {
+            display: flex;
+            gap: 9px;
+            align-items: flex-start;
+        }
+        .feat-icon {
+            font-size: 13px;
+            margin-top: 1px;
+        }
+        .feat-title {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.75);
+            font-weight: 700;
+        }
+        .feat-sub {
+            font-size: 9px;
+            color: rgba(0, 0, 0, 0.4);
+        }
+        .controls {
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            padding-top: 12px;
+        }
+        .ctrl-label {
+            font-size: 9px;
+            color: rgba(0, 0, 0, 0.35);
+            margin-bottom: 7px;
+        }
+        .day-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .day-btn {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
+            padding: 3px 8px;
+            color: #1e1e2a;
+            font-size: 10px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .day-display {
+            font-size: 17px;
+            color: #d4a820;
+            font-weight: 900;
+            min-width: 36px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+        }
+        .ctrl-btns {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .ctrl-open-btn {
+            background: rgba(212, 168, 32, 0.09);
+            border: 1px solid rgba(212, 168, 32, 0.26);
+            border-radius: 5px;
+            padding: 5px 12px;
+            color: #d4a820;
+            font-size: 9px;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+        .ctrl-reset-btn {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 5px;
+            padding: 5px 12px;
+            color: rgba(0, 0, 0, 0.35);
+            font-size: 9px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .ctrl-note {
+            font-size: 9px;
+            color: rgba(0, 0, 0, 0.25);
+            line-height: 1.6;
+        }
+
+        /* ── SCROLLBAR ────────────────────────────────────────────────── */
+        .screen-content::-webkit-scrollbar,
+        .scroll-area::-webkit-scrollbar {
+            width: 2px;
+        }
+        .screen-content::-webkit-scrollbar-track,
+        .scroll-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .screen-content::-webkit-scrollbar-thumb,
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ── DEVICE ────────────────────────────────────────────────── -->
+    <div class="device-wrapper">
+        <div class="device-glow"></div>
+        <div class="device">
+            <div class="strap strap-top">
+                <div class="strap-hole" style="top:10px"></div>
+                <div class="strap-hole" style="top:18px"></div>
+                <div class="strap-hole" style="top:26px"></div>
+            </div>
+            <div class="device-inner">
+                <!-- COVER -->
+                <div class="cover" id="cover">
+                    <div class="cover-brand">
+                        <div class="title" style="font-size:13px;letter-spacing:0.08em">LRP 🌉 'N G.A.P.S.</div>
+                        <div class="sub">LIGHTHOUSE RESILIENCE PROGRAM</div>
+                    </div>
+                    <div class="cover-ring"><div class="cover-ring-inner"></div></div>
+                    <button class="cover-btn" onclick="openCover()">OPEN LRP ↑</button>
+                </div>
+
+                <!-- SCREEN -->
+                <div class="screen">
+                    <div class="screen-glow"></div>
+                    <!-- Status Bar -->
+                    <div class="status-bar">
+                        <span class="status-l"><span class="status-dot">●</span> LRP·GAPS</span>
+                        <span class="status-r" id="clock">--:--</span>
+                    </div>
+
+                    <!-- Mode Toggle -->
+                    <div class="mode-toggle" id="modeToggle">
+                        <button class="mode-btn active" data-mode="worker" onclick="setMode('worker')">Worker</button>
+                        <button class="mode-btn" data-mode="client" onclick="setMode('client')">Client</button>
+                    </div>
+
+                    <!-- SCREEN CONTENT -->
+                    <div class="screen-content" id="screenContent">
+                        <!-- ========================== WORKER MODE ========================== -->
+                        <div id="s-home" class="scr active">
+                            <div style="display:flex;justify-content:space-between;align-items:center">
+                                <span style="font-size:9px;color:#8a8080;letter-spacing:.07em">LRP 🌉 'N G.A.P.S.</span>
+                                <span style="font-size:9px;color:#34c759">● ACTIVE</span>
+                            </div>
+                            <div style="text-align:center;padding:4px 0">
+                                <div style="font-size:10px;color:#8a8080" id="greeting">Good morning</div>
+                                <div style="font-size:26px;font-weight:900;color:#d4a820;font-family:'Inter',sans-serif;line-height:1.1" id="day-display">Slow Soak · Day 47</div>
+                                <div style="font-size:8px;letter-spacing:.04em" id="tier-label"></div>
+                            </div>
+                            <div class="box" id="home-tip" style="border-color:#c03030;background:rgba(192,48,48,0.1);color:#8a8080"></div>
+                            <div class="btn-row">
+                                <button class="grid-btn" style="border-color:rgba(176,120,32,0.38);background:rgba(176,120,32,0.11)" onclick="go('halt')"><span>⚡</span><span style="color:#b07820">HALT</span></button>
+                                <button class="grid-btn" style="border-color:rgba(31,126,161,0.38);background:rgba(31,126,161,0.11)" onclick="go('breath')"><span>🌬</span><span style="color:#1f7ea1">Breath</span></button>
+                                <button class="grid-btn" style="border-color:rgba(90,173,204,0.38);background:rgba(90,173,204,0.11)" onclick="go('tier')"><span>🌊</span><span style="color:#5aadcc">Slow Soak</span></button>
+                                <button class="grid-btn" style="border-color:rgba(26,92,42,0.38);background:rgba(26,92,42,0.11)" onclick="go('checkin')"><span>✓</span><span style="color:#1a5c2a">Check-In</span></button>
+                                <button class="grid-btn" style="border-color:rgba(212,168,32,0.38);background:rgba(212,168,32,0.11)" onclick="go('beachcomb')"><span>🐚</span><span style="color:#d4a820">Beachcomb</span></button>
+                                <button class="grid-btn" style="border-color:rgba(123,78,166,0.38);background:rgba(123,78,166,0.11)" onclick="go('library')"><span>📚</span><span style="color:#7b4ea6">Library</span></button>
+                                <button class="grid-btn" style="border-color:rgba(31,126,161,0.38);background:rgba(31,126,161,0.11)" onclick="go('uip')"><span>🔷</span><span style="color:#1f7ea1">Protocol</span></button>
+                                <button class="grid-btn" style="border-color:rgba(46,116,181,0.38);background:rgba(46,116,181,0.11)" onclick="go('tfb')"><span>🔗</span><span style="color:#2e74b5">T-F-B Chain</span></button>
+                            </div>
+                            <button onclick="go('dialogue')" style="background:rgba(212,168,32,0.08);border:1px solid rgba(212,168,32,0.25);border-radius:5px;padding:4px 8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;width:100%;font-family:'Inter',sans-serif;margin-bottom:2px">
+                                <span style="font-size:9px;color:#d4a820;font-weight:700">💬 Dialogue</span>
+                                <span style="font-size:9px;color:#8a8080">Full shared thread</span>
+                            </button>
+                            <button onclick="go('sos')" style="background:rgba(192,48,48,0.08);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:4px 8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;width:100%;font-family:'Inter',sans-serif">
+                                <span style="font-size:9px;color:#c03030;font-weight:700">🆘 NEED SUPPORT</span>
+                                <span style="font-size:9px;color:#8a8080">Controller · 988</span>
+                            </button>
+                        </div>
+
+                        <!-- HALT (Worker) -->
+                        <div id="s-halt" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">HALT CHECK</span></div>
+                            <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:2px">Not just your clients' instrument. Yours too.</div>
+                            <div id="halt-rows"></div>
+                            <div style="border-radius:6px;padding:5px 8px;text-align:center;margin-top:2px" id="halt-result">
+                                <div style="font-size:8px;color:#8a8080">VULNERABILITY</div>
+                                <div style="font-size:18px;font-weight:900;font-family:'Inter',sans-serif" id="halt-risk-label">—</div>
+                                <div style="font-size:8px;color:#8a8080" id="halt-total">Total 0/20</div>
+                            </div>
+                            <div id="halt-tip" style="display:none;background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:5px 8px;font-size:9px;color:#c03030;line-height:1.35">High HALT detected. One-Breath Reset now. Contact your Controller before your next client contact.</div>
+                            <button id="halt-breath-btn" style="display:none;background:rgba(31,126,161,0.12);border:1px solid rgba(31,126,161,0.3);border-radius:5px;padding:5px;color:#1f7ea1;font-size:9px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif" onclick="go('breath')">→ BREATH RESET</button>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-HALT" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('HALT','dlg-HALT')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BREATH (Worker) -->
+                        <div id="s-breath" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="stopBreath()">←</button><span class="topbar-title">ONE-BREATH RESET</span></div>
+                            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+                                <div class="breath-circle" id="breath-circle" style="width:68px;height:68px;border-color:#1f7ea1;background:radial-gradient(circle,rgba(31,126,161,0.1),transparent)">
+                                    <span style="font-size:18px;font-weight:900;color:#1f7ea1;font-family:'Inter',sans-serif" id="breath-num">◉</span>
+                                </div>
+                                <div style="font-size:11px;font-weight:700;letter-spacing:.09em;color:#1f7ea1" id="breath-label">ONE-BREATH RESET</div>
+                                <div style="font-size:9px;color:#8a8080" id="breath-sub">4 in · 2 hold · 6 out · 3 cycles</div>
+                                <button id="breath-start-btn" onclick="startBreath()" style="background:rgba(31,126,161,0.15);border:1px solid rgba(31,126,161,0.35);border-radius:6px;padding:5px 14px;color:#1f7ea1;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">START</button>
+                                <div id="breath-done-msg" style="display:none;font-size:9px;color:#8a8080;text-align:center;line-height:1.5">Parasympathetic activated.<br>Nervous system co-regulating.</div>
+                            </div>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-Breath" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('Breath','dlg-Breath')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLOW SOAK MAP (Worker) -->
+                        <div id="s-tier" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('tier')">←</button><span class="topbar-title" id="tier-screen-title">SLOW SOAK MAP</span></div>
+                            <div id="tier-list-area" style="font-size:9px;color:#8a8080;text-align:center;margin-bottom:2px"></div>
+                            <div class="scroll-area" id="tier-content"></div>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-SlowSoak" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('SlowSoak','dlg-SlowSoak')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CHECK-IN (Worker) -->
+                        <div id="s-checkin" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">DAILY CHECK-IN</span></div>
+                            <div id="checkin-content" style="flex:1;display:flex;flex-direction:column;gap:6px"></div>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-CheckIn" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('CheckIn','dlg-CheckIn')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BEACHCOMBING (Worker) -->
+                        <div id="s-beachcomb" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">BEACHCOMBING</span></div>
+                            <div style="font-size:9px;color:#8a8080;line-height:1.5;margin-bottom:6px">The closing ritual of every day in the field. Walk the shoreline of what happened. Pick up what's worth keeping. Leave the rest at the tideline.</div>
+                            <div class="scroll-area" id="beachcomb-content"></div>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-Beachcombing" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('Beachcombing','dlg-Beachcombing')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UIP (Worker) -->
+                        <div id="s-uip" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">INTERRUPTION PROTOCOL</span></div>
+                            <div style="font-size:9px;color:#8a8080;text-align:center;margin-bottom:2px">For overwhelm, compassion fatigue, or a boundary slipping</div>
+                            <div class="scroll-area" id="uip-content"></div>
+                            <button onclick="startUIP()" style="background:rgba(31,126,161,0.12);border:1px solid rgba(31,126,161,0.3);border-radius:5px;padding:6px;color:#1f7ea1;font-weight:700;font-size:10px;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0">▶ RUN FULL PROTOCOL</button>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-Protocol" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('Protocol','dlg-Protocol')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- T-F-B (Worker) -->
+                        <div id="s-tfb" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">T-F-B CHAIN</span></div>
+                            <div style="font-size:9px;color:#8a8080;line-height:1.5;margin-bottom:8px">The core CBT model applied to YOUR chain — the practitioner's, not just the client's. Tap any link to explore it.</div>
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;margin-bottom:10px">
+                                <div id="tfb-trigger-box" onclick="tfbSelect('trigger')" style="width:100%;background:rgba(176,120,32,0.10);border:2px solid #b07820;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                                    <div style="font-size:10px;color:#b07820;font-weight:700;margin-bottom:2px">① TRIGGER</div>
+                                    <div style="font-size:9px;color:#e8e4dc;line-height:1.4">The activating event — a call, a relapse, an outcome outside your control</div>
+                                </div>
+                                <div style="font-size:14px;color:#4a4a4a">↓</div>
+                                <div id="tfb-thought-box" onclick="tfbSelect('thought')" style="width:100%;background:rgba(192,48,48,0.10);border:2px solid #c03030;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                                    <div style="font-size:10px;color:#c03030;font-weight:700;margin-bottom:2px">② AUTOMATIC THOUGHT</div>
+                                    <div style="font-size:9px;color:#e8e4dc;line-height:1.4">The fast, reflexive thing your mind says — so quick you mistake it for fact</div>
+                                </div>
+                                <div style="font-size:14px;color:#4a4a4a">↓</div>
+                                <div id="tfb-feeling-box" onclick="tfbSelect('feeling')" style="width:100%;background:rgba(123,78,166,0.10);border:2px solid #7b4ea6;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                                    <div style="font-size:10px;color:#7b4ea6;font-weight:700;margin-bottom:2px">③ FEELING</div>
+                                    <div style="font-size:9px;color:#e8e4dc;line-height:1.4">The emotion that follows the thought — not the event itself</div>
+                                </div>
+                                <div style="font-size:14px;color:#4a4a4a">↓</div>
+                                <div id="tfb-behaviour-box" onclick="tfbSelect('behaviour')" style="width:100%;background:rgba(26,92,42,0.10);border:2px solid #1a5c2a;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                                    <div style="font-size:10px;color:#1a5c2a;font-weight:700;margin-bottom:2px">④ BEHAVIOUR</div>
+                                    <div style="font-size:9px;color:#e8e4dc;line-height:1.4">What you do — overwork, withdraw, snap, reach out, take it home</div>
+                                </div>
+                                <div style="font-size:14px;color:#4a4a4a">↓</div>
+                                <div id="tfb-consequence-box" onclick="tfbSelect('consequence')" style="width:100%;background:rgba(31,126,161,0.10);border:2px solid #1f7ea1;border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.2s">
+                                    <div style="font-size:10px;color:#1f7ea1;font-weight:700;margin-bottom:2px">⑤ CONSEQUENCE</div>
+                                    <div style="font-size:9px;color:#e8e4dc;line-height:1.4">What happens as a result — and what it reinforces in the chain</div>
+                                </div>
+                            </div>
+                            <div id="tfb-detail" style="display:none;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:8px 10px;margin-bottom:8px">
+                                <div id="tfb-detail-title" style="font-size:10px;font-weight:700;margin-bottom:4px"></div>
+                                <div id="tfb-detail-body" style="font-size:9px;color:#e8e4dc;line-height:1.6"></div>
+                            </div>
+                            <div style="background:rgba(212,168,32,0.08);border:1px solid rgba(212,168,32,0.24);border-radius:7px;padding:7px 10px;margin-bottom:6px">
+                                <div style="font-size:10px;color:#d4a820;font-weight:700;margin-bottom:3px">THE GAP — Where Choice Lives</div>
+                                <div style="font-size:9px;color:#e8e4dc;line-height:1.5">Between ② and ③ there is a space. That space is where the Fish Bowl Method lives. You are not your thought. You are the one watching the thought. In that gap — however small — you have a choice.</div>
+                                <div style="font-size:9px;color:#8a8080;font-style:italic;margin-top:3px">Frankl: "Between stimulus and response there is a space. In that space is our power to choose."</div>
+                            </div>
+                            <button onclick="go('library')" style="background:rgba(90,173,204,0.08);border:1px solid rgba(90,173,204,0.3);border-radius:5px;padding:4px 10px;color:#5aadcc;font-size:9px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;width:100%">→ LIBRARY: ABC THOUGHT RECORD</button>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-TFBChain" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('TFBChain','dlg-TFBChain')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SOS (Worker) -->
+                        <div id="s-sos" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">SUPPORT</span></div>
+                            <div style="flex:1;display:flex;flex-direction:column;gap:4px;justify-content:center">
+                                <button class="sos-btn" onclick="sosPressed(this,'ctrl')" style="background:rgba(31,126,161,0.08);border:1px solid rgba(31,126,161,0.25);border-radius:6px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;color:#e8e4dc;width:100%"><span style="font-size:15px">👥</span><div><div style="font-size:10px;color:#1f7ea1;font-weight:700">Controller Check-In</div><div style="font-size:9px;color:#8a8080">Your node — always reachable</div></div></button>
+                                <button class="sos-btn" onclick="sosPressed(this,'buddy')" style="background:rgba(26,92,42,0.08);border:1px solid rgba(26,92,42,0.25);border-radius:6px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;color:#e8e4dc;width:100%"><span style="font-size:15px">🤝</span><div><div style="font-size:10px;color:#1a5c2a;font-weight:700">Peer Debrief</div><div style="font-size:9px;color:#8a8080">Call your buddy. Don't carry it solo.</div></div></button>
+                                <button class="sos-btn" onclick="go('breath')" style="background:rgba(176,120,32,0.08);border:1px solid rgba(176,120,32,0.25);border-radius:6px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;color:#e8e4dc;width:100%"><span style="font-size:15px">🌬</span><div><div style="font-size:10px;color:#b07820;font-weight:700">One-Breath Reset</div><div style="font-size:9px;color:#8a8080">Activate right now</div></div></button>
+                                <button class="sos-btn" onclick="go('uip')" style="background:rgba(123,78,166,0.08);border:1px solid rgba(123,78,166,0.25);border-radius:6px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;color:#e8e4dc;width:100%"><span style="font-size:15px">🔷</span><div><div style="font-size:10px;color:#7b4ea6;font-weight:700">Full Protocol</div><div style="font-size:9px;color:#8a8080">Run all 6 interruption steps</div></div></button>
+                                <button class="sos-btn" onclick="sosPressed(this,'988')" style="background:rgba(192,48,48,0.08);border:1px solid rgba(192,48,48,0.25);border-radius:6px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;color:#e8e4dc;width:100%"><span style="font-size:15px">📞</span><div><div style="font-size:10px;color:#c03030;font-weight:700">988 Suicide &amp; Crisis</div><div style="font-size:9px;color:#8a8080">Call or text — 24/7 free. Your crisis matters too.</div></div></button>
+                            </div>
+                            <div id="sos-confirm" style="display:none;background:rgba(26,92,42,0.12);border:1px solid rgba(26,92,42,0.3);border-radius:5px;padding:5px 8px;font-size:9px;color:#1a5c2a;text-align:center;line-height:1.4">Controller notified. You are not alone.</div>
+                        </div>
+
+                        <!-- DIALOGUE (Worker-side viewer of the shared thread) -->
+                        <div id="s-dialogue" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('home')">←</button><span class="topbar-title">DIALOGUE</span></div>
+                            <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:4px">Every note added from any area, both modes, in one shared thread.</div>
+                            <div id="dialogue-entries" class="scroll-area" style="max-height:180px;border:1px solid rgba(255,255,255,0.06);border-radius:5px;padding:4px 6px;margin-bottom:4px"></div>
+                            <div style="display:flex;gap:4px">
+                                <input id="dlg-General" placeholder="Add a general note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:10px;font-family:'Inter',sans-serif">
+                                <button onclick="addDialogueNote('General','dlg-General')" style="background:rgba(212,168,32,0.1);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                            </div>
+                        </div>
+
+                        <!-- LIBRARY (Worker) -->
+                        <div id="s-library" class="scr">
+                            <div class="topbar"><button class="back-btn" id="lib-back" onclick="libBack()">←</button><span class="topbar-title" id="lib-title">KNOWLEDGE BASE</span></div>
+                            <div id="lib-sub" style="font-size:9px;color:#8a8080;text-align:center;margin-bottom:2px">Full LRP knowledge base — tap any section</div>
+                            <div class="scroll-area" id="lib-content"></div>
+                        </div>
+
+                        <!-- ========================== CLIENT MODE ========================== -->
+                        <div id="s-client-home" class="scr">
+                            <div style="display:flex;justify-content:space-between;align-items:center">
+                                <span style="font-size:9px;color:#8a8080;letter-spacing:.07em">G.A.P.S. · CLIENT</span>
+                                <span style="font-size:9px;color:#34c759">● CONNECTED</span>
+                            </div>
+                            <div style="text-align:center;padding:4px 0">
+                                <div style="font-size:14px;font-weight:700;color:#d4a820;font-family:'Inter',sans-serif;line-height:1.2">Shared Space</div>
+                                <div style="font-size:8px;color:#8a8080">Worker &amp; Client together</div>
+                            </div>
+                            <div class="btn-row">
+                                <button class="grid-btn" style="border-color:rgba(31,126,161,0.38);background:rgba(31,126,161,0.11)" onclick="go('c-breath')"><span>🌬</span><span style="color:#1f7ea1">Co‑Breath</span></button>
+                                <button class="grid-btn" style="border-color:rgba(176,120,32,0.38);background:rgba(176,120,32,0.11)" onclick="go('c-fish')"><span>🐟</span><span style="color:#b07820">Fish Bowl</span></button>
+                                <button class="grid-btn" style="border-color:rgba(26,92,42,0.38);background:rgba(26,92,42,0.11)" onclick="go('c-checkin')"><span>✓</span><span style="color:#1a5c2a">Check‑In</span></button>
+                                <button class="grid-btn" style="border-color:rgba(212,168,32,0.38);background:rgba(212,168,32,0.11)" onclick="go('c-journal')"><span>📓</span><span style="color:#d4a820">Journal</span></button>
+                                <button class="grid-btn" style="border-color:rgba(123,78,166,0.38);background:rgba(123,78,166,0.11)" onclick="go('c-library')"><span>📚</span><span style="color:#7b4ea6">Library</span></button>
+                                <button class="grid-btn" style="border-color:rgba(90,173,204,0.38);background:rgba(90,173,204,0.11)" onclick="go('c-paws')"><span>🧠</span><span style="color:#5aadcc">PAWS Map</span></button>
+                            </div>
+                            <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:6px 8px;font-size:9px;color:#8a8080;line-height:1.4;margin-top:4px">
+                                <div style="font-weight:700;color:#d4a820;margin-bottom:2px">📌 Today's shared intention</div>
+                                <div id="client-intention">To be present together.</div>
+                            </div>
+                            <button onclick="go('c-journal')" style="background:rgba(90,173,204,0.08);border:1px solid rgba(90,173,204,0.3);border-radius:5px;padding:4px 8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;width:100%;font-family:'Inter',sans-serif;margin-top:4px">
+                                <span style="font-size:9px;color:#5aadcc;font-weight:700">📝 Write in shared journal</span>
+                                <span style="font-size:9px;color:#8a8080">worker &amp; client</span>
+                            </button>
+                        </div>
+
+                        <!-- Client Co-Breath -->
+                        <div id="s-c-breath" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('client-home')">←</button><span class="topbar-title">CO‑BREATH</span></div>
+                            <div style="font-size:9px;color:#8a8080;line-height:1.4;text-align:center;margin-bottom:4px">Breathe together — 4 in, 4 out</div>
+                            <div class="shared-breath">
+                                <div class="breath-circle" id="c-breath-circle" style="width:80px;height:80px;border-color:#1f7ea1;background:radial-gradient(circle,rgba(31,126,161,0.1),transparent)">
+                                    <span id="c-breath-num">◉</span>
+                                </div>
+                                <div style="font-size:11px;font-weight:700;color:#1f7ea1" id="c-breath-label">Tap to start</div>
+                                <button id="c-breath-btn" onclick="startClientBreath()" style="background:rgba(31,126,161,0.15);border:1px solid rgba(31,126,161,0.35);border-radius:6px;padding:5px 16px;color:#1f7ea1;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">START</button>
+                            </div>
+                            <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 8px;font-size:9px;color:#8a8080;text-align:center;line-height:1.4">Regulating together — your nervous systems entrain.</div>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-CoBreath" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('CoBreath','dlg-CoBreath')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Client Fish Bowl -->
+                        <div id="s-c-fish" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('client-home')">←</button><span class="topbar-title">FISH BOWL</span></div>
+                            <div style="font-size:9px;color:#8a8080;line-height:1.5;margin-bottom:4px">Name what’s swimming. You are the bowl, not the fish.</div>
+                            <div style="background:rgba(31,126,161,0.08);border:1px solid rgba(31,126,161,0.2);border-radius:6px;padding:8px 10px;margin-bottom:6px">
+                                <div style="font-size:10px;color:#1f7ea1;font-weight:700;margin-bottom:2px">What fish do you notice?</div>
+                                <input id="c-fish-input" placeholder="e.g. worry, anger, hope..." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:4px 6px;color:#e8e4dc;font-size:10px;font-family:'Inter',sans-serif" />
+                                <button onclick="addFish()" style="margin-top:4px;background:rgba(31,126,161,0.12);border:1px solid rgba(31,126,161,0.3);border-radius:4px;padding:3px 10px;color:#1f7ea1;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Add fish</button>
+                            </div>
+                            <div id="c-fish-list" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+                            <div style="margin-top:6px;font-size:9px;color:#8a8080;font-style:italic;text-align:center">You are the bowl. The fish swim. You are not the fish.</div>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-FishBowl" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('FishBowl','dlg-FishBowl')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Client Check-In -->
+                        <div id="s-c-checkin" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('client-home')">←</button><span class="topbar-title">CHECK‑IN</span></div>
+                            <div id="c-checkin-content" style="flex:1;display:flex;flex-direction:column;gap:6px"></div>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-ClientCheckIn" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('ClientCheckIn','dlg-ClientCheckIn')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Client Journal -->
+                        <div id="s-c-journal" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('client-home')">←</button><span class="topbar-title">SHARED JOURNAL</span></div>
+                            <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:4px">Both you and the worker can add notes. Seen by both.</div>
+                            <div id="c-journal-entries" class="scroll-area" style="max-height:150px;border:1px solid rgba(255,255,255,0.06);border-radius:5px;padding:4px 6px;margin-bottom:4px"></div>
+                            <div style="display:flex;gap:4px">
+                                <select id="c-journal-who" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif;flex:1">
+                                    <option value="worker">Worker</option>
+                                    <option value="client">Client</option>
+                                </select>
+                                <input id="c-journal-text" placeholder="Write something..." style="flex:3;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:10px;font-family:'Inter',sans-serif" />
+                                <button onclick="addJournalEntry()" style="background:rgba(212,168,32,0.1);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Post</button>
+                            </div>
+                        </div>
+
+                        <!-- Client Library -->
+                        <div id="s-c-library" class="scr">
+                            <div class="topbar"><button class="back-btn" id="c-lib-back" onclick="clientLibBack()">←</button><span class="topbar-title" id="c-lib-title">LIBRARY</span></div>
+                            <div id="c-lib-sub" style="font-size:9px;color:#8a8080;text-align:center;margin-bottom:2px">Tap any section</div>
+                            <div class="scroll-area" id="c-lib-content"></div>
+                        </div>
+
+                        <!-- CLIENT PAWS MAP -->
+                        <div id="s-c-paws" class="scr">
+                            <div class="topbar"><button class="back-btn" onclick="go('client-home')">←</button><span class="topbar-title" id="c-paws-title">PAWS MAP</span></div>
+                            <div id="c-paws-list-area" style="font-size:9px;color:#8a8080;text-align:center;margin-bottom:2px"></div>
+                            <div class="scroll-area" id="c-paws-content"></div>
+                            <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;margin-top:6px">
+                                <div style="font-size:8px;color:#8a8080;margin-bottom:3px">💬 Note for the dialogue — <span style="color:#d4a820">visible to both</span></div>
+                                <div style="display:flex;gap:4px">
+                                    <input id="dlg-PAWS" placeholder="Add a note..." style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:3px 6px;color:#e8e4dc;font-size:9px;font-family:'Inter',sans-serif">
+                                    <button onclick="addDialogueNote('PAWS','dlg-PAWS')" style="background:rgba(212,168,32,0.12);border:1px solid rgba(212,168,32,0.3);border-radius:4px;padding:3px 8px;color:#d4a820;font-size:9px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- screen-content -->
+
+                    <!-- KEYPAD -->
+                    <div class="keypad">
+                        <button class="key" onclick="keyPress('home')">⌂</button>
+                        <button class="key" onclick="keyPress('up')">↑</button>
+                        <button class="key" onclick="keyPress('ok')">✓</button>
+                        <button class="key" onclick="keyPress('back')">←</button>
+                        <button class="key" onclick="keyPress('down')">↓</button>
+                        <button class="key" onclick="keyPress('cancel')">✕</button>
+                    </div>
+                </div><!-- screen -->
+            </div><!-- device-inner -->
+            <div class="side-btn side-btn1"></div>
+            <div class="side-btn side-btn2"></div>
+            <div class="strap strap-bot">
+                <div class="strap-hole" style="top:6px"></div>
+                <div class="strap-hole" style="top:14px"></div>
+                <div class="strap-hole" style="top:22px"></div>
+                <div class="strap-buckle"></div>
+            </div>
+        </div><!-- device -->
+    </div>
+
+    <!-- ── SIDE PANEL ────────────────────────────────────────────── -->
+    <div class="panel">
+        <div class="panel-tag">LRP 🌉 'N G.A.P.S.</div>
+        <div class="panel-title">LRP 🌉 'N G.A.P.S. — Two‑Way Companion</div>
+        <div class="panel-desc">Developed by Neil Schwab | Lighthouse Resilience Program (LRP) — Worker &amp; Client Companion.<br /><br />
+        <strong>Two modes:</strong> <strong>Worker</strong> (self‑care tools) and <strong>Client</strong> (shared exercises). Toggle at top of the screen. The shared journal, co‑breath, and fish bowl build connection and co‑regulation.</div>
+        <div class="panel-features">
+            <div class="feat"><span class="feat-icon">🔄</span><div><div class="feat-title">Mode Toggle</div><div class="feat-sub">Switch between Worker and Client views</div></div></div>
+            <div class="feat"><span class="feat-icon">🌬</span><div><div class="feat-title">Co‑Breath</div><div class="feat-sub">Breathe together in session</div></div></div>
+            <div class="feat"><span class="feat-icon">🐟</span><div><div class="feat-title">Fish Bowl</div><div class="feat-sub">Name and observe thoughts together</div></div></div>
+            <div class="feat"><span class="feat-icon">📓</span><div><div class="feat-title">Shared Journal</div><div class="feat-sub">Worker and client entries in one place</div></div></div>
+            <div class="feat"><span class="feat-icon">📚</span><div><div class="feat-title">Worker Library</div><div class="feat-sub">Full LRP knowledge base for the practitioner</div></div></div>
+        </div>
+        <div class="controls">
+            <div class="ctrl-label">SIMULATE DAY (Worker Mode):</div>
+            <div class="day-row">
+                <button class="day-btn" onclick="changeDay(-10)">–10</button>
+                <button class="day-btn" onclick="changeDay(-1)">–1</button>
+                <div class="day-display" id="panel-day">47</div>
+                <button class="day-btn" onclick="changeDay(1)">+1</button>
+                <button class="day-btn" onclick="changeDay(10)">+10</button>
+            </div>
+            <div class="ctrl-btns">
+                <button class="ctrl-open-btn" id="cover-toggle-btn" onclick="toggleCover()">OPEN COVER ↑</button>
+                <button class="ctrl-reset-btn" onclick="resetDevice()">RESET</button>
+            </div>
+            <div class="ctrl-note">Open the device → switch modes at the top. Worker tools remain fully functional; Client mode adds shared exercises.</div>
+        </div>
+    </div>
+
+    <script>
+        // ── DATA ──────────────────────────────────────────────────────────────────────
+        // TIER_MAP (Worker) – same as original
+        const TIER_MAP = [{
+            id: 1,
+            name: "Observer Basics & Boundaries as Shoreline",
+            peak: "Months 1–4",
+            color: "#1F7EA1",
+            what: "You're learning to watch your own nervous system the way you'd teach a client to watch theirs. Boundaries are being drawn for the first time in places you didn't know were undefended.",
+            why: "You cannot hold the Fish Bowl stance for a client if you've never practised it on yourself. Tier 1 is where the observer muscle is built — on your own material first.",
+            signs: ["Catching yourself over-functioning before you're asked to", "Noticing the 51% Rule — are you doing more than your share?", "First attempts at naming 'there's fear' instead of 'I am failing'", "Testing a boundary and feeling the guilt that follows"],
+            interrupt: ["Fish Bowl labelling: 'There's [emotion] swimming. It is not me.'", "51% Rule check before taking on any extra task.",
+                "Boundaries as Shoreline: name one thing this week that is not yours to carry.", "Beacon Huddle — say the true thing out loud to your node.",
+                "Beachcombing at the end of the day — every day, no exceptions."
+            ],
+            truth: "Every practitioner who has become a lighthouse started exactly here, clumsily drawing their first line. It gets easier because it becomes structural, not because it becomes less true."
+        }, {
+            id: 2,
+            name: "Pattern Literacy & Alchemy",
+            peak: "Months 5–8",
+            color: "#B07820",
+            what: "You start to see the shape of your own patterns — not just your clients'. The same schema that shows up in their case file is quietly running in your own reactions.",
+            why: "Pattern literacy at this stage means recognising when you are identifying with a client's material instead of observing it, and reframing your own struggles as data instead of verdicts.",
+            signs: ["Taking a client's setback home with you", "Feeling responsible for outcomes that were never yours to control", "Recognising your own schema in someone else's story", "The urge to fix instead of witness"],
+            interrupt: ["Alchemy journaling: 'What is this teaching me?'", "Outcome Detachment ritual — separate your effort from their result.",
+                "Name the schema out loud in supervision, not just in your head.", "Fair Exchange audit: one replenisher for every two depletors this week.",
+                "Beachcombing — sort what's client material from what's your own history surfacing."
+            ],
+            truth: "Seeing your own patterns while holding someone else's is the exact skill that turns a rescue boat into a lighthouse. It is uncomfortable because it is working."
+        }, {
+            id: 3,
+            name: "Co-Regulation Leadership & Sovereign Service",
+            peak: "Months 9–12",
+            color: "#1A5C2A",
+            what: "You're no longer just managing your own regulation — you're becoming a stable point that others co-regulate against. This is the shift from rescue boat to lighthouse.",
+            why: "A lighthouse does not chase ships. It stands steady and lets others find their way by your light. This tier is where that steadiness becomes durable instead of effortful.",
+            signs: ["Others in your node start regulating off your calm, without you doing anything extra", "Mentoring newer workers without absorbing their dysregulation", "Systemic thinking — seeing the policy gap, not just the individual case", "Sustainable pace instead of passion-fuelled overdrive"],
+            interrupt: ["Mentorship without merger — hold the light, don't hand them the flashlight.", "Policy-from-practice notes instead of individual heroics.",
+                "Legacy check: what structure are you leaving that outlives your presence?", "Beachcombing as a taught ritual — pass it to someone earlier in their Slow Soak."
+            ],
+            truth: "The lighthouse doesn't need to be thanked by every ship it guides in. Its job was never to be needed. It was to be steady. That's what Month 12 actually feels like."
+        }];
+
+        const CAPS = [{
+            letter: "G",
+            name: "Gratitude",
+            color: "#D4A820",
+            what: "The intentional redirect of attention from threat to resource. Not toxic positivity — a tactical neurological interrupt of the cortisol-dominant threat scan.",
+            why: "A hard caseload builds a brain that looks for everything wrong. Gratitude physically redirects that scan toward what exists.",
+            practice: ["One thing — not a list. One real, specific, present thing.", "Before a Beacon Huddle: one spoken thing.",
+                "When the fog hits: name one physical sensation that is neutral or good.", "Beachcombing close: what existed today that wasn't nothing?"
+            ],
+            example: "Not 'I'm grateful for my job.' Instead: 'I'm grateful that the coffee was still warm when I finally got to it at 2pm.'"
+        }, {
+            letter: "A",
+            name: "Acceptance",
+            color: "#1F7EA1",
+            what: "The release of energy spent fighting a reality that will not change because it is fought. Not approval. Not defeat. The end of the war with what is.",
+            why: "Resistance to a client's pace, a system's limits, or a colleague's crisis multiplies your suffering without changing any of it. Acceptance frees that energy for actual work.",
+            practice: ["Three-part statement: 'This is real. I did not want this. I accept it anyway.'",
+                "The riverbank: 'The river doesn't carry yesterday's water.'", "Identify what is yours to carry and what must be set down tonight.",
+                "At Beachcombing: one thing you are accepting tonight that you were fighting today."
+            ],
+            example: "'I accept that this client relapsed on my watch and that relapse is data, not verdict. I am not fighting that fact tonight.'"
+        }, {
+            letter: "P",
+            name: "Presence",
+            color: "#1A5C2A",
+            what: "The intentional return to this moment, this body, this session. The gap between stimulus and response where conscious choice lives.",
+            why: "A hard day pulls the mind into the next crisis and the last one simultaneously. Presence is the only moment where anything can actually be done — for them or for you.",
+            practice: ["5-4-3-2-1 Grounding between sessions: 5 see, 4 hear, 3 touch, 2 smell, 1 taste.", "One-Breath Reset: 4 counts in, 2 hold, 6 out.",
+                "10-minute blocks: 'For the next 10 minutes I am doing this one thing.'", "Physical anchor: feel the ground under your feet before you walk into the next room."
+            ],
+            example: "'For the next 10 minutes I am fully in this conversation. Not the 3pm call. Not this morning's file.'"
+        }, {
+            letter: "S",
+            name: "Surrender",
+            color: "#7B4EA6",
+            what: "The recognition of what is yours to carry and what must be set down. Not giving up — the precise identification of your actual domain of responsibility.",
+            why: "Practitioners routinely carry weight that was never theirs — a client's choices, a system's failures, an outcome no one could have controlled. Surrender removes this unnecessary weight without abandoning genuine responsibility.",
+            practice: ["Two-column exercise: What is mine? What is not mine?", "The Serenity anchor: change what you can, release what you cannot.",
+                "Beachcombing, every night: 'I set down what is not mine to carry tonight.'", "Write what you're surrendering on paper and close the journal."
+            ],
+            example: "'I surrender the outcome of tonight's crisis call. I keep what is mine: showing up, staying regulated, making the referral.'"
+        }];
+
+        const UIP = [
+            { num: 1, name: "NAME IT", color: "#1F7EA1",
+            desc: "Say it out loud or write it. 'There is overwhelm.' 'I am absorbing this client's dysregulation.' Naming activates the thinking brain and reduces the emotional brain's dominance." },
+            { num: 2, name: "GROUND THE BODY", color: "#1A5C2A",
+            desc: "One-Breath Reset (4–2–6). Or 5-4-3-2-1 grounding. Or stamp your feet and look at something solid. Bring the body back to now, before you walk into the next room." },
+            { num: 3, name: "MAKE CONTACT", color: "#B07820",
+            desc: "Text or call your Controller, buddy, or anyone in your node. Do this BEFORE the shift ends, not after you've already taken it home. Contact breaks isolation, which is where burnout lives." },
+            { num: 4, name: "APPLY THE CAPACITY", color: "#7B4EA6",
+            desc: "GRATITUDE — if the mind is in future dread\nACCEPTANCE — if you're fighting what already happened\nPRESENCE — if you've left this moment for the next crisis\nSURRENDER — if you're carrying an outcome that isn't yours" },
+            { num: 5, name: "WAIT 20 MINUTES", color: "#FF9500",
+            desc: "The urge to send the hot email, make the heroic call, or fix the unfixable peaks and passes like any other wave. Do not act on a charged impulse before 20 minutes have passed. Set a timer." },
+            { num: 6, name: "DOCUMENT IT", color: "#5AADCC",
+            desc: "One sentence in your journal or a policy-from-practice note: what triggered it, what you did, how it passed. This is data — not judgment. Your next Beachcombing session builds on it." }
+        ];
+
+        const LIB_SECTIONS = [
+            { id: "caps", i: "◈", l: "G.A.P.S. Capacities", s: "Conscious Awareness — four core practices", c: "#D4A820" },
+            { id: "fish", i: "🐟", l: "Fish Bowl Method", s: "Observer stance — the core practice", c: "#1F7EA1" },
+            { id: "tools", i: "🌬", l: "Regulation Tools", s: "Breath · Grounding · Sacred Pause · Beachcombing", c: "#1A5C2A" },
+            { id: "arc", i: "⚠", l: "Rescue Boat → Lighthouse", s: "The 3-stage burnout arc, named early", c: "#B07820" },
+            { id: "dose", i: "⚗", l: "D.O.S.E. Architecture", s: "Why the work replenishes you, structured right", c: "#FF9500" },
+            { id: "halt-lib", i: "⚡", l: "HALT Framework", s: "Hungry · Angry · Lonely · Tired", c: "#5AADCC" },
+            { id: "abc", i: "📋", l: "ABC Thought Record", s: "Dispute the automatic thought", c: "#1F7EA1" },
+            { id: "distort", i: "🔍", l: "Cognitive Distortions", s: "6 patterns that drive practitioner burnout", c: "#1A5C2A" },
+            { id: "uip-lib", i: "🔷", l: "Interruption Protocol", s: "6-step emergency navigation", c: "#7B4EA6" },
+            { id: "dbt", i: "🧩", l: "DBT Skills", s: "Mindfulness · Distress Tolerance · Emotion Regulation · Interpersonal Effectiveness", c: "#C03030" },
+            { id: "worked-ex", i: "📖", l: "Worked Examples", s: "What using this app actually looks like", c: "#5AADCC" },
+        ];
+
+        // ── STATE ─────────────────────────────────────────────────────────────────────
+        let currentDay = 47;
+        let currentMode = 'worker';
+        let currentScreen = 'home';
+        let coverOpen = false;
+        let haltScores = { H: 0, A: 0, L: 0, T: 0 };
+        let breathPhase = 'idle';
+        let breathCount = 0;
+        let breathCycles = 0;
+        let breathTimer = null;
+        let uipStep = null;
+        let libStack = [];
+        let checkinStep = 0;
+        let checkinAnswers = {};
+        let tierDetailId = null;
+
+        // Client shared state
+        let clientJournal = [
+            { who: 'worker', text: 'Welcome to our shared space. Let’s breathe together.' },
+            { who: 'client', text: 'Feeling a bit nervous but glad we’re here.' }
+        ];
+        let clientFish = ['worry', 'hope', 'curiosity'];
+        let clientCheckinStep = 0;
+        let clientCheckinAnswers = {};
+        let clientLibStack = [];
+        let dialogueThread = [];
+
+        // ── PERSISTENCE ──────────────────────────────────────────────────────────────
+        // Worker-only data (haltScores, checkinAnswers/Step, currentDay) and
+        // client-shared data (clientJournal, clientFish, clientCheckinAnswers/Step)
+        // are saved under separate keys, matching the app's existing separation
+        // between worker-private and client-shared state.
+        function saveLifelineState() {
+            try {
+                localStorage.setItem('lifelineWorker', JSON.stringify({
+                    currentDay, haltScores, checkinAnswers, checkinStep
+                }));
+            } catch (e) {}
+            try {
+                localStorage.setItem('lifelineClientShared', JSON.stringify({
+                    clientJournal, clientFish, clientCheckinAnswers, clientCheckinStep, dialogueThread
+                }));
+            } catch (e) {}
+        }
+        function loadLifelineState() {
+            try {
+                const w = JSON.parse(localStorage.getItem('lifelineWorker'));
+                if (w) {
+                    if (typeof w.currentDay === 'number') currentDay = w.currentDay;
+                    if (w.haltScores) haltScores = w.haltScores;
+                    if (w.checkinAnswers) checkinAnswers = w.checkinAnswers;
+                    if (typeof w.checkinStep === 'number') checkinStep = w.checkinStep;
+                }
+            } catch (e) {}
+            try {
+                const c = JSON.parse(localStorage.getItem('lifelineClientShared'));
+                if (c) {
+                    if (c.clientJournal) clientJournal = c.clientJournal;
+                    if (c.clientFish) clientFish = c.clientFish;
+                    if (c.clientCheckinAnswers) clientCheckinAnswers = c.clientCheckinAnswers;
+                    if (typeof c.clientCheckinStep === 'number') clientCheckinStep = c.clientCheckinStep;
+                    if (c.dialogueThread) dialogueThread = c.dialogueThread;
+                }
+            } catch (e) {}
+        }
+
+        // ── INIT ──────────────────────────────────────────────────────────────────────
+        window.onload = function() {
+            loadLifelineState();
+            updateClock();
+            setInterval(updateClock, 30000);
+            updateHomeForDay();
+            buildHalt();
+            buildUIP();
+            buildCheckin();
+            buildBeachcomb();
+            buildCheckin();
+            buildUIP();
+            renderClientJournal();
+            renderClientFish();
+            buildClientCheckin();
+            buildClientPawsList();
+            renderDialogue();
+            setMode('worker');
+        };
+
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = h + ':' + m;
+            const g = now.getHours() < 12 ? 'Good morning' : now.getHours() < 17 ? 'Good afternoon' : 'Good evening';
+            document.getElementById('greeting').textContent = g;
+        }
+
+        // ── MODE TOGGLE ──────────────────────────────────────────────────────────────
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+            document.querySelectorAll('.scr').forEach(s => s.classList.remove('active'));
+            if (mode === 'worker') {
+                document.getElementById('s-home').classList.add('active');
+                currentScreen = 'home';
+            } else {
+                document.getElementById('s-client-home').classList.add('active');
+                currentScreen = 'client-home';
+            }
+        }
+
+        function go(screen) {
+            // screen can be 'home', 'halt', etc. for worker; or 'client-home', 'c-breath' for client
+            const isClient = screen.startsWith('c-') || screen === 'client-home';
+            const mode = isClient ? 'client' : 'worker';
+            // If trying to go to a worker screen while in client mode, switch mode
+            if (mode !== currentMode) setMode(mode);
+            document.querySelectorAll('.scr').forEach(s => s.classList.remove('active'));
+            const el = document.getElementById('s-' + screen);
+            if (el) { el.classList.add('active'); }
+            currentScreen = screen;
+            // Update sub-content if needed
+            if (screen === 'checkin') resetCheckin();
+            if (screen === 'breath') resetBreath();
+            if (screen === 'tier') buildTierList();
+            if (screen === 'beachcomb') buildBeachcomb();
+            if (screen === 'library') { libStack = [];
+                showLibMain(); }
+            if (screen === 'tfb') { tfbSelect(null); }
+            if (screen === 'uip') buildUIP();
+            if (screen === 'sos') document.getElementById('sos-confirm').style.display = 'none';
+            if (screen === 'c-checkin') buildClientCheckin();
+            if (screen === 'c-journal') renderClientJournal();
+            if (screen === 'c-fish') renderClientFish();
+            if (screen === 'c-library') { clientLibStack = []; showClientLibMain(); }
+            if (screen === 'c-paws') buildClientPawsList();
+            if (screen === 'c-breath') resetClientBreath();
+            if (screen === 'dialogue') renderDialogue();
+        }
+
+        function keyPress(action) {
+            if (action === 'home') go(currentMode === 'worker' ? 'home' : 'client-home');
+            if (action === 'back') go(currentMode === 'worker' ? 'home' : 'client-home');
+            if (action === 'ok' && currentMode === 'worker' && currentScreen === 'home') go('checkin');
+        }
+
+        // ── COVER ─────────────────────────────────────────────────────────────────────
+        function openCover() {
+            coverOpen = true;
+            document.getElementById('cover').classList.add('open');
+            document.getElementById('cover-toggle-btn').textContent = 'CLOSE COVER ↓';
+        }
+
+        function toggleCover() {
+            coverOpen = !coverOpen;
+            document.getElementById('cover').classList.toggle('open', coverOpen);
+            document.getElementById('cover-toggle-btn').textContent = coverOpen ? 'CLOSE COVER ↓' : 'OPEN COVER ↑';
+        }
+
+        function resetDevice() { go('home');
+            coverOpen = true;
+            document.getElementById('cover').classList.add('open');
+            document.getElementById('cover-toggle-btn').textContent = 'CLOSE COVER ↓'; }
+
+        // ── DAY ───────────────────────────────────────────────────────────────────────
+        function changeDay(d) {
+            currentDay = Math.max(1, Math.min(365, currentDay + d));
+            document.getElementById('panel-day').textContent = currentDay;
+            updateHomeForDay();
+            if (currentScreen === 'tier') buildTierList();
+            saveLifelineState();
+        }
+
+        function getTierForDay(day) {
+            if (day <= 120) return TIER_MAP[0];
+            if (day <= 240) return TIER_MAP[1];
+            return TIER_MAP[2];
+        }
+
+        function updateHomeForDay() {
+            document.getElementById('day-display').textContent = 'Slow Soak · Day ' + currentDay;
+            const t = getTierForDay(currentDay);
+            const lbl = document.getElementById('tier-label');
+            lbl.textContent = 'Tier ' + t.id + ' · ' + t.name;
+            lbl.style.color = t.color;
+            const tip = document.getElementById('home-tip');
+            tip.style.borderLeftColor = t.color;
+            tip.style.background = t.color + '18';
+            tip.textContent = t.interrupt[0];
+            const clientTip = document.getElementById('client-intention');
+            if (clientTip) {
+                const h = getPawsHurdle(currentDay);
+                clientTip.textContent = 'PAWS H' + h.id + ' · ' + h.name + ' — ' + h.interrupt[0];
+            }
+        }
+
+        function getPawsHurdle(day) {
+            if (day < 14) return CLIENT_PAWS[2];
+            if (day < 45) return CLIENT_PAWS[0];
+            if (day < 90) return CLIENT_PAWS[4];
+            if (day < 120) return CLIENT_PAWS[5];
+            return CLIENT_PAWS[6];
+        }
+
+        // ── HALT ──────────────────────────────────────────────────────────────────────
+        function buildHalt() {
+            const dims = [{ k: 'H', l: 'Hungry', c: '#B07820' }, { k: 'A', l: 'Angry', c: '#C03030' }, { k: 'L', l: 'Lonely',
+                c: '#1F7EA1' }, { k: 'T', l: 'Tired', c: '#7B4EA6' }];
+            const container = document.getElementById('halt-rows');
+            container.innerHTML = '';
+            dims.forEach(d => {
+                const row = document.createElement('div');
+                row.className = 'halt-row';
+                row.style.cssText =
+                    'background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 8px;margin-bottom:3px';
+                row.innerHTML =
+                    `<div class="halt-header" style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:10px;color:${d.c};font-weight:700">${d.k} — ${d.l}</span><span style="font-size:10px;color:#d4a820;font-weight:900" id="halt-score-${d.k}">0/5</span></div><div class="halt-bars" style="display:flex;gap:3px" id="halt-bars-${d.k}"></div>`;
+                container.appendChild(row);
+                const bars = document.getElementById('halt-bars-' + d.k);
+                for (let v = 1; v <= 5; v++) {
+                    const b = document.createElement('button');
+                    b.className = 'halt-bar';
+                    b.style.cssText =
+                        `flex:1;height:13px;border-radius:2px;cursor:pointer;border:none;transition:all 0.1s;opacity:0.2;background:${d.c}`;
+                    b.id = 'hbar-' + d.k + '-' + v;
+                    b.onclick = () => setHalt(d.k, v, d.c);
+                    bars.appendChild(b);
+                }
+            });
+        }
+
+        function setHalt(key, val, color) {
+            haltScores[key] = val;
+            document.getElementById('halt-score-' + key).textContent = val + '/5';
+            for (let v = 1; v <= 5; v++) {
+                const b = document.getElementById('hbar-' + key + '-' + v);
+                b.classList.toggle('on', v <= val);
+            }
+            updateHaltResult();
+            saveLifelineState();
+        }
+
+        function updateHaltResult() {
+            const total = Object.values(haltScores).reduce((a, b) => a + b, 0);
+            const risk = total <= 6 ? { l: 'LOW', c: '#34C759' } : total <= 12 ? { l: 'MODERATE', c: '#FF9500' } : { l: 'HIGH',
+                c: '#C03030' };
+            const rl = document.getElementById('halt-risk-label');
+            const rt = document.getElementById('halt-total');
+            const res = document.getElementById('halt-result');
+            rl.textContent = total > 0 ? risk.l : '—';
+            rl.style.color = risk.c;
+            rt.textContent = 'Total ' + total + '/20';
+            res.style.background = total > 0 ? risk.c + '1A' : 'transparent';
+            res.style.border = total > 0 ? '1px solid ' + risk.c + '44' : 'none';
+            document.getElementById('halt-tip').style.display = total > 12 ? 'block' : 'none';
+            document.getElementById('halt-breath-btn').style.display = total > 0 ? 'block' : 'none';
+        }
+
+        // ── BREATH (Worker) ──────────────────────────────────────────────────────────
+        function resetBreath() {
+            clearInterval(breathTimer);
+            breathPhase = 'idle';
+            breathCount = 0;
+            breathCycles = 0;
+            setBreathUI('ONE-BREATH RESET', '#1F7EA1', '◉', '4 in · 2 hold · 6 out · 3 cycles', 68, false, false, true);
+        }
+
+        function setBreathUI(label, color, numTxt, sub, size, showDone, hidBtn, showBtn) {
+            document.getElementById('breath-label').textContent = label;
+            document.getElementById('breath-label').style.color = color;
+            document.getElementById('breath-num').textContent = numTxt;
+            document.getElementById('breath-num').style.color = color;
+            document.getElementById('breath-sub').textContent = sub;
+            const circle = document.getElementById('breath-circle');
+            circle.style.width = size + 'px';
+            circle.style.height = size + 'px';
+            circle.style.borderColor = color;
+            circle.style.background = 'radial-gradient(circle,' + color + '12,transparent)';
+            circle.style.boxShadow = '0 0 ' + (breathPhase === 'in' ? 16 : 6) + 'px ' + color + '38';
+            document.getElementById('breath-done-msg').style.display = showDone ? 'block' : 'none';
+            document.getElementById('breath-start-btn').style.display = showBtn ? 'block' : 'none';
+            document.getElementById('breath-start-btn').style.background = color + '15';
+            document.getElementById('breath-start-btn').style.borderColor = color + '38';
+            document.getElementById('breath-start-btn').style.color = color;
+        }
+
+        function startBreath() {
+            breathCycles = 0;
+            runPhase('in');
+        }
+
+        function runPhase(phase) {
+            breathPhase = phase;
+            clearInterval(breathTimer);
+            const dur = { in: 4, hold: 2, out: 6 } [phase];
+            const colors = { in: '#1A5C2A', hold: '#B07820', out: '#1F7EA1' };
+            const labels = { in: 'BREATHE IN', hold: 'HOLD', out: 'BREATHE OUT' };
+            const sizes = { in: 84, hold: 74, out: 64 };
+            const subs = { in: 'Cycle ' + (breathCycles + 1) + ' of 3', hold: 'Cycle ' + (breathCycles + 1) + ' of 3',
+                out: 'Cycle ' + (breathCycles + 1) + ' of 3' };
+            breathCount = dur;
+            setBreathUI(labels[phase], colors[phase], String(dur), subs[phase], sizes[phase], false, false, false);
+            breathTimer = setInterval(() => {
+                breathCount--;
+                document.getElementById('breath-num').textContent = breathCount;
+                if (breathCount <= 0) {
+                    clearInterval(breathTimer);
+                    if (phase === 'in') runPhase('hold');
+                    else if (phase === 'hold') runPhase('out');
+                    else {
+                        breathCycles++;
+                        if (breathCycles >= 3) {
+                            breathPhase = 'done';
+                            setBreathUI('COMPLETE', '#34C759', '◉', 'All 3 cycles complete', 68, true, false, true);
+                            document.getElementById('breath-start-btn').textContent = 'AGAIN';
+                            document.getElementById('breath-start-btn').onclick = startBreath;
+                        } else runPhase('in');
+                    }
+                }
+            }, 1000);
+        }
+
+        function stopBreath() { clearInterval(breathTimer);
+            resetBreath();
+            go('home'); }
+
+        // ── SLOW SOAK MAP (Worker) ──────────────────────────────────────────────────
+        function buildTierList() {
+            tierDetailId = null;
+            document.getElementById('tier-screen-title').textContent = 'SLOW SOAK MAP';
+            const area = document.getElementById('tier-content');
+            const info = document.getElementById('tier-list-area');
+            info.textContent = 'Day ' + currentDay + ' · Tap a tier for full detail';
+            area.innerHTML = '';
+            TIER_MAP.forEach(t => {
+                const start = t.id === 1 ? 1 : t.id === 2 ? 121 : 241;
+                const end = t.id === 1 ? 120 : t.id === 2 ? 240 : 365;
+                const inRange = currentDay >= start && currentDay <= end;
+                const btn = document.createElement('button');
+                btn.style.cssText =
+                    `background:${inRange?t.color+'1E':'rgba(255,255,255,0.04)'};border:1px solid ${inRange?'#D4A820':'rgba(255,255,255,0.12)'};border-radius:5px;padding:6px 8px;cursor:pointer;text-align:left;width:100%;font-family:'Inter',sans-serif;margin-bottom:3px`;
+                btn.innerHTML =
+                    `<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:${inRange?'#D4A820':'#E8E4DC'};font-weight:${inRange?700:400}">${inRange?'⚠ ':''}Tier ${t.id}: ${t.name}</span><span style="font-size:8px;color:#8a8080">${t.peak}</span></div>${inRange?'<div style="font-size:9px;color:#8a8080;margin-top:2px;line-height:1.3">'+t.interrupt[0]+'</div>':''}`;
+                btn.onclick = () => showTierDetail(t);
+                area.appendChild(btn);
+            });
+        }
+
+        function showTierDetail(t) {
+            tierDetailId = t.id;
+            document.getElementById('tier-screen-title').textContent = 'TIER ' + t.id + ': ' + t.name;
+            document.getElementById('tier-list-area').textContent = t.peak;
+            document.getElementById('tier-list-area').style.color = t.color;
+            const area = document.getElementById('tier-content');
+            area.innerHTML = '';
+            const parts = [
+                `<div style="font-size:11px;color:#E8E4DC;line-height:1.5;margin-bottom:4px">${t.what}</div>`,
+                `<div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8a8080;line-height:1.4;font-style:italic;margin-bottom:4px">${t.why}</div>`,
+                `<div style="font-size:9px;color:${t.color};font-weight:700;margin-bottom:3px">SIGNS:</div>`,
+                t.signs.map(s =>
+                    `<div style="display:flex;gap:5px;font-size:9px;color:#8a8080;line-height:1.35;margin-bottom:2px"><span style="color:${t.color};flex-shrink:0">▸</span>${s}</div>`
+                    ).join(''),
+                `<div style="font-size:9px;color:${t.color};font-weight:700;margin-top:4px;margin-bottom:3px">WHAT TO DO:</div>`,
+                t.interrupt.map((si, i) =>
+                    `<div style="display:flex;gap:5px;font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:3px"><span style="color:#34C759;flex-shrink:0;font-weight:700">${i+1}.</span>${si}</div>`
+                    ).join(''),
+                `<div style="background:${t.color}14;border:1px solid ${t.color}28;border-radius:5px;padding:5px 7px;font-size:9px;color:${t.color};line-height:1.4;font-style:italic;margin-top:4px">${t.truth}</div>`
+            ];
+            area.innerHTML = parts.join('');
+        }
+
+        // ── BEACHCOMBING (Worker) ─────────────────────────────────────────────────────
+        const BEACHCOMB_STEPS = [
+            { step: "WALK THE SHORE", color: "#5AADCC", desc: "Before you leave, or before you sleep, mentally walk back through the day. Don't judge yet. Just walk it." },
+            { step: "NAME WHAT WASHED IN", color: "#1F7EA1", desc: "What arrived today that wasn't there yesterday? A client's crisis. A colleague's comment. Your own old wound, surfacing sideways." },
+            { step: "PICK IT UP", color: "#D4A820", desc: "Look at each piece honestly. Is it a shell worth keeping — a real win, a genuine connection, a lesson? Or driftwood you're carrying out of habit?" },
+            { step: "SORT: MINE OR NOT MINE", color: "#7B4EA6", desc: "This is Surrender in practice. What is actually yours to carry home? What belongs to the client, the system, or the day itself — not to you?" },
+            { step: "LEAVE IT AT THE TIDELINE", color: "#1A5C2A", desc: "Say it out loud or write it: 'I set this down here.' The tide takes what you leave. You do not have to carry it into tomorrow." },
+            { step: "KEEP THE SHELL", color: "#B07820", desc: "Name one thing worth keeping from today — one real thing. This is Gratitude closing the loop. Put it in your pocket. Start tomorrow with it." }
+        ];
+
+        function buildBeachcomb() {
+            const area = document.getElementById('beachcomb-content');
+            if (!area) return;
+            area.innerHTML = '';
+            BEACHCOMB_STEPS.forEach((s, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex;gap:6px;align-items:flex-start;margin-bottom:4px';
+                row.innerHTML =
+                    `<div style="min-width:18px;height:18px;border-radius:50%;background:${s.color};color:#0d111a;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</div><div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;flex:1"><div style="font-size:10px;color:${s.color};font-weight:700;margin-bottom:1px">${s.step}</div><div style="font-size:9px;color:#8a8080;line-height:1.35">${s.desc}</div></div>`;
+                area.appendChild(row);
+            });
+            const closer = document.createElement('div');
+            closer.style.cssText = 'background:rgba(212,168,32,0.1);border:1px solid rgba(212,168,32,0.26);border-radius:5px;padding:6px 8px;font-size:9px;color:#d4a820;font-style:italic;line-height:1.4;margin-top:4px';
+            closer.textContent = 'You are not the tide. You are not what washes in. You are the one walking the shore, every single day, choosing what to pick up and what to leave.';
+            area.appendChild(closer);
+        }
+
+        // ── WORKER CHECK-IN (5-question daily) ──────────────────────────────────────
+        const CI_QS = [
+            { q: "How are you feeling?", k: "mood", opts: ["Grounded","Foggy","Depleted","Steady","Overloaded"] },
+            { q: "Morning reset done?", k: "reset", opts: ["Yes, done","Partial","Not yet"] },
+            { q: "Eaten today?", k: "food", opts: ["Full meals","Partial","Nothing yet"] },
+            { q: "Caseload pressure today?", k: "pressure", opts: ["Light","Manageable","Heavy","Overloaded"] },
+            { q: "Node connection today?", k: "node", opts: ["Strong","Good","Isolated","Not yet"] }
+        ];
+
+        function resetCheckin() { checkinStep = 0; checkinAnswers = {}; buildCheckin(); }
+
+        function buildCheckin() {
+            const area = document.getElementById('checkin-content');
+            if (!area) return;
+            area.innerHTML = '';
+            if (checkinStep >= CI_QS.length) {
+                const flag = checkinAnswers.mood === 'Overloaded' || checkinAnswers.pressure === 'Overloaded';
+                area.innerHTML = `
+                    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px">
+                        <div style="font-size:20px">✓</div>
+                        <div style="font-size:12px;color:#34C759;font-weight:700">Check-In Complete</div>
+                        <div style="font-size:9px;color:#8a8080;text-align:center;line-height:1.5">Day ${currentDay} logged.</div>
+                        ${flag ? `<div style="background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:7px 10px;text-align:center"><div style="font-size:9px;color:#C03030;line-height:1.5;margin-bottom:5px">Flagged. Consider Beachcombing or the Interruption Protocol now.</div><button onclick="go('uip')" style="background:rgba(192,48,48,0.15);border:1px solid rgba(192,48,48,0.4);border-radius:5px;padding:4px 10px;color:#C03030;font-size:9px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">→ PROTOCOL</button></div>` : `<div style="background:rgba(26,92,42,0.1);border:1px solid rgba(26,92,42,0.3);border-radius:5px;padding:7px 10px;font-size:9px;color:#1A5C2A;text-align:center">Good data. Stay with the rhythm.</div>`}
+                        <button onclick="go('home')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:5px 14px;color:#E8E4DC;font-size:10px;cursor:pointer;font-family:'Inter',sans-serif">Done</button>
+                    </div>`;
+                saveLifelineState();
+                return;
+            }
+            const q = CI_QS[checkinStep];
+            const pct = ((checkinStep + 1) / CI_QS.length * 100).toFixed(0);
+            area.innerHTML = `
+                <div style="font-size:9px;color:#8a8080;text-align:center">Day ${currentDay} · Q${checkinStep+1}/${CI_QS.length}</div>
+                <div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px">
+                    <div style="font-size:12px;color:#E8E4DC;text-align:center;line-height:1.4">${q.q}</div>
+                    ${q.opts.map(opt=>`<button onclick="ciAnswer('${opt}')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:7px 10px;color:#E8E4DC;font-size:11px;cursor:pointer;text-align:left;font-family:'Inter',sans-serif">${opt}</button>`).join('')}
+                </div>`;
+        }
+
+        function ciAnswer(opt) {
+            if (checkinStep >= CI_QS.length) return;
+            checkinAnswers[CI_QS[checkinStep].k] = opt;
+            checkinStep++;
+            buildCheckin();
+        }
+
+        // ── UIP (Interruption Protocol) ─────────────────────────────────────────────
+        function buildUIP() {
+            const area = document.getElementById('uip-content');
+            if (!area) return;
+            area.innerHTML = '';
+            UIP.forEach((s, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'list-btn';
+                btn.style.background = s.color + '10';
+                btn.style.borderColor = s.color + '28';
+                btn.style.borderLeftColor = s.color;
+                btn.innerHTML = `<div><div class="list-btn-t" style="color:${s.color}">${s.num}. ${s.name}</div><div class="list-btn-s">${s.desc.substring(0,55)}…</div></div>`;
+                btn.onclick = () => showUIPStep(i);
+                area.appendChild(btn);
+            });
+        }
+
+        function startUIP() { showUIPStep(0); }
+
+        function showUIPStep(idx) {
+            const s = UIP[idx];
+            const area = document.getElementById('uip-content');
+            area.innerHTML = '';
+            area.style.flexDirection = 'column';
+            area.style.gap = '6px';
+            const card = document.createElement('div');
+            card.style.cssText = `background:${s.color}12;border:1px solid ${s.color}28;border-radius:7px;padding:10px 12px;font-size:10px;color:#E8E4DC;line-height:1.65;flex:1`;
+            card.innerHTML = s.desc.split('\n').map(l => `<div style="margin-bottom:3px">${l}</div>`).join('');
+            area.appendChild(card);
+            const navRow = document.createElement('div');
+            navRow.style.cssText = 'display:flex;gap:5px;flex-shrink:0';
+            if (idx > 0) {
+                const prev = document.createElement('button');
+                prev.className = 'action-btn';
+                prev.style.cssText = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);color:#8a8080;flex:1';
+                prev.textContent = '← PREV';
+                prev.onclick = () => showUIPStep(idx - 1);
+                navRow.appendChild(prev);
+            }
+            if (idx < UIP.length - 1) {
+                const next = document.createElement('button');
+                next.className = 'action-btn';
+                next.style.cssText = `background:${s.color}14;border:1px solid ${s.color}30;color:${s.color};flex:2;font-weight:700`;
+                next.textContent = 'NEXT →';
+                next.onclick = () => showUIPStep(idx + 1);
+                navRow.appendChild(next);
+            } else {
+                const done = document.createElement('button');
+                done.className = 'action-btn';
+                done.style.cssText = 'background:rgba(52,199,89,0.12);border:1px solid rgba(52,199,89,0.3);color:#34C759;flex:2;font-weight:700';
+                done.textContent = '✓ COMPLETE';
+                done.onclick = buildUIP;
+                navRow.appendChild(done);
+            }
+            area.appendChild(navRow);
+        }
+
+        // ── T-F-B CHAIN ──────────────────────────────────────────────────────────────
+        const tfbData = {
+            trigger: {
+                title: "Trigger — The Activating Event",
+                color: "#B07820",
+                body: `The trigger is the starting point — something in the outside world (a client's crisis, a colleague's comment, an unread email at 6pm) or inside your body (fatigue, a memory of a past case, hunger). The trigger itself does not cause the reaction. What happens NEXT in your mind does.
+
+Examples:
+
+• A client relapses on your watch
+
+• A supervisor's offhand comment about your caseload
+
+• Walking into a shift already depleted
+
+• A file that echoes a case that went badly before
+
+• A quiet moment where the accumulated weight finally lands
+
+Key insight: The same trigger fires different chains in different practitioners. The trigger is not the problem. Your automatic thought about the trigger is where the chain becomes yours.`
+            },
+            thought: {
+                title: "Automatic Thought — The Fast Mind",
+                color: "#C03030",
+                body: `Automatic thoughts are the reflexive, instant things your mind says — so fast they feel like facts. They are not facts. They are interpretations shaped by your training, your history, and your caseload.
+
+Common practitioner automatic thoughts:
+
+• "I should have caught this"
+
+• "If I don't handle it, no one will"
+
+• "I can't be tired — they have it worse"
+
+• "Nobody else understands this job"
+
+• "I've already let this client down"
+
+The shift: Instead of "I AM failing" try "I NOTICE the thought that I am failing." You are not the thought. You are the one watching it. That distance is everything.
+
+This is where the intervention happens — not at the trigger, but at the thought. (Beck et al., 1993)`
+            },
+            feeling: {
+                title: "Feeling — The Emotional Response",
+                color: "#7B4EA6",
+                body: `The feeling follows the thought — not the event. Two practitioners can face the same trigger and feel completely different emotions based on the automatic thought that fires.
+
+Trigger: A client misses their third session
+
+Thought A: "Their pace, not my failure" → Feeling: neutral, still engaged
+
+Thought B: "I'm losing them" → Feeling: anxious, over-functioning
+
+Thought C: "I'm not good at this job" → Feeling: shame, withdrawal
+
+Same trigger. Completely different feelings. Because the thought is different.
+
+This is why the intervention targets the thought — change the thought and you change the feeling that follows. Not by forcing positivity, but by finding the more accurate thought.
+
+Rate your feelings 0 to 10. Track how they shift when the thought shifts.`
+            },
+            behaviour: {
+                title: "Behaviour — What You Do",
+                color: "#1A5C2A",
+                body: `The behaviour is what you do in response to the feeling. In burnout, the behaviour is often over-functioning or withdrawal — but it can also be irritability, cynicism, or quietly checking out while still showing up.
+
+The behaviour makes sense. If you feel responsible for an outcome that isn't yours and over-functioning has always relieved that feeling — over-functioning is a logical response. This model does not shame the behaviour. It asks: what thought and feeling led here, and can we intervene earlier in the chain?
+
+Intervention points:
+
+At the TRIGGER — name high-risk moments before your shift
+
+At the THOUGHT — ABC Thought Record, cognitive distortion check
+
+At the FEELING — HALT check, breath reset, grounding
+
+At the BEHAVIOUR — Beachcombing, Beacon Huddle, call your Controller`
+            },
+            consequence: {
+                title: "Consequence — What Gets Reinforced",
+                color: "#1F7EA1",
+                body: `The consequence is what happens as a result of the behaviour — and critically, what gets reinforced.
+
+Short-term consequence of over-functioning: relief of anxiety, the sense of having done everything possible
+
+Long-term consequence: depletion, resentment, the 51% Rule violated week after week, eventual burnout
+
+The brain remembers the short-term relief first. That is why the chain is so self-reinforcing — the behaviour works in the short term even as it erodes the capacity to keep doing the work at all.
+
+Breaking the consequence cycle:
+
+Each time you interrupt the chain before the behaviour, you weaken the automatic connection. Each conscious choice — a boundary held, a Beachcombing session completed — creates a competing pathway. Over time this is what turns a rescue boat into a lighthouse.`
+            }
+        };
+
+        function tfbSelect(id) {
+            ['trigger', 'thought', 'feeling', 'behaviour', 'consequence'].forEach(k => {
+                const box = document.getElementById('tfb-' + k + '-box');
+                if (box) box.style.opacity = id && id !== k ? '0.5' : '1';
+            });
+            const detail = document.getElementById('tfb-detail');
+            if (!id) { if (detail) detail.style.display = 'none'; return; }
+            const data = tfbData[id];
+            if (!data || !detail) return;
+            detail.style.display = 'block';
+            document.getElementById('tfb-detail-title').style.color = data.color;
+            document.getElementById('tfb-detail-title').textContent = data.title;
+            document.getElementById('tfb-detail-body').textContent = data.body;
+            if (typeof detail.scrollIntoView === 'function') {
+                detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // ── SOS ───────────────────────────────────────────────────────────────────────
+        function sosPressed(btn, type) {
+            const confirm = document.getElementById('sos-confirm');
+            if (confirm) confirm.style.display = 'block';
+        }
+
+        // ── WORKER LIBRARY ───────────────────────────────────────────────────────────
+        function setLibTitle(t) { document.getElementById('lib-title').textContent = t; }
+
+        function showLibMain() {
+            document.getElementById('lib-title').textContent = 'KNOWLEDGE BASE';
+            const sub = document.getElementById('lib-sub');
+            sub.style.display = 'block';
+            sub.textContent = 'Full LRP system — tap any section';
+            const area = document.getElementById('lib-content');
+            area.innerHTML = '';
+            LIB_SECTIONS.forEach(s => {
+                const btn = document.createElement('button');
+                btn.className = 'list-btn';
+                btn.style.background = s.c + '0E';
+                btn.style.borderColor = s.c + '26';
+                btn.style.borderLeftColor = s.c;
+                btn.innerHTML = `<span class="list-btn-icon">${s.i}</span><div><div class="list-btn-t" style="color:${s.c}">${s.l}</div><div class="list-btn-s">${s.s}</div></div>`;
+                btn.onclick = () => libSection(s.id);
+                area.appendChild(btn);
+            });
+        }
+
+        function libSection(id) {
+            document.getElementById('lib-sub').style.display = 'none';
+            if (id === 'uip-lib') { go('uip'); return; }
+            const map = {
+                caps: showCaps, fish: showFish, tools: showTools, arc: showArc,
+                dose: showDose, 'halt-lib': showHaltLib, abc: showAbc,
+                distort: showDistort, dbt: showDbt, 'worked-ex': showWorkedEx
+            };
+            const fn = map[id];
+            if (fn) { libStack.push(showLibMain); fn(); }
+        }
+
+        function libBack() {
+            if (libStack.length === 0) { go('home'); return; }
+            libStack.pop();
+            if (libStack.length === 0) showLibMain();
+            else {
+                const last = libStack[libStack.length - 1];
+                if (typeof last === 'function') last();
+            }
+        }
+        // G.A.P.S. CAPACITIES
+        function showCaps() {
+            setLibTitle('G.A.P.S. CAPACITIES');
+            const area = document.getElementById('lib-content');
+            area.innerHTML = '';
+            CAPS.forEach(cap => {
+                const btn = document.createElement('button');
+                btn.style.cssText = `background:${cap.color}10;border:1px solid ${cap.color}26;border-radius:7px;padding:9px 12px;cursor:pointer;text-align:left;display:flex;gap:10px;align-items:center;width:100%;margin-bottom:5px;font-family:'Inter',sans-serif`;
+                btn.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;background:${cap.color}18;border:2px solid ${cap.color}38;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:14px;font-weight:900;color:${cap.color}">${cap.letter}</span></div><div><div style="font-size:11px;color:${cap.color};font-weight:700">${cap.name}</div><div style="font-size:9px;color:#8a8080;margin-top:1px">${cap.what.substring(0,50)}…</div></div>`;
+                btn.onclick = () => { libStack.push(showCaps); showCapDetail(cap); };
+                area.appendChild(btn);
+            });
+        }
+
+        function showCapDetail(cap) {
+            setLibTitle(cap.letter + ' — ' + cap.name);
+            document.getElementById('lib-content').innerHTML = `
+                <div style="font-size:11px;color:#E8E4DC;line-height:1.5;margin-bottom:5px">${cap.what}</div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8a8080;line-height:1.4;font-style:italic;margin-bottom:5px">${cap.why}</div>
+                <div style="font-size:9px;color:${cap.color};font-weight:700;margin-bottom:3px">PRACTICE:</div>
+                ${cap.practice.map(p=>`<div style="display:flex;gap:5px;font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:3px"><span style="color:${cap.color};flex-shrink:0">▸</span>${p}</div>`).join('')}
+                <div style="background:rgba(255,255,255,0.04);border-left:4px solid ${cap.color};padding:6px 8px;border-radius:0 5px 5px 0;font-size:9px;color:#8a8080;font-style:italic;line-height:1.4;margin-top:5px">${cap.example}</div>`;
+        }
+
+        // FISH BOWL METHOD
+        function showFish() {
+            setLibTitle('FISH BOWL METHOD');
+            const FISH = {
+                core: "You are the bowl. Your thoughts, feelings, and a client's dysregulation are the fish. Fish swim through a bowl — they do not become the bowl.",
+                steps: [
+                    { step: "NOTICE", desc: "Something is happening internally — in session, or after. You feel something, think something, or absorb something." },
+                    { step: "NAME IT", desc: "'There is [feeling/reaction] moving through me right now.' Say it in your head, or write it after the session." },
+                    { step: "OBSERVE IT", desc: "Watch it like a fish in a bowl. Where is it in your body? Don't fight it — just watch." },
+                    { step: "SEPARATE", desc: "'I am the bowl. This is a fish. I am not this fish.' The reaction is real. You are not the reaction." },
+                    { step: "WAIT", desc: "Most emotional fish swim through in under 20 minutes if you don't feed them. This includes what you absorb from a hard session." },
+                    { step: "CHOOSE", desc: "From the bowl — not from inside the fish — decide what to do next, or nothing at all." }
+                ],
+                examples: [
+                    { bad: "I am overwhelmed", good: "There is overwhelm passing through me right now" },
+                    { bad: "I'm bad at this job", good: "There is doubt here. Doubt is not a verdict." },
+                    { bad: "I can't handle another crisis today", good: "There is depletion here. I am observing the depletion." },
+                    { bad: "I'm absorbing their trauma", good: "There is secondary weight passing through. I am not the weight." }
+                ],
+                community: "At a Beacon Huddle: one person speaks, everyone else holds the bowl. No fixing. No advice. Just witness the fish swim through."
+            };
+            let tab = 'steps';
+            const area = document.getElementById('lib-content');
+            function render() {
+                area.innerHTML = `
+                    <div style="display:flex;gap:3px;margin-bottom:5px;flex-shrink:0">
+                        ${['steps','examples','community'].map(t=>`<button onclick="fishTab('${t}')" style="flex:1;background:${t===tab?'rgba(31,126,161,0.18)':'rgba(255,255,255,0.04)'};border:1px solid ${t===tab?'#1F7EA1':'rgba(255,255,255,0.12)'};border-radius:4px;padding:3px 0;color:${t===tab?'#1F7EA1':'#8a8080'};font-size:8px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;font-family:'Inter',sans-serif">${t}</button>`).join('')}
+                    </div>
+                    <div style="background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.25);border-radius:5px;padding:5px 7px;font-size:10px;color:#E8E4DC;line-height:1.45;margin-bottom:5px">${FISH.core}</div>
+                    <div id="fish-tab-content" style="display:flex;flex-direction:column;gap:4px;overflow-y:auto;flex:1"></div>`;
+                const tc = document.getElementById('fish-tab-content');
+                if (tab === 'steps') {
+                    FISH.steps.forEach((s,i) => {
+                        tc.innerHTML += `<div style="display:flex;gap:6px;align-items:flex-start"><div style="min-width:18px;height:18px;border-radius:50%;background:#1F7EA1;color:#fff;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</div><div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;flex:1"><div style="font-size:10px;color:#1F7EA1;font-weight:700;margin-bottom:1px">${s.step}</div><div style="font-size:9px;color:#8a8080;line-height:1.35">${s.desc}</div></div></div>`;
+                    });
+                } else if (tab === 'examples') {
+                    FISH.examples.forEach(e => {
+                        tc.innerHTML += `<div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px"><div style="font-size:9px;color:#C03030;margin-bottom:2px">Instead: <em>${e.bad}</em></div><div style="font-size:9px;color:#34C759">Say: <em>"${e.good}"</em></div></div>`;
+                    });
+                } else {
+                    tc.innerHTML = `<div style="background:rgba(31,126,161,0.1);border:1px solid rgba(31,126,161,0.25);border-radius:5px;padding:7px 9px;font-size:10px;color:#E8E4DC;line-height:1.55">${FISH.community}</div>`;
+                }
+            }
+            window.fishTab = function(t) { tab = t; render(); };
+            render();
+        }
+
+        // REGULATION TOOLS
+        function showTools() {
+            setLibTitle('REGULATION TOOLS');
+            const TOOLS = [
+                { id: 'breath', n: "One-Breath Reset", i: "🌬", c: "#1F7EA1", sub: "4 in · 2 hold · 6 out",
+                    why: "The extended exhale activates the parasympathetic nervous system — the body's natural calm response. A physiological override, not a mental trick.",
+                    steps: ["Sit or stand. Both feet on ground.", "Breathe IN through nose: 1-2-3-4.", "HOLD: 1-2.", "Breathe OUT through mouth: 1-2-3-4-5-6.", "Repeat 3 times minimum.", "Notice: the body has already shifted."],
+                    note: "Opens every Beacon Huddle — the whole node does it together. Co-regulation." },
+                { id: 'ground', n: "5-4-3-2-1 Grounding", i: "⚓", c: "#1A5C2A", sub: "Return to now, before the next room",
+                    why: "When the next crisis pulls you into future dread or the last one into past regret, this forces the brain to process immediate sensory input — only possible in the present.",
+                    steps: ["5 things you can SEE — be specific.", "4 things you can HEAR — include quiet sounds.", "3 things you can TOUCH — name textures.", "2 things you can SMELL.", "1 thing you can TASTE."],
+                    note: "You are here. Nothing that happened in the last session requires you to carry it into the next one." },
+                { id: 'pause', n: "The Sacred Pause", i: "🌙", c: "#7B4EA6", sub: "The last act of every shift",
+                    why: "What you carry home has disproportionate influence on tomorrow's baseline. The Sacred Pause chooses what travels with you and what stays at the shoreline.",
+                    steps: ["One-Breath Reset before you leave the building.", "One line in your journal — what existed today.", "Name one thing you set down tonight (Surrender).", "Name one thing you return to tomorrow — just one."],
+                    note: "Not a review of the cases that went wrong. A completion ritual." },
+                { id: 'beach', n: "Beachcombing", i: "🏖", c: "#D4A820", sub: "The full evening ritual — 6 steps",
+                    why: "A structured way to sort what's real, what's yours, and what to leave at the tideline before the next shift begins.",
+                    steps: ["Walk the Shore — mentally review the day without judging yet.", "Name What Washed In — what arrived today that wasn't there yesterday.", "Pick It Up — is it a shell worth keeping, or driftwood out of habit.", "Sort: Mine or Not Mine — Surrender in practice.", "Leave It at the Tideline — say it out loud or write it.", "Keep the Shell — name one real thing worth keeping."],
+                    note: "Open the full ritual any time from the Worker home screen." }
+            ];
+            const area = document.getElementById('lib-content');
+            area.innerHTML = '';
+            TOOLS.forEach(t => {
+                const btn = document.createElement('button');
+                btn.style.cssText = `background:${t.c}10;border:1px solid ${t.c}26;border-radius:7px;padding:11px 13px;cursor:pointer;text-align:left;display:flex;gap:11px;align-items:center;width:100%;margin-bottom:5px;font-family:'Inter',sans-serif`;
+                btn.innerHTML = `<span style="font-size:18px">${t.i}</span><div><div style="font-size:11px;color:${t.c};font-weight:700">${t.n}</div><div style="font-size:9px;color:#8a8080;margin-top:1px">${t.sub}</div></div>`;
+                btn.onclick = () => {
+                    if (t.id === 'beach') { go('beachcomb'); return; }
+                    libStack.push(showTools); showToolDetail(t);
+                };
+                area.appendChild(btn);
+            });
+        }
+
+        function showToolDetail(t) {
+            setLibTitle(t.n);
+            document.getElementById('lib-content').innerHTML = `
+                <div style="font-size:9px;color:${t.c};font-style:italic;margin-bottom:5px">${t.sub}</div>
+                <div style="background:${t.c}10;border:1px solid ${t.c}24;border-radius:5px;padding:6px 8px;font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">${t.why}</div>
+                ${t.steps.map((s,i)=>`<div style="display:flex;gap:6px;font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:3px"><span style="color:${t.c};font-weight:700;flex-shrink:0">${i+1}.</span>${s}</div>`).join('')}
+                <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:5px 7px;font-size:9px;color:#8a8080;font-style:italic;line-height:1.4;margin-top:5px">${t.note}</div>`;
+        }
+
+        // RESCUE BOAT → LIGHTHOUSE (reuses TIER_MAP — same 3-stage arc as the day-tracked Slow Soak)
+        function showArc() {
+            setLibTitle('RESCUE BOAT → LIGHTHOUSE');
+            const area = document.getElementById('lib-content');
+            area.innerHTML = `<div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">The same 3-tier arc tracked on your Slow Soak map, as a standing reference. Tap a stage.</div>`;
+            TIER_MAP.forEach(tier => {
+                const btn = document.createElement('button');
+                btn.style.cssText = `background:${tier.color}10;border:1px solid ${tier.color}26;border-left:3px solid ${tier.color};border-radius:0 6px 6px 0;padding:8px 11px;cursor:pointer;text-align:left;width:100%;margin-bottom:5px;font-family:'Inter',sans-serif`;
+                btn.innerHTML = `<div style="font-size:11px;color:${tier.color};font-weight:700">Tier ${tier.id}: ${tier.name}</div><div style="font-size:9px;color:#8a8080;margin-top:2px;line-height:1.3">${tier.peak}</div>`;
+                btn.onclick = () => { libStack.push(showArc); showTierDetail(tier); libStack.push(showArc); };
+                area.appendChild(btn);
+            });
+        }
+
+        // D.O.S.E. ARCHITECTURE
+        function showDose() {
+            setLibTitle('D.O.S.E. ARCHITECTURE');
+            const DOSE = [
+                { letter: "D", name: "Dopamine", color: "#D4A820",
+                    from: "Completing a visible task. Closing a file well. Seeing a client's small, real progress. Finishing Beachcombing.",
+                    vs: "Chronic overwhelm without closure depletes natural dopamine production. Completed, witnessed work earns it — which is why it lasts.",
+                    at: "Finishing a session note, checking off a Beachcombing round, closing a case cleanly." },
+                { letter: "O", name: "Oxytocin", color: "#1F7EA1",
+                    from: "Genuine connection. Beacon Huddles. Buddy check-ins. Being witnessed without being fixed.",
+                    vs: "Isolation and over-functioning try to replace oxytocin. Nothing replaces it. Only real human connection delivers it.",
+                    at: "A Peer Debrief, a Controller Check-In, being witnessed honestly in a Beacon Huddle." },
+                { letter: "S", name: "Serotonin", color: "#1A5C2A",
+                    from: "Predictable rhythm. Recognized competence within a node. Steady hours. Being seen as reliable.",
+                    vs: "Chaos and unpredictability deplete serotonin. A predictable practice rhythm is a serotonin delivery architecture.",
+                    at: "A consistent shift rhythm, practising the Sacred Pause, maintaining boundaries as shoreline." },
+                { letter: "E", name: "Endorphins", color: "#7B4EA6",
+                    from: "Physical movement. Laughter. Honest emotional release. Stepping fully away from the desk.",
+                    vs: "The physical release of a walk or a real laugh delivers endorphins no amount of overwork can substitute for.",
+                    at: "A walk between sessions, honest laughter with a safe colleague, physical movement after a hard shift." }
+            ];
+            const area = document.getElementById('lib-content');
+            area.innerHTML = `<div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">The same reward pathway a hard caseload depletes — replenished through structured practice and real connection instead.</div>`;
+            DOSE.forEach(c => {
+                const btn = document.createElement('button');
+                btn.style.cssText = `background:${c.color}10;border:1px solid ${c.color}26;border-radius:7px;padding:9px 12px;cursor:pointer;text-align:left;display:flex;gap:11px;align-items:center;width:100%;margin-bottom:5px;font-family:'Inter',sans-serif`;
+                btn.innerHTML = `<div style="width:26px;height:26px;border-radius:50%;background:${c.color}18;border:2px solid ${c.color}36;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:13px;font-weight:900;color:${c.color}">${c.letter}</span></div><div><div style="font-size:11px;color:${c.color};font-weight:700">${c.name}</div><div style="font-size:9px;color:#8a8080;margin-top:1px">${c.from.substring(0,48)}…</div></div>`;
+                btn.onclick = () => { libStack.push(showDose); showDoseDetail(c); };
+                area.appendChild(btn);
+            });
+        }
+
+        function showDoseDetail(c) {
+            setLibTitle(c.letter + ' — ' + c.name);
+            document.getElementById('lib-content').innerHTML = `
+                <div style="background:${c.color}10;border:1px solid ${c.color}26;border-radius:5px;padding:7px 9px;margin-bottom:5px">
+                    <div style="font-size:9px;color:${c.color};font-weight:700;margin-bottom:3px">WHERE IT COMES FROM:</div>
+                    <div style="font-size:10px;color:#E8E4DC;line-height:1.5">${c.from}</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:5px;padding:6px 8px;font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">${c.vs}</div>
+                <div style="background:rgba(26,92,42,0.08);border:1px solid rgba(26,92,42,0.22);border-radius:5px;padding:6px 8px">
+                    <div style="font-size:9px;color:#1A5C2A;font-weight:700;margin-bottom:2px">IN PRACTICE:</div>
+                    <div style="font-size:9px;color:#E8E4DC;line-height:1.4">${c.at}</div>
+                </div>`;
+        }
+
+        // HALT FRAMEWORK
+        function showHaltLib() {
+            setLibTitle('HALT FRAMEWORK');
+            document.getElementById('lib-content').innerHTML = `
+                <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">Before any high-stakes decision or hard call, run the HALT check. These four states lower your threshold for every other trigger (Marlatt &amp; Donovan, 2005).</div>
+                ${[
+                    {l:"H",n:"Hungry",c:"#D4A820",d:"When did you last eat? Low blood sugar impairs prefrontal function and increases impulsivity.",a:"Eat something before the next hard conversation. Every decision made hungry is made at a disadvantage."},
+                    {l:"A",n:"Angry",c:"#C03030",d:"Is there resentment or an unprocessed conflict running underneath right now?",a:"Name it before acting. Write it. Call your Controller. Don't decide from anger."},
+                    {l:"L",n:"Lonely",c:"#1F7EA1",d:"Are you disconnected from your node? Isolation is the highest-risk state for burnout to accelerate.",a:"Reach out to one person before making any decision. Connection is the antidote."},
+                    {l:"T",n:"Tired",c:"#7B4EA6",d:"Is your nervous system depleted? Fatigue suppresses the prefrontal cortex and your capacity for conscious choice.",a:"Rest before deciding. If you can't rest, run a breath reset first."}
+                ].map(h=>`
+                <div style="background:${h.c}10;border:1px solid ${h.c}26;border-left:3px solid ${h.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px">
+                    <div style="font-size:11px;color:${h.c};font-weight:700;margin-bottom:2px">${h.l} — ${h.n}</div>
+                    <div style="font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:2px">${h.d}</div>
+                    <div style="font-size:9px;color:#8a8080;font-style:italic">${h.a}</div>
+                </div>`).join('')}`;
+        }
+
+        // ABC THOUGHT RECORD
+        function showAbc() {
+            setLibTitle('ABC THOUGHT RECORD');
+            document.getElementById('lib-content').innerHTML = `
+                <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">The core CBT skill for challenging automatic thoughts (Beck et al., 1993). Use it after any high-stakes moment or hard shift.</div>
+                ${[
+                    {l:"A",n:"Activating Event",c:"#1F7EA1",d:"What happened? Describe the situation factually.",x:"A client relapsed after a session I felt good about."},
+                    {l:"B",n:"Belief / Automatic Thought",c:"#D4A820",d:"What did your mind say immediately? Find the sentence.",x:"'I completely failed them.'"},
+                    {l:"C",n:"Consequence",c:"#C03030",d:"What emotion followed (0-10)? What did you do?",x:"Shame 7/10. Stayed two hours late reviewing the file."},
+                    {l:"D",n:"Dispute the Thought",c:"#7B4EA6",d:"Evidence FOR? Evidence AGAINST? What would you tell a colleague in this spot?",x:"Relapse is data about their process, not a verdict on my competence."},
+                    {l:"E",n:"Effect of New Thought",c:"#1A5C2A",d:"Write the more balanced thought. Rate emotion again.",x:"Shame drops from 7 to 3. Documented and went home on time."}
+                ].map(s=>`
+                <div style="background:${s.c}10;border:1px solid ${s.c}26;border-left:3px solid ${s.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px">
+                    <div style="font-size:11px;color:${s.c};font-weight:700;margin-bottom:2px">${s.l} — ${s.n}</div>
+                    <div style="font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:2px">${s.d}</div>
+                    <div style="font-size:9px;color:#8a8080;font-style:italic">${s.x}</div>
+                </div>`).join('')}`;
+        }
+
+        // COGNITIVE DISTORTIONS (practitioner burnout framing)
+        function showDistort() {
+            setLibTitle('COGNITIVE DISTORTIONS');
+            document.getElementById('lib-content').innerHTML = `
+                <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">Six thinking patterns that drive practitioner burnout. Naming them reduces their power (Beck et al., 1993).</div>
+                ${[
+                    {n:"All-or-Nothing",c:"#C03030",d:"I missed one thing — I'm bad at this job.",r:"One miss does not erase competence. Partial success is still success."},
+                    {n:"Catastrophizing",c:"#B07820",d:"This one hard case means I can't do this work anymore.",r:"A hard case is a wave. It peaks and passes. Feeling depleted is not the same as being unfit."},
+                    {n:"Mind-Reading",c:"#1F7EA1",d:"My supervisor thinks I'm not handling this.",r:"You do not have access to other people's thoughts. What is the actual evidence?"},
+                    {n:"Emotional Reasoning",c:"#7B4EA6",d:"I feel responsible so I must be responsible.",r:"Feelings are not facts. Feeling responsible does not mean the outcome was yours to control."},
+                    {n:"Should Statements",c:"#1A5C2A",d:"I should be able to handle a full caseload without this affecting me.",r:"You are exactly where you are. Should is a trap. What can I do right now?"},
+                    {n:"Personalization",c:"#5AADCC",d:"If this job is hard for me, it means I'm not cut out for it.",r:"This work is hard for everyone doing it honestly. Difficulty is not a character verdict."}
+                ].map(d=>`
+                <div style="background:${d.c}10;border:1px solid ${d.c}26;border-left:3px solid ${d.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px">
+                    <div style="font-size:10px;color:${d.c};font-weight:700;margin-bottom:2px">${d.n}</div>
+                    <div style="font-size:9px;color:#E8E4DC;line-height:1.35;margin-bottom:2px;font-style:italic">"${d.d}"</div>
+                    <div style="font-size:9px;color:#8a8080;line-height:1.35">Reframe: ${d.r}</div>
+                </div>`).join('')}`;
+        }
+
+        // DBT SKILLS
+        function showDbt() {
+            setLibTitle('DBT SKILLS');
+            const DBT = [
+                { n: "Mindfulness", c: "#D4A820", d: "The foundation skill underneath the other three. Observe, describe, and participate in the present moment without judgment — the same stance as Fish Bowl, formalized (Linehan, 1993).", ex: "During a hard session: notice your own reaction without acting on it or suppressing it." },
+                { n: "Distress Tolerance", c: "#C03030", d: "Getting through a crisis moment without making it worse. Not solving the problem — surviving the next 10 minutes intact.", ex: "TIP skill: cold water on the wrists, intense brief exercise, or paced breathing to drop physiological arousal fast." },
+                { n: "Emotion Regulation", c: "#7B4EA6", d: "Understanding and reducing vulnerability to intense emotion before it hits, not just managing it after.", ex: "PLEASE skill: treat Physical iLlness, balance Eating, avoid mood-Altering substances, balance Sleep, get Exercise." },
+                { n: "Interpersonal Effectiveness", c: "#1A5C2A", d: "Asking for what you need and holding boundaries without damaging the relationship or your own self-respect.", ex: "DEAR MAN: Describe, Express, Assert, Reinforce — then Mindful, Appear confident, Negotiate." }
+            ];
+            const area = document.getElementById('lib-content');
+            area.innerHTML = `<div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">Four skill modules for practitioners carrying a heavy caseload — not just for clients.</div>`;
+            DBT.forEach(s => {
+                const btn = document.createElement('button');
+                btn.style.cssText = `background:${s.c}10;border:1px solid ${s.c}26;border-left:3px solid ${s.c};border-radius:0 6px 6px 0;padding:8px 11px;cursor:pointer;text-align:left;width:100%;margin-bottom:5px;font-family:'Inter',sans-serif`;
+                btn.innerHTML = `<div style="font-size:11px;color:${s.c};font-weight:700">${s.n}</div><div style="font-size:9px;color:#8a8080;margin-top:2px;line-height:1.3">${s.d.substring(0,70)}…</div>`;
+                btn.onclick = () => {
+                    setLibTitle(s.n);
+                    document.getElementById('lib-content').innerHTML = `
+                        <div style="font-size:10px;color:#E8E4DC;line-height:1.5;margin-bottom:6px">${s.d}</div>
+                        <div style="background:${s.c}10;border:1px solid ${s.c}26;border-radius:5px;padding:6px 8px">
+                            <div style="font-size:9px;color:${s.c};font-weight:700;margin-bottom:2px">TRY THIS:</div>
+                            <div style="font-size:9px;color:#E8E4DC;line-height:1.4">${s.ex}</div>
+                        </div>`;
+                };
+                area.appendChild(btn);
+            });
+        }
+
+        // WORKED EXAMPLES — built only from features that exist in this app
+        function showWorkedEx() {
+            setLibTitle('WORKED EXAMPLES');
+            const area = document.getElementById('lib-content');
+            area.innerHTML = `<div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:6px">Two real walkthroughs of what using this app actually looks like.</div>`;
+            const ex1 = document.createElement('div');
+            ex1.style.cssText = 'background:rgba(31,126,161,0.08);border:1px solid rgba(31,126,161,0.22);border-radius:7px;padding:9px 11px;margin-bottom:8px';
+            ex1.innerHTML = `
+                <div style="font-size:11px;color:#1F7EA1;font-weight:700;margin-bottom:5px">A 2 AM Moment</div>
+                <div style="font-size:9px;color:#E8E4DC;line-height:1.55">
+                    Woken by a text about a client crisis. Before replying: opens HALT — Hungry 2, Angry 1, Lonely 3, Tired 5. Total 11, MODERATE. Runs the One-Breath Reset, 3 cycles. Opens the Interruption Protocol: names it ("I am about to respond from Tired and Lonely"), makes contact with the on-call Controller instead of handling it solo, waits the 20 minutes before drafting any reply. Documents one sentence in the journal afterward. Goes back to sleep having interrupted the chain before the behaviour, not after.
+                </div>`;
+            const ex2 = document.createElement('div');
+            ex2.style.cssText = 'background:rgba(212,168,32,0.08);border:1px solid rgba(212,168,32,0.22);border-radius:7px;padding:9px 11px';
+            ex2.innerHTML = `
+                <div style="font-size:11px;color:#D4A820;font-weight:700;margin-bottom:5px">Worker Checking In</div>
+                <div style="font-size:9px;color:#E8E4DC;line-height:1.55">
+                    End of a full shift. Opens Check-In: five questions, answered honestly rather than performed — mood is "Depleted," node connection is "Isolated today." Sees the flag, opens Beachcombing before leaving the building: walks the shore, names what washed in (a hard file, an unrelated personal worry that surfaced sideways), sorts mine from not-mine, leaves the file's outcome at the tideline, keeps one real thing — a client's small, real progress. Closes the app. The day is complete, not carried home.
+                </div>`;
+            area.appendChild(ex1);
+            area.appendChild(ex2);
+        }
+
+        // ══════════════════════════════════════════════════════════════════════════
+        // ── CLIENT MODE ──────────────────────────────────────────────────────────
+        // ══════════════════════════════════════════════════════════════════════════
+
+        // ── CLIENT PAWS DATA (7 hurdles, day-based highlighting) ─────────────────
+        const CLIENT_PAWS = [
+            { id: 1, name: "Cognitive Fog", peak: "Days 14–45", color: "#1F7EA1",
+                what: "Your brain is rebuilding its thinking infrastructure. Decisions feel hard. Memory slips. This is neurological repair — not personal failure.",
+                interrupt: ["Name it: 'There is fog passing through my brain right now.'", "Do ONE 10-minute task only.", "One-Breath Reset before any decision.", "Tell your worker: 'I'm in the fog today.'"] },
+            { id: 2, name: "Emotional Rollercoaster", peak: "Days 30–60", color: "#B07820",
+                what: "Ordinary events feel catastrophic. Your emotional regulation system is recalibrating.",
+                interrupt: ["Fish Bowl: 'There is anger passing through me. I am not the anger.'", "Name the feeling out loud.", "Physical movement for 5 minutes.", "Tell your worker before it becomes an action."] },
+            { id: 3, name: "Sleep Disruption", peak: "Days 7–30", color: "#1A5C2A",
+                what: "Your sleep architecture is being completely rebuilt after substances suppressed it.",
+                interrupt: ["Sacred Pause before sleep — every night.", "No screens after dark if possible.", "One line in your journal before closing your eyes."] },
+            { id: 4, name: "Stress Sensitivity", peak: "Days 45–90", color: "#7B4EA6",
+                what: "Things that used to roll off your back now feel unbearable. Your stress response is temporarily overshooting.",
+                interrupt: ["HALT check immediately.", "One-Breath Reset before responding.", "5-4-3-2-1 Grounding to return to present."] },
+            { id: 5, name: "Craving Waves", peak: "Days 45–90", color: "#C03030",
+                what: "Intense urges that arrive suddenly and feel overwhelming. Neurochemical events — not decisions, not identity.",
+                interrupt: ["NAME IT OUT LOUD: 'There is a craving. This is a wave.'", "Make contact FIRST.", "Cravings peak at 20 minutes. Set a timer. Ride it.", "Do NOT isolate."] },
+            { id: 6, name: "Anhedonia", peak: "Days 60–120", color: "#FF9500",
+                what: "Nothing feels good. This is the hardest hurdle — it makes recovery feel pointless.",
+                interrupt: ["FUNCTION BEFORE FEELING — act as if.", "One small physical accomplishment per day.", "Tell your worker honestly: 'Nothing feels good today.'"] },
+            { id: 7, name: "Identity Confusion", peak: "Days 90–180", color: "#5AADCC",
+                what: "You don't know who you are without the substance. A new self hasn't fully formed yet.",
+                interrupt: ["Values anchor: write 3 things you believe in.", "Act from values — not from identity.", "Return to your direction from Day 1."] }
+        ];
+
+        function getClientPawsHurdle(day) {
+            if (day < 14) return CLIENT_PAWS[2];
+            if (day < 45) return CLIENT_PAWS[0];
+            if (day < 90) return CLIENT_PAWS[4];
+            if (day < 120) return CLIENT_PAWS[5];
+            return CLIENT_PAWS[6];
+        }
+
+        function buildClientPawsList() {
+            document.getElementById('c-paws-title').textContent = 'PAWS MAP';
+            const info = document.getElementById('c-paws-list-area');
+            info.textContent = 'Day ' + currentDay + ' · Tap hurdle for full detail';
+            const area = document.getElementById('c-paws-content');
+            area.innerHTML = '';
+            CLIENT_PAWS.forEach(h => {
+                const start = parseInt(h.peak.replace('Days ', '').split('–')[0]);
+                const end = parseInt(h.peak.replace('Days ', '').split('–')[1]);
+                const inRange = currentDay >= start && currentDay <= end;
+                const btn = document.createElement('button');
+                btn.style.cssText = `background:${inRange ? h.color + '1E' : 'rgba(255,255,255,0.04)'};border:1px solid ${inRange ? '#D4A820' : 'rgba(255,255,255,0.12)'};border-radius:5px;padding:6px 8px;cursor:pointer;text-align:left;width:100%;font-family:'Inter',sans-serif;margin-bottom:3px`;
+                btn.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:${inRange ? '#D4A820' : '#E8E4DC'};font-weight:${inRange ? 700 : 400}">${inRange ? '⚠ ' : ''}H${h.id}: ${h.name}</span><span style="font-size:8px;color:#8a8080">${h.peak}</span></div>`;
+                btn.onclick = () => showCPawsDetail(h);
+                area.appendChild(btn);
+            });
+        }
+
+        function showCPawsDetail(h) {
+            document.getElementById('c-paws-title').textContent = 'H' + h.id + ': ' + h.name;
+            const info = document.getElementById('c-paws-list-area');
+            info.textContent = h.peak;
+            info.style.color = h.color;
+            const area = document.getElementById('c-paws-content');
+            area.innerHTML = `
+                <div style="font-size:11px;color:#E8E4DC;line-height:1.5;margin-bottom:4px">${h.what}</div>
+                <div style="font-size:9px;color:${h.color};font-weight:700;margin-top:4px;margin-bottom:3px">WHAT TO DO:</div>
+                ${h.interrupt.map((si,i)=>`<div style="display:flex;gap:5px;font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:3px"><span style="color:#34C759;flex-shrink:0;font-weight:700">${i+1}.</span>${si}</div>`).join('')}
+                <button onclick="buildClientPawsList()" style="margin-top:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:5px;padding:5px;color:#8a8080;font-size:9px;cursor:pointer;font-family:'Inter',sans-serif">← All hurdles</button>`;
+        }
+
+        // ── CO-BREATH (Client) ────────────────────────────────────────────────────
+        let cBreathPhase = 'idle';
+        let cBreathCount = 0;
+        let cBreathCycles = 0;
+        let cBreathTimer = null;
+
+        function resetClientBreath() {
+            clearInterval(cBreathTimer);
+            cBreathPhase = 'idle'; cBreathCount = 0; cBreathCycles = 0;
+            setClientBreathUI('CO-BREATH', '#1F7EA1', '◉', '4 in · 2 hold · 6 out · 3 cycles', false);
+        }
+
+        function setClientBreathUI(label, color, numTxt, sub, showDone) {
+            const l = document.getElementById('c-breath-label');
+            const n = document.getElementById('c-breath-num');
+            const b = document.getElementById('c-breath-btn');
+            if (l) { l.textContent = label; l.style.color = color; }
+            if (n) { n.textContent = numTxt; n.style.color = color; }
+            const circle = document.getElementById('c-breath-circle');
+            if (circle) circle.style.borderColor = color;
+            if (b) { b.style.display = showDone ? 'none' : 'block'; b.textContent = 'START'; b.onclick = startClientBreath; }
+        }
+
+        function startClientBreath() {
+            cBreathCycles = 0;
+            runClientBreathPhase('in');
+        }
+
+        function runClientBreathPhase(phase) {
+            cBreathPhase = phase;
+            clearInterval(cBreathTimer);
+            const dur = { in: 4, hold: 2, out: 6 }[phase];
+            const colors = { in: '#1A5C2A', hold: '#B07820', out: '#1F7EA1' };
+            const labels = { in: 'BREATHE IN', hold: 'HOLD', out: 'BREATHE OUT' };
+            cBreathCount = dur;
+            setClientBreathUI(labels[phase], colors[phase], String(dur), '', true);
+            cBreathTimer = setInterval(() => {
+                cBreathCount--;
+                const n = document.getElementById('c-breath-num');
+                if (n) n.textContent = cBreathCount;
+                if (cBreathCount <= 0) {
+                    clearInterval(cBreathTimer);
+                    if (phase === 'in') runClientBreathPhase('hold');
+                    else if (phase === 'hold') runClientBreathPhase('out');
+                    else {
+                        cBreathCycles++;
+                        if (cBreathCycles >= 3) {
+                            setClientBreathUI('COMPLETE', '#34C759', '◉', '', false);
+                        } else runClientBreathPhase('in');
+                    }
+                }
+            }, 1000);
+        }
+
+        function stopClientBreath() { clearInterval(cBreathTimer); resetClientBreath(); go('client-home'); }
+
+        // ── FISH BOWL (Client) ────────────────────────────────────────────────────
+        function renderClientFish() {
+            const list = document.getElementById('c-fish-list');
+            if (!list) return;
+            list.innerHTML = '';
+            clientFish.forEach((f, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'background:rgba(31,126,161,0.08);border:1px solid rgba(31,126,161,0.2);border-radius:5px;padding:5px 8px;font-size:10px;color:#E8E4DC;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center';
+                row.innerHTML = `<span>There is <strong>${f}</strong> passing through</span>`;
+                list.appendChild(row);
+            });
+        }
+
+        function addFish() {
+            const input = document.getElementById('c-fish-input');
+            if (!input || !input.value.trim()) return;
+            clientFish.push(input.value.trim());
+            input.value = '';
+            renderClientFish();
+            saveLifelineState();
+        }
+
+        // ── CLIENT CHECK-IN ───────────────────────────────────────────────────────
+        const C_CI_QS = [
+            { q: "How are you feeling?", k: "mood", opts: ["Grounded","Foggy","Anxious","Empty","Strong"] },
+            { q: "Have you eaten today?", k: "food", opts: ["Full meals","Partial","Nothing yet"] },
+            { q: "Craving intensity?", k: "craving", opts: ["None","Low","Medium","High","Urgent"] },
+            { q: "Connection today?", k: "node", opts: ["Strong","Good","Isolated","Not yet"] }
+        ];
+
+        function resetClientCheckin() { clientCheckinStep = 0; clientCheckinAnswers = {}; buildClientCheckin(); }
+
+        function buildClientCheckin() {
+            const area = document.getElementById('c-checkin-content');
+            if (!area) return;
+            area.innerHTML = '';
+            if (clientCheckinStep >= C_CI_QS.length) {
+                const hr = clientCheckinAnswers.craving === 'Urgent' || clientCheckinAnswers.craving === 'High';
+                area.innerHTML = `
+                    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px">
+                        <div style="font-size:20px">✓</div>
+                        <div style="font-size:12px;color:#34C759;font-weight:700">Check-In Complete</div>
+                        ${hr ? `<div style="background:rgba(192,48,48,0.1);border:1px solid rgba(192,48,48,0.3);border-radius:5px;padding:7px 10px;text-align:center"><div style="font-size:9px;color:#C03030;line-height:1.5">High craving flagged. Do not isolate. Tell your worker.</div></div>` : `<div style="background:rgba(26,92,42,0.1);border:1px solid rgba(26,92,42,0.3);border-radius:5px;padding:7px 10px;font-size:9px;color:#1A5C2A;text-align:center">Good data. Stay with the rhythm.</div>`}
+                        <button onclick="go('client-home')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:5px 14px;color:#E8E4DC;font-size:10px;cursor:pointer;font-family:'Inter',sans-serif">Done</button>
+                    </div>`;
+                saveLifelineState();
+                return;
+            }
+            const q = C_CI_QS[clientCheckinStep];
+            area.innerHTML = `
+                <div style="font-size:9px;color:#8a8080;text-align:center">Q${clientCheckinStep+1}/${C_CI_QS.length}</div>
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px">
+                    <div style="font-size:12px;color:#E8E4DC;text-align:center;line-height:1.4">${q.q}</div>
+                    ${q.opts.map(opt=>`<button onclick="ciClientAnswer('${opt}')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:7px 10px;color:#E8E4DC;font-size:11px;cursor:pointer;text-align:left;font-family:'Inter',sans-serif">${opt}</button>`).join('')}
+                </div>`;
+        }
+
+        function ciClientAnswer(opt) {
+            if (clientCheckinStep >= C_CI_QS.length) return;
+            clientCheckinAnswers[C_CI_QS[clientCheckinStep].k] = opt;
+            clientCheckinStep++;
+            buildClientCheckin();
+        }
+
+        // ── SHARED JOURNAL ────────────────────────────────────────────────────────
+        function renderClientJournal() {
+            const area = document.getElementById('c-journal-entries');
+            if (!area) return;
+            area.innerHTML = '';
+            clientJournal.forEach(e => {
+                const isWorker = e.who === 'worker';
+                const row = document.createElement('div');
+                row.style.cssText = `background:${isWorker ? 'rgba(31,126,161,0.08)' : 'rgba(212,168,32,0.08)'};border:1px solid ${isWorker ? 'rgba(31,126,161,0.2)' : 'rgba(212,168,32,0.2)'};border-radius:6px;padding:6px 9px;margin-bottom:5px`;
+                row.innerHTML = `<div style="font-size:8px;color:${isWorker ? '#1F7EA1' : '#D4A820'};font-weight:700;text-transform:uppercase;margin-bottom:2px">${isWorker ? 'Worker' : 'Client'}</div><div style="font-size:10px;color:#E8E4DC;line-height:1.4">${e.text}</div>`;
+                area.appendChild(row);
+            });
+        }
+
+        function addJournalEntry() {
+            const who = document.getElementById('c-journal-who').value;
+            const textInput = document.getElementById('c-journal-text');
+            if (!textInput || !textInput.value.trim()) return;
+            clientJournal.push({ who: who, text: textInput.value.trim() });
+            textInput.value = '';
+            renderClientJournal();
+            saveLifelineState();
+        }
+
+        // ── CLIENT LIBRARY (9 sections) ───────────────────────────────────────────
+        const C_LIB_SECTIONS = [
+            { id: "gaps", i: "◈", l: "G.A.P.S. Practices", s: "Gratitude · Acceptance · Presence · Surrender", c: "#D4A820" },
+            { id: "tfb", i: "🔗", l: "The T-F-B Chain", s: "Trigger → Thought → Feeling → Behaviour", c: "#2E74B5" },
+            { id: "halt", i: "⚡", l: "HALT Check", s: "Hungry · Angry · Lonely · Tired", c: "#5AADCC" },
+            { id: "distort", i: "🔍", l: "Cognitive Distortions", s: "6 patterns that sustain use", c: "#1A5C2A" },
+            { id: "abcde", i: "📋", l: "ABCDE Thought Record", s: "Dispute the automatic thought", c: "#1F7EA1" },
+            { id: "dbt", i: "🧩", l: "DBT Skills", s: "Mindfulness · Distress Tolerance · Emotion Regulation · Interpersonal Effectiveness", c: "#C03030" },
+            { id: "cenaps", i: "⚠", l: "Relapse as a Process", s: "Emotional → Mental → Physical (Gorski, 1989)", c: "#B07820" },
+            { id: "resources", i: "📞", l: "Resources", s: "ConnexOntario · CAMH · SMART Recovery · 988", c: "#34C759" },
+            { id: "doors", i: "🚪", l: "The Five Doors", s: "Deeper practices — check timing with your worker", c: "#7B4EA6" }
+        ];
+
+        function setClientLibTitle(t) { document.getElementById('c-lib-title').textContent = t; }
+
+        function showClientLibMain() {
+            document.getElementById('c-lib-title').textContent = 'KNOWLEDGE BASE';
+            const sub = document.getElementById('c-lib-sub');
+            if (sub) { sub.style.display = 'block'; sub.textContent = 'Tap any section'; }
+            const area = document.getElementById('c-lib-content');
+            area.innerHTML = '';
+            C_LIB_SECTIONS.forEach(s => {
+                const btn = document.createElement('button');
+                btn.className = 'list-btn';
+                btn.style.background = s.c + '0E';
+                btn.style.borderColor = s.c + '26';
+                btn.style.borderLeftColor = s.c;
+                btn.innerHTML = `<span class="list-btn-icon">${s.i}</span><div><div class="list-btn-t" style="color:${s.c}">${s.l}</div><div class="list-btn-s">${s.s}</div></div>`;
+                btn.onclick = () => clientLibSection(s.id);
+                area.appendChild(btn);
+            });
+        }
+
+        function clientLibSection(id) {
+            const sub = document.getElementById('c-lib-sub');
+            if (sub) sub.style.display = 'none';
+            if (id === 'tfb') { go('tfb'); return; }
+            const map = {
+                gaps: showClientGaps, halt: showClientHalt, distort: showClientDistort,
+                abcde: showClientAbcde, dbt: showClientDbt, cenaps: showClientCenaps,
+                resources: showClientResources, doors: showClientDoors
+            };
+            const fn = map[id];
+            if (fn) fn();
+        }
+
+        function clientLibBack() { showClientLibMain(); }
+
+        function showClientGaps() {
+            setClientLibTitle('G.A.P.S. PRACTICES');
+            const area = document.getElementById('c-lib-content');
+            area.innerHTML = '';
+            CAPS.forEach(cap => {
+                const box = document.createElement('div');
+                box.style.cssText = `background:${cap.color}10;border:1px solid ${cap.color}26;border-radius:7px;padding:9px 11px;margin-bottom:6px`;
+                box.innerHTML = `<div style="font-size:11px;color:${cap.color};font-weight:700;margin-bottom:3px">${cap.letter} — ${cap.name}</div><div style="font-size:9px;color:#E8E4DC;line-height:1.4;margin-bottom:4px">${cap.what}</div><div style="font-size:9px;color:#8a8080;font-style:italic;line-height:1.4">${cap.practice[0]}</div>`;
+                area.appendChild(box);
+            });
+        }
+
+        function showClientHalt() {
+            setClientLibTitle('HALT CHECK');
+            document.getElementById('c-lib-content').innerHTML = `
+                <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">Before any high-risk moment, run the HALT check. These four states lower your threshold for everything else.</div>
+                ${[
+                    {l:"H",n:"Hungry",c:"#D4A820",d:"Eat something first. Every decision made hungry is made at a disadvantage."},
+                    {l:"A",n:"Angry",c:"#C03030",d:"Name it before acting. Don't decide from anger."},
+                    {l:"L",n:"Lonely",c:"#1F7EA1",d:"Reach out to one person before making any decision."},
+                    {l:"T",n:"Tired",c:"#7B4EA6",d:"Rest before deciding. If you can't rest, run a breath reset first."}
+                ].map(h=>`<div style="background:${h.c}10;border:1px solid ${h.c}26;border-left:3px solid ${h.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px"><div style="font-size:11px;color:${h.c};font-weight:700;margin-bottom:2px">${h.l} — ${h.n}</div><div style="font-size:9px;color:#E8E4DC;line-height:1.4">${h.d}</div></div>`).join('')}`;
+        }
+
+        function showClientDistort() {
+            setClientLibTitle('COGNITIVE DISTORTIONS');
+            document.getElementById('c-lib-content').innerHTML = `
+                <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">Six thinking patterns that sustain addictive behaviour. Naming them reduces their power.</div>
+                ${[
+                    {n:"All-or-Nothing",c:"#C03030",d:"I slipped — I am a total failure.",r:"Slipping once does not erase progress."},
+                    {n:"Catastrophizing",c:"#B07820",d:"This craving means I will relapse.",r:"A craving is a wave. It peaks and passes."},
+                    {n:"Mind-Reading",c:"#1F7EA1",d:"They all think I am weak.",r:"You do not have access to other people's thoughts."},
+                    {n:"Emotional Reasoning",c:"#7B4EA6",d:"I feel like using so I must need to.",r:"Feelings are not facts."},
+                    {n:"Should Statements",c:"#1A5C2A",d:"I should be stronger than this.",r:"Should is a trap. What can I do right now?"},
+                    {n:"Personalization",c:"#5AADCC",d:"If my recovery is hard, I am broken.",r:"Recovery is hard for everyone. Difficulty is not a character verdict."}
+                ].map(d=>`<div style="background:${d.c}10;border:1px solid ${d.c}26;border-left:3px solid ${d.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px"><div style="font-size:10px;color:${d.c};font-weight:700;margin-bottom:2px">${d.n}</div><div style="font-size:9px;color:#E8E4DC;font-style:italic;margin-bottom:2px">"${d.d}"</div><div style="font-size:9px;color:#8a8080">Reframe: ${d.r}</div></div>`).join('')}`;
+        }
+
+        function showClientAbcde() {
+            setClientLibTitle('ABCDE THOUGHT RECORD');
+            document.getElementById('c-lib-content').innerHTML = `
+                <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">Use this after any high-risk moment.</div>
+                ${[
+                    {l:"A",n:"Activating Event",c:"#1F7EA1",d:"What happened, factually."},
+                    {l:"B",n:"Belief",c:"#D4A820",d:"What did your mind say immediately?"},
+                    {l:"C",n:"Consequence",c:"#C03030",d:"What emotion followed (0-10)? What did you do?"},
+                    {l:"D",n:"Dispute",c:"#7B4EA6",d:"Evidence for and against. What would you tell a friend?"},
+                    {l:"E",n:"Effect",c:"#1A5C2A",d:"The more balanced thought. Rate the emotion again."}
+                ].map(s=>`<div style="background:${s.c}10;border:1px solid ${s.c}26;border-left:3px solid ${s.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px"><div style="font-size:11px;color:${s.c};font-weight:700;margin-bottom:2px">${s.l} — ${s.n}</div><div style="font-size:9px;color:#E8E4DC">${s.d}</div></div>`).join('')}`;
+        }
+
+        function showClientDbt() {
+            setClientLibTitle('DBT SKILLS');
+            document.getElementById('c-lib-content').innerHTML = `
+                <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">Four skill modules used in CBT-SUD group work.</div>
+                ${[
+                    {n:"Mindfulness",c:"#D4A820",d:"Observe, describe, and participate in the moment without judgment."},
+                    {n:"Distress Tolerance",c:"#C03030",d:"Getting through a crisis moment without making it worse."},
+                    {n:"Emotion Regulation",c:"#7B4EA6",d:"Reduce vulnerability to intense emotion before it hits."},
+                    {n:"Interpersonal Effectiveness",c:"#1A5C2A",d:"Asking for what you need while holding self-respect."}
+                ].map(s=>`<div style="background:${s.c}10;border:1px solid ${s.c}26;border-left:3px solid ${s.c};border-radius:0 6px 6px 0;padding:6px 8px;margin-bottom:4px"><div style="font-size:11px;color:${s.c};font-weight:700;margin-bottom:2px">${s.n}</div><div style="font-size:9px;color:#E8E4DC">${s.d}</div></div>`).join('')}`;
+        }
+
+        function showClientCenaps() {
+            setClientLibTitle('RELAPSE AS A PROCESS');
+            const STAGES = [
+                { num: 1, name: "Emotional Relapse", color: "#B07820", def: "The body is in relapse mode before the mind has consciously considered using.", interrupt: "HALT check. Talk to your worker. Return to your daily rhythm." },
+                { num: 2, name: "Mental Relapse", color: "#FF9500", def: "The mind begins actively engaging with the possibility of using.", interrupt: "Run the Universal Interruption Protocol immediately. Make contact." },
+                { num: 3, name: "Physical Relapse", color: "#C03030", def: "Use occurs — the result of Stages 1 and 2 progressing uninterrupted.", interrupt: "Return to recovery. This is data, not verdict. Call your support person." }
+            ];
+            document.getElementById('c-lib-content').innerHTML = `
+                <div style="font-size:9px;color:#8a8080;line-height:1.4;margin-bottom:5px">Relapse is a process, not an event (Gorski, 1989).</div>
+                ${STAGES.map(s=>`<div style="background:${s.color}10;border:1px solid ${s.color}26;border-left:3px solid ${s.color};border-radius:0 6px 6px 0;padding:7px 9px;margin-bottom:5px"><div style="font-size:11px;color:${s.color};font-weight:700;margin-bottom:2px">Stage ${s.num}: ${s.name}</div><div style="font-size:9px;color:#E8E4DC;margin-bottom:3px">${s.def}</div><div style="font-size:9px;color:#8a8080;font-style:italic">${s.interrupt}</div></div>`).join('')}`;
+        }
+
+        function showClientResources() {
+            setClientLibTitle('RESOURCES');
+            const R = [
+                { n: "ConnexOntario", d: "Free, confidential 24/7 helpline for addiction and mental health services across Ontario." },
+                { n: "CAMH", d: "Centre for Addiction and Mental Health — Canada's largest mental health teaching hospital." },
+                { n: "SMART Recovery", d: "Self-management peer support meetings, in person and online." },
+                { n: "eMentalHealth.ca", d: "Ontario mental health and addiction service directory." },
+                { n: "988 Suicide & Crisis", d: "Call or text — 24/7 free." }
+            ];
+            document.getElementById('c-lib-content').innerHTML = R.map(r=>`<div style="background:rgba(52,199,89,0.08);border:1px solid rgba(52,199,89,0.22);border-radius:6px;padding:7px 9px;margin-bottom:5px"><div style="font-size:11px;color:#34C759;font-weight:700;margin-bottom:2px">${r.n}</div><div style="font-size:9px;color:#E8E4DC;line-height:1.4">${r.d}</div></div>`).join('');
+        }
+
+        function showClientDoors() {
+            setClientLibTitle('THE FIVE DOORS');
+            const D = [
+                { n: "Sacred Pause", d: "A brief, deliberate stop before reacting — used elsewhere in this app as the closing ritual." },
+                { n: "Snap Practice", d: "A physical interrupt for a fast-moving urge — a single sharp sensory cue to break the automatic chain." },
+                { n: "Mandela Method", d: "Naming what has already been survived, as evidence against the thought that this moment is unsurvivable." },
+                { n: "Momentum of Karma", d: "Recognizing that each small choice compounds — not fatalism, but the honest weight of accumulated direction." }
+            ];
+            document.getElementById('c-lib-content').innerHTML = `
+                <div style="background:rgba(123,78,166,0.1);border:1px solid rgba(123,78,166,0.28);border-radius:6px;padding:7px 9px;font-size:9px;color:#E8E4DC;line-height:1.5;margin-bottom:6px">These are deeper practices. If things feel unsteady right now, check with your worker about timing before working through these.</div>
+                ${D.map(d=>`<div style="background:rgba(123,78,166,0.08);border:1px solid rgba(123,78,166,0.2);border-radius:6px;padding:7px 9px;margin-bottom:5px"><div style="font-size:11px;color:#7B4EA6;font-weight:700;margin-bottom:2px">${d.n}</div><div style="font-size:9px;color:#E8E4DC;line-height:1.4">${d.d}</div></div>`).join('')}`;
+        }
+        // ── DIALOGUE (shared thread, 11 tagged contexts + General) ───────────────
+        function addDialogueNote(context, inputId) {
+            const input = document.getElementById(inputId);
+            if (!input || !input.value.trim()) return;
+            dialogueThread.push({ context: context, who: currentMode, text: input.value.trim(), day: currentDay });
+            input.value = '';
+            const btn = input.nextElementSibling;
+            if (btn) {
+                const orig = btn.textContent;
+                btn.textContent = 'Sent ✓';
+                setTimeout(() => { btn.textContent = orig; }, 1200);
+            }
+            if (currentScreen === 'dialogue') renderDialogue();
+            saveLifelineState();
+        }
+
+        function renderDialogue() {
+            const area = document.getElementById('dialogue-entries');
+            if (!area) return;
+            area.innerHTML = '';
+            if (dialogueThread.length === 0) {
+                area.innerHTML = '<div style="font-size:9px;color:#8a8080;text-align:center;padding:10px">No notes yet. Add one from any tool screen.</div>';
+                return;
+            }
+            dialogueThread.slice().reverse().forEach(e => {
+                const isWorker = e.who === 'worker';
+                const row = document.createElement('div');
+                row.style.cssText = `background:${isWorker ? 'rgba(31,126,161,0.08)' : 'rgba(212,168,32,0.08)'};border:1px solid ${isWorker ? 'rgba(31,126,161,0.2)' : 'rgba(212,168,32,0.2)'};border-radius:5px;padding:5px 8px;margin-bottom:4px`;
+                row.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:2px"><span style="color:${isWorker ? '#1F7EA1' : '#D4A820'};font-weight:700;text-transform:uppercase">${isWorker ? 'Worker' : 'Client'} · ${e.context}</span></div><div style="font-size:9px;color:#E8E4DC;line-height:1.4">${e.text}</div>`;
+                area.appendChild(row);
+            });
+        }
+
+    </script>
+</body>
+</html>
