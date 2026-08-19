@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTT Dashboard — Global Telephone Tag · G.A.P.S. by HALO</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#0D2B45;color:#E8E4DC;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#0A1628,#0D2B45);border-bottom:4px solid #D4A820;padding:18px 28px}
+.hdr-inner{max-width:1300px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.hdr-tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5AADCC;margin-bottom:3px}
+.hdr-title{font-size:clamp(16px,2.2vw,24px);font-weight:700;color:#fff}
+.hdr-sub{font-size:11px;color:#9B8D80;margin-top:2px}
+.live-badge{background:rgba(52,199,89,0.14);border:1px solid rgba(52,199,89,0.35);border-radius:20px;padding:5px 12px;font-size:11px;color:#34C759;display:flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:#34C759;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* TABS */
+.tabs{background:rgba(0,0,0,0.25);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;overflow-x:auto}
+.tab{padding:13px 22px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9B8D80;cursor:pointer;border:none;border-bottom:3px solid transparent;background:none;font-family:Georgia,serif;white-space:nowrap;transition:all .2s}
+.tab:hover{color:#D4A820}
+.tab.on{color:#D4A820;border-bottom-color:#D4A820;background:rgba(212,168,32,0.07)}
+
+/* LAYOUT */
+.wrap{max-width:1300px;margin:0 auto;padding:20px 16px}
+.panel{display:none}.panel.on{display:block}
+
+/* CARDS */
+.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px}
+.card-title{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#9B8D80;margin-bottom:14px}
+
+/* GRID HELPERS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
+@media(max-width:500px){.g4,.g3,.g2{grid-template-columns:1fr}}
+
+/* STAT CARDS */
+.stat{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px;text-align:center;position:relative;overflow:hidden}
+.stat-n{font-size:clamp(26px,4vw,40px);font-weight:900;font-family:Georgia,serif;line-height:1;margin-bottom:4px}
+.stat-l{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#9B8D80}
+.stat-d{font-size:11px;margin-top:4px}
+.stat-bar{position:absolute;top:0;left:0;right:0;height:3px}
+
+/* CHECK-IN FORM */
+.ci-wrap{display:grid;grid-template-columns:3fr 2fr;gap:20px;align-items:start}
+@media(max-width:800px){.ci-wrap{grid-template-columns:1fr}}
+.ci-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:16px;padding:26px;position:relative;overflow:hidden}
+.ci-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#1F7EA1,#7B4EA6,#D4A820)}
+.ci-session{font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:#D4A820;margin-bottom:5px}
+.ci-title{font-size:21px;font-weight:700;color:#fff;margin-bottom:4px}
+.ci-sub{font-size:12px;color:#9B8D80;line-height:1.5;margin-bottom:22px}
+.q-block{margin-bottom:18px}
+.q-num{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#5AADCC;margin-bottom:5px}
+.q-text{font-size:14px;color:#E8E4DC;font-style:italic;line-height:1.5;margin-bottom:10px}
+.q-opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.11);border-radius:7px;padding:6px 13px;font-size:12px;color:#E8E4DC;cursor:pointer;transition:all .18s;font-family:Georgia,serif}
+.opt:hover{background:rgba(255,255,255,0.09)}
+.opt.sel{background:rgba(212,168,32,0.16);border-color:#D4A820;color:#D4A820}
+.submit-btn{width:100%;background:linear-gradient(135deg,#1F7EA1,#7B4EA6);border:none;border-radius:10px;padding:13px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:Georgia,serif;letter-spacing:.05em;margin-top:6px;transition:all .2s}
+.submit-btn:hover{opacity:.9;transform:translateY(-1px)}
+.submit-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.thankyou{display:none;text-align:center;padding:28px 0}
+.ty-icon{font-size:44px;margin-bottom:10px}
+.ty-title{font-size:19px;font-weight:700;color:#D4A820;margin-bottom:7px}
+.ty-sub{font-size:12px;color:#9B8D80;line-height:1.6}
+.ty-next{background:rgba(212,168,32,0.1);border:1px solid rgba(212,168,32,0.28);border-radius:7px;padding:8px 14px;font-size:11px;color:#D4A820;display:inline-block;margin:10px 0}
+.reset-btn{background:rgba(31,126,161,0.12);border:1px solid rgba(31,126,161,0.28);border-radius:7px;padding:6px 14px;font-size:11px;color:#1F7EA1;cursor:pointer;font-family:Georgia,serif;margin-top:8px}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:14px}
+
+/* COLOUR GRID */
+.col-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.col-cell{border-radius:8px;padding:9px 6px;text-align:center;border:1px solid rgba(255,255,255,0.07)}
+.col-icon{font-size:16px;margin-bottom:3px}
+.col-name{font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.col-pct{font-size:17px;font-weight:900;font-family:Georgia,serif;line-height:1}
+.col-bw{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-top:5px}
+.col-bf{height:100%;border-radius:2px;transition:width 1.4s ease}
+
+/* HALT */
+.halt-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.halt-l{font-size:12px;font-weight:900;width:14px;flex-shrink:0;font-family:Georgia,serif}
+.halt-track{flex:1;height:7px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.halt-fill{height:100%;border-radius:4px;transition:width 1.4s ease}
+.halt-v{font-size:10px;font-weight:700;width:28px;text-align:right;flex-shrink:0}
+
+/* FLOURISH RING */
+.f-wrap{display:flex;align-items:center;justify-content:center;padding:8px 0}
+.f-ring{position:relative;width:100px;height:100px}
+.f-svg{width:100px;height:100px;transform:rotate(-90deg)}
+.f-track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:8}
+.f-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.8s ease}
+.f-ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.f-num{font-size:24px;font-weight:900;font-family:Georgia,serif;color:#D4A820;line-height:1}
+.f-lbl{font-size:8px;letter-spacing:.07em;text-transform:uppercase;color:#9B8D80;margin-top:2px}
+.f-desc{text-align:center;font-size:10px;color:#9B8D80;line-height:1.5;margin-top:8px}
+
+/* FEED */
+.feed-item{padding:9px 11px;border-left:3px solid;border-radius:0 6px 6px 0;margin-bottom:7px;background:rgba(255,255,255,0.02)}
+.feed-time{font-size:8px;color:#9B8D80;letter-spacing:.04em;margin-bottom:2px}
+.feed-q{font-size:9px;color:#9B8D80;margin-bottom:2px}
+.feed-a{font-size:11px;font-weight:700}
+.feed-node{font-size:9px;color:#9B8D80;margin-top:2px;font-style:italic}
+
+/* DASHBOARD */
+.timeline{display:flex;align-items:flex-end;gap:3px;height:90px}
+.t-bar{flex:1;border-radius:3px 3px 0 0;min-height:4px;cursor:pointer;transition:opacity .2s}
+.t-bar:hover{opacity:.75}
+.t-lbl{font-size:8px;color:#9B8D80;text-align:center;margin-top:4px}
+
+.node-row{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.node-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.node-name{font-size:11px;flex:1}
+.node-bw{width:70px;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.node-bf{height:100%;border-radius:3px;transition:width 1s ease}
+.node-s{font-size:10px;font-weight:700;width:28px;text-align:right}
+
+.stress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.stress-cell{border-radius:8px;padding:9px;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stress-icon{font-size:15px;margin-bottom:3px}
+.stress-lbl{font-size:8px;color:#9B8D80;margin-bottom:3px;line-height:1.3}
+.stress-val{font-size:14px;font-weight:900;font-family:Georgia,serif}
+.stress-trend{font-size:9px;margin-top:2px}
+
+.qb-row{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.qb-lbl{font-size:10px;color:#E8E4DC;line-height:1.3}
+.qb-bw{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.qb-bf{height:100%;border-radius:3px;background:linear-gradient(90deg,#1F7EA1,#7B4EA6);transition:width 1.4s ease}
+.qb-meta{display:flex;justify-content:space-between;font-size:9px;color:#9B8D80}
+
+.irf-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:13px}
+.irf-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.irf-title{font-size:12px;font-weight:700}
+.irf-status{font-size:9px;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:10px}
+.irf-detail{font-size:10px;color:#9B8D80;line-height:1.5}
+
+/* FISHING HOLE */
+.fh-intro{background:linear-gradient(135deg,rgba(212,168,32,0.07),rgba(31,126,161,0.04));border:1px solid rgba(212,168,32,0.18);border-radius:14px;padding:26px;margin-bottom:20px;text-align:center}
+.fh-title{font-size:clamp(17px,2.4vw,26px);font-weight:700;color:#D4A820;margin-bottom:8px}
+.fh-eq{font-family:monospace;font-size:13px;color:#5AADCC;background:rgba(0,0,0,0.28);padding:8px 18px;border-radius:7px;display:inline-block;margin:8px 0}
+.fh-desc{font-size:12px;color:#9B8D80;line-height:1.7;max-width:660px;margin:10px auto 0}
+
+.fh-stat{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px;text-align:center;position:relative;overflow:hidden}
+.fh-icon{font-size:28px;margin-bottom:8px}
+.fh-val{font-size:34px;font-weight:900;font-family:Georgia,serif;line-height:1;margin-bottom:4px}
+.fh-lbl{font-size:11px;font-weight:700;margin-bottom:5px}
+.fh-sub{font-size:10px;color:#9B8D80;line-height:1.5}
+
+.journey-wrap{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px;margin-bottom:18px}
+.j-track{display:flex;align-items:center;overflow-x:auto;padding-bottom:6px;gap:0}
+.j-node{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;min-width:100px}
+.j-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid rgba(255,255,255,0.1)}
+.j-circle.active{box-shadow:0 0 0 4px rgba(212,168,32,0.18)}
+.j-name{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;text-align:center}
+.j-w{font-size:9px;color:#9B8D80;text-align:center}
+.j-pct{font-size:10px;font-weight:700;text-align:center}
+.j-line{flex:1;height:2px;background:rgba(255,255,255,0.07);min-width:16px}
+.j-line.done{background:#D4A820}
+
+.intention-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:9px}
+.int-card{background:linear-gradient(135deg,rgba(212,168,32,0.05),rgba(31,126,161,0.03));border:1px solid rgba(212,168,32,0.13);border-radius:8px;padding:12px}
+.int-text{font-size:11px;color:#E8E4DC;line-height:1.6;font-style:italic;margin-bottom:6px}
+.int-meta{font-size:9px;color:#9B8D80;display:flex;justify-content:space-between}
+
+.poem-card{background:linear-gradient(135deg,rgba(212,168,32,0.06),rgba(26,92,42,0.04));border:1px solid rgba(212,168,32,0.16);border-radius:12px;padding:24px;margin-top:18px;text-align:center}
+.poem-line{font-size:13px;color:#E8E4DC;line-height:2;font-style:italic}
+.poem-line strong{color:#D4A820;font-style:normal}
+
+.footer{text-align:center;padding:28px 16px;font-size:10px;color:#9B8D80;border-top:1px solid rgba(255,255,255,0.05);margin-top:36px}
+.footer strong{color:#D4A820}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <div>
+      <div class="hdr-tag">G.A.P.S. by HALO · GTT-CEP-IRF · Global Telephone Tag</div>
+      <div class="hdr-title">The Mainframe — Live Aggregate Dashboard</div>
+      <div class="hdr-sub">Anonymous · Sovereign · No Individual Tracking · Data serves flourishing only</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="live-badge"><div class="dot"></div>Live Session</div>
+      <div style="font-size:11px;color:#9B8D80" id="clock"></div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('checkin',this)">◉ Check-In</button>
+    <button class="tab" onclick="switchTab('dashboard',this)">◈ Mainframe</button>
+    <button class="tab" onclick="switchTab('fishing',this)">🎣 The Fishing Hole</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ── CHECK-IN ── -->
+  <div id="panel-checkin" class="panel on">
+    <div class="ci-wrap">
+      <div class="ci-card">
+        <div class="ci-session" id="session-lbl">Morning Check-In · Session 1 of 3</div>
+        <div class="ci-title">Good morning.</div>
+        <div class="ci-sub">Five questions. No names. No judgment.<br>Your truth helps the whole community flourish.</div>
+
+        <div id="ci-form">
+          <div class="q-block">
+            <div class="q-num">Question 1 of 5</div>
+            <div class="q-text">"How are you liking it?"</div>
+            <div class="q-opts">
+              <button class="opt" onclick="pick(this,'q1','Loving it')">Loving it</button>
+              <button class="opt" onclick="pick(this,'q1','Pretty good')">Pretty good</button>
+              <button class="opt" onclick="pick(this,'q1','Getting there')">Getting there</button>
+              <button class="opt" onclick="pick(this,'q1','Struggling')">Struggling</button>
+              <button class="opt" onclick="pick(this,'q1','Not at all')">Not at all</button>
+            </div>
+          </div>
+          <div class="q-block">
+            <div class="q-num">Question 2 of 5</div>
+            <div class="q-text">"What could be better?"</div>
+            <div class="q-opts">
+              <button class="opt" onclick="pick(this,'q2','My sleep')">My sleep</button>
+              <button class="opt" onclick="pick(this,'q2','My connections')">My connections</button>
+              <button class="opt" onclick="pick(this,'q2','My work')">My work</button>
+              <button class="opt" onclick="pick(this,'q2','My body')">My body</button>
+              <button class="opt" onclick="pick(this,'q2','My mind')">My mind</button>
+              <button class="opt" onclick="pick(this,'q2','Everything is good')">Everything is good</button>
+            </div>
+          </div>
+          <div class="q-block">
+            <div class="q-num">Question 3 of 5</div>
+            <div class="q-text">"What could make you flourish?"</div>
+            <div class="q-opts">
+              <button class="opt" onclick="pick(this,'q3','More purpose')">More purpose</button>
+              <button class="opt" onclick="pick(this,'q3','Deeper connection')">Deeper connection</button>
+              <button class="opt" onclick="pick(this,'q3','More rest')">More rest</button>
+              <button class="opt" onclick="pick(this,'q3','Recognition')">Recognition</button>
+              <button class="opt" onclick="pick(this,'q3','Creative expression')">Creative expression</button>
+              <button class="opt" onclick="pick(this,'q3','Physical challenge')">Physical challenge</button>
+            </div>
+          </div>
+          <div class="q-block">
+            <div class="q-num">Question 4 of 5</div>
+            <div class="q-text">"What could make you feel better right now?"</div>
+            <div class="q-opts">
+              <button class="opt" onclick="pick(this,'q4','A breath')">A breath</button>
+              <button class="opt" onclick="pick(this,'q4','Movement')">Movement</button>
+              <button class="opt" onclick="pick(this,'q4','A conversation')">A conversation</button>
+              <button class="opt" onclick="pick(this,'q4','Quiet')">Quiet</button>
+              <button class="opt" onclick="pick(this,'q4','Food')">Food</button>
+              <button class="opt" onclick="pick(this,'q4','I feel fine')">I feel fine</button>
+            </div>
+          </div>
+          <div class="q-block">
+            <div class="q-num">Question 5 of 5</div>
+            <div class="q-text">"How would you do that?"</div>
+            <div class="q-opts">
+              <button class="opt" onclick="pick(this,'q5','Right now — I will')">Right now — I will</button>
+              <button class="opt" onclick="pick(this,'q5','After this session')">After this session</button>
+              <button class="opt" onclick="pick(this,'q5','I need help with this')">I need help with this</button>
+              <button class="opt" onclick="pick(this,'q5','I am not sure yet')">I am not sure yet</button>
+              <button class="opt" onclick="pick(this,'q5','Nothing needed')">Nothing needed</button>
+            </div>
+          </div>
+          <button class="submit-btn" id="sub-btn" onclick="submitCI()" disabled>Submit to the Mainframe — Anonymously</button>
+        </div>
+
+        <div class="thankyou" id="thankyou">
+          <div class="ty-icon">◉</div>
+          <div class="ty-title">Received. Thank you.</div>
+          <div class="ty-sub">Your truth has joined the aggregate.<br>No name. No trace. Just signal.<br>The mainframe is listening.</div>
+          <div class="ty-next" id="next-lbl">Next session opens at midday</div>
+          <br>
+          <button class="reset-btn" onclick="resetCI()">← Check in again (demo)</button>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+
+        <div class="card">
+          <div class="card-title">Community Colour State</div>
+          <div class="col-grid" id="col-grid"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">HALT Aggregate Baseline</div>
+          <div id="halt-rows"></div>
+          <div style="font-size:9px;color:#9B8D80;margin-top:6px;line-height:1.5">Higher = more vulnerability in the cohort. Triggers resource pre-positioning.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Cohort Flourish Score</div>
+          <div class="f-wrap">
+            <div class="f-ring">
+              <svg class="f-svg" viewBox="0 0 100 100">
+                <circle class="f-track" cx="50" cy="50" r="42"/>
+                <circle class="f-fill" id="f-arc" cx="50" cy="50" r="42"
+                  stroke="url(#fg)" stroke-dasharray="264" stroke-dashoffset="264"/>
+                <defs>
+                  <linearGradient id="fg" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#1F7EA1"/>
+                    <stop offset="100%" stop-color="#D4A820"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="f-ctr">
+                <div class="f-num" id="f-num">—</div>
+                <div class="f-lbl">/ 100</div>
+              </div>
+            </div>
+          </div>
+          <div class="f-desc" id="f-desc">Submit your check-in to see the live cohort score update.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Anonymous Response Feed</div>
+          <div id="feed"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAINFRAME ── -->
+  <div id="panel-dashboard" class="panel">
+
+    <div class="g4" style="margin-bottom:18px">
+      <div class="stat">
+        <div class="stat-bar" style="background:linear-gradient(90deg,#1F7EA1,#5AADCC)"></div>
+        <div class="stat-n" style="color:#5AADCC" id="d-checkins">0</div>
+        <div class="stat-l">Check-Ins Today</div>
+        <div class="stat-d" style="color:#2E8B47">3 sessions · 5 questions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-bar" style="background:linear-gradient(90deg,#D4A820,#B07820)"></div>
+        <div class="stat-n" style="color:#D4A820" id="d-flourish">—</div>
+        <div class="stat-l">Flourish Score</div>
+        <div class="stat-d" style="color:#9B8D80">Community aggregate</div>
+      </div>
+      <div class="stat">
+        <div class="stat-bar" style="background:linear-gradient(90deg,#1A5C2A,#2E8B47)"></div>
+        <div class="stat-n" style="color:#2E8B47" id="d-mayhem">Low</div>
+        <div class="stat-l">Mayhem Index</div>
+        <div class="stat-d" style="color:#2E8B47">No IRF triggered</div>
+      </div>
+      <div class="stat">
+        <div class="stat-bar" style="background:linear-gradient(90deg,#7B4EA6,#1F7EA1)"></div>
+        <div class="stat-n" style="color:#7B4EA6">6</div>
+        <div class="stat-l">Active Nodes</div>
+        <div class="stat-d" style="color:#9B8D80">Don River · MASH · School</div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-title">Response Timeline — Today</div>
+        <div class="timeline" id="timeline"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px">
+          <span style="font-size:8px;color:#9B8D80">6 AM</span>
+          <span style="font-size:8px;color:#9B8D80">9</span>
+          <span style="font-size:8px;color:#9B8D80">12 PM</span>
+          <span style="font-size:8px;color:#9B8D80">3</span>
+          <span style="font-size:8px;color:#9B8D80">6</span>
+          <span style="font-size:8px;color:#9B8D80">Now</span>
+        </div>
+        <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
+          <div style="display:flex;gap:5px;align-items:center"><div style="width:9px;height:9px;border-radius:2px;background:#1F7EA1"></div><span style="font-size:9px;color:#9B8D80">Flourishing</span></div>
+          <div style="display:flex;gap:5px;align-items:center"><div style="width:9px;height:9px;border-radius:2px;background:#B07820"></div><span style="font-size:9px;color:#9B8D80">Moderate</span></div>
+          <div style="display:flex;gap:5px;align-items:center"><div style="width:9px;height:9px;border-radius:2px;background:#C03030"></div><span style="font-size:9px;color:#9B8D80">Stress</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Node Flourish Scores</div>
+        <div id="node-list"></div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-title">Where Support Is Needed — Q2 Aggregate</div>
+        <div class="stress-grid" id="stress-grid"></div>
+        <div style="font-size:9px;color:#9B8D80;margin-top:10px;line-height:1.5">Triggers resource pre-positioning before crisis arrives.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">What Would Make You Flourish — Q3 Aggregate</div>
+        <div id="q-breakdown"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">IRF — Rose · Mildred · Jenny · Marie Hodge</div>
+      <div class="g4" id="irf-grid"></div>
+    </div>
+
+  </div>
+
+  <!-- ── FISHING HOLE ── -->
+  <div id="panel-fishing" class="panel">
+
+    <div class="fh-intro">
+      <div class="fh-title">🎣 The Fishing Hole</div>
+      <div class="fh-eq">S_Sovereign = (Heart × Soul) + (E_tool × Physical) = 1 + creation</div>
+      <div class="fh-desc">
+        Conscious. Content. Unattached to expectations or outcome.<br>
+        Holding good intention toward self and others simultaneously.<br>
+        Genuinely wanting the people around them to flourish.<br><br>
+        <em>Connected to everything. Attached to nothing. Ego in the backpack.</em>
+      </div>
+    </div>
+
+    <div class="g3" style="margin-bottom:18px">
+      <div class="fh-stat">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#D4A820,#B07820)"></div>
+        <div class="fh-icon">🌱</div>
+        <div class="fh-val" style="color:#D4A820">3</div>
+        <div class="fh-lbl" style="color:#D4A820">At the Fishing Hole</div>
+        <div class="fh-sub">W score 86–100 · Sovereign mastery · Active Mother-Elders</div>
+      </div>
+      <div class="fh-stat">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1F7EA1,#5AADCC)"></div>
+        <div class="fh-icon">🎯</div>
+        <div class="fh-val" style="color:#1F7EA1">42</div>
+        <div class="fh-lbl" style="color:#1F7EA1">Average W Score</div>
+        <div class="fh-sub">Early restoration stage · Emerging from Limbic Prison</div>
+      </div>
+      <div class="fh-stat">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1A5C2A,#2E8B47)"></div>
+        <div class="fh-icon">📡</div>
+        <div class="fh-val" style="color:#2E8B47">35.2</div>
+        <div class="fh-lbl" style="color:#2E8B47">V_Gen — Generational Ripple</div>
+        <div class="fh-sub">Sovereign units · Children who witnessed and were seeded</div>
+      </div>
+    </div>
+
+    <div class="journey-wrap">
+      <div class="card-title">The Colour Journey — Cohort Distribution</div>
+      <div class="j-track" id="j-track"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px">
+      <div class="card-title">The Intention Wall — Anonymous Voices of the Cohort</div>
+      <div class="intention-grid" id="int-grid"></div>
+    </div>
+
+    <div class="poem-card">
+      <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#D4A820;margin-bottom:16px">Children Learn What They Live — Dorothy Law Nolte, 1954</div>
+      <div class="poem-line">If a child lives with <strong>criticism</strong> — they learn to condemn.</div>
+      <div class="poem-line">If a child lives with <strong>hostility</strong> — they learn to fight.</div>
+      <div class="poem-line">If a child lives with <strong>encouragement</strong> — they learn confidence.</div>
+      <div class="poem-line">If a child lives with <strong>fairness</strong> — they learn justice.</div>
+      <div class="poem-line">If a child lives with <strong>security</strong> — they learn to have faith.</div>
+      <div class="poem-line">If a child lives with <strong>acceptance and friendship</strong> — they learn love is in the world.</div>
+      <div style="margin-top:20px;font-size:13px;color:#D4A820;font-style:italic;line-height:1.8">
+        "This is the Fishing Hole. It starts as a child.<br>
+        And if it's properly filled with water —<br>
+        you're always in it."
+      </div>
+      <div style="font-size:10px;color:#9B8D80;margin-top:8px">— Neil J. Schwab, Framework Architect · G.A.P.S. by HALO</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  <strong>GTT-CEP-IRF · G.A.P.S. by HALO · MASH Antifragile · GSRT Earthworks</strong><br>
+  Neil J. Schwab — Framework Architect · neil.schwab@live.ca · (905) 868-6985 · Newmarket, Ontario<br><br>
+  <em>Forgive Yesterday · Heal Today · Flourish Tomorrow · Together · PBTG</em>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const COLOURS=[
+  {name:'WHITE',icon:'○',col:'#E8E4DC',bg:'rgba(232,228,220,0.08)',pct:22},
+  {name:'BLUE', icon:'◉',col:'#1F7EA1',bg:'rgba(31,126,161,0.12)', pct:31},
+  {name:'GREEN',icon:'◈',col:'#1A5C2A',bg:'rgba(26,92,42,0.12)',   pct:24},
+  {name:'YELLW',icon:'◆',col:'#D4A820',bg:'rgba(212,168,32,0.12)', pct:12},
+  {name:'BLACK',icon:'◼',col:'#7B4EA6',bg:'rgba(123,78,166,0.12)', pct:7},
+  {name:'GOLD', icon:'★',col:'#B07820',bg:'rgba(176,120,32,0.12)', pct:4},
+];
+const HALT_D=[
+  {k:'H',l:'Hungry',c:'#B07820',v:42},
+  {k:'A',l:'Angry', c:'#C03030',v:35},
+  {k:'L',l:'Lonely',c:'#1F7EA1',v:58},
+  {k:'T',l:'Tired', c:'#7B4EA6',v:51},
+];
+const NODES=[
+  {name:'MASH Antifragile — Cobalt',    col:'#1F7EA1',score:78},
+  {name:'GSRT Earthworks — Don River',  col:'#1A5C2A',score:84},
+  {name:'Newmarket School — Cohort A',  col:'#D4A820',score:71},
+  {name:'York Region Community Node',   col:'#7B4EA6',score:62},
+  {name:'Blue Door / Porter Place',     col:'#B07820',score:47},
+  {name:'Remote Participants',          col:'#5AADCC',score:69},
+];
+const STRESS=[
+  {icon:'😴',lbl:'Sleep quality',  val:'High',col:'#C03030',trend:'↑ 12%'},
+  {icon:'🤝',lbl:'Connection',     val:'Mod', col:'#B07820',trend:'→ stable'},
+  {icon:'💪',lbl:'Work meaning',   val:'Good',col:'#1A5C2A',trend:'↑ 8%'},
+  {icon:'🧠',lbl:'Mental fog',     val:'High',col:'#C03030',trend:'↑ 18%'},
+  {icon:'🍎',lbl:'Nutrition',      val:'Mod', col:'#B07820',trend:'↓ 4%'},
+  {icon:'🏃',lbl:'Physical energy',val:'Good',col:'#1A5C2A',trend:'↑ 6%'},
+];
+const Q3_D=[
+  {lbl:'More purpose in daily work',  pct:72},
+  {lbl:'Deeper connection with crew', pct:64},
+  {lbl:'More physical rest',          pct:58},
+  {lbl:'Creative or cultural expression',pct:41},
+  {lbl:'Recognition from community',  pct:33},
+  {lbl:'Physical challenge and growth',pct:29},
+];
+const IRF_D=[
+  {icon:'🌹',title:'Rose — Shadow Watch',    status:'Monitoring',sc:'#7B4EA6',
+   detail:'3 participants flagged for shadow accumulation. Watching quietly.'},
+  {icon:'☀️',title:'Jenny — Sunshine Scan',  status:'Active',    sc:'#D4A820',
+   detail:'Genuine Tint expression trending upward. MASH campfire connection scores strong.'},
+  {icon:'🔮',title:'Mildred — Selections',   status:'Ready',     sc:'#1F7EA1',
+   detail:'2 participants palette-matched for GREEN tier advancement. Awaiting Rose confirmation.'},
+  {icon:'🛡️',title:'Marie Hodge Intercept', status:'Clear',     sc:'#1A5C2A',
+   detail:'No declining ΔE trajectories. No burnout pattern spread. All nodes within healthy range.'},
+];
+const INTENTIONS=[
+  "To show up for my crew the way they showed up for me.",
+  "To get back to the river. To breathe.",
+  "To be the kind of father my daughter can fish with.",
+  "To carry less. To rest more. To trust the process.",
+  "To teach what I know before I forget I know it.",
+  "To stop running from the fog and sit in it until it clears.",
+  "To earn my BLUE. For the water. For the watershed.",
+  "To remember I am not the fish. I am the bowl.",
+  "To make tomorrow worth yesterday.",
+  "To show my kids what meaningful work looks like.",
+  "To forgive. Even myself. Especially myself.",
+  "To find my hue and live in it, whatever colour it is.",
+];
+const JOURNEY=[
+  {name:'WHITE',icon:'○',col:'#E8E4DC',w:'W 20–35',pct:'22%',done:true},
+  {name:'BLUE', icon:'◉',col:'#1F7EA1',w:'W 36–50',pct:'31%',done:true},
+  {name:'GREEN',icon:'◈',col:'#1A5C2A',w:'W 51–65',pct:'24%',done:false},
+  {name:'YELLOW',icon:'◆',col:'#D4A820',w:'W 66–75',pct:'12%',done:false},
+  {name:'BLACK',icon:'◼',col:'#7B4EA6',w:'W 76–85',pct:'7%', done:false},
+  {name:'GOLD', icon:'★',col:'#B07820',w:'W 86+',  pct:'4%', done:false},
+];
+const FEED_SEEDS=[
+  {q:'How are you liking it?',           a:'Pretty good',       node:'MASH — Cobalt',       col:'#1F7EA1'},
+  {q:'What could make you flourish?',    a:'Deeper connection', node:'Don River Node',       col:'#1A5C2A'},
+  {q:'What could be better?',            a:'My sleep',          node:'Newmarket School',     col:'#D4A820'},
+  {q:'How would you do that?',           a:'Right now — I will',node:'Blue Door Node',       col:'#B07820'},
+  {q:'What could make you feel better?', a:'Movement',          node:'MASH — Cobalt',        col:'#7B4EA6'},
+  {q:'How are you liking it?',           a:'Loving it',         node:'Don River Node',       col:'#1A5C2A'},
+  {q:'What could make you flourish?',    a:'More purpose',      node:'Remote Participants',  col:'#5AADCC'},
+];
+const TL_DATA=[
+  {h:55,c:'#1F7EA1'},{h:40,c:'#1F7EA1'},{h:65,c:'#1F7EA1'},{h:30,c:'#B07820'},
+  {h:70,c:'#1F7EA1'},{h:45,c:'#B07820'},{h:80,c:'#1F7EA1'},{h:55,c:'#1F7EA1'},
+  {h:35,c:'#C03030'},{h:60,c:'#1F7EA1'},{h:75,c:'#1F7EA1'},{h:50,c:'#B07820'},
+  {h:65,c:'#1F7EA1'},{h:40,c:'#B07820'},{h:70,c:'#1F7EA1'},{h:85,c:'#1F7EA1'},
+  {h:55,c:'#1F7EA1'},{h:30,c:'#C03030'},{h:60,c:'#1F7EA1'},{h:75,c:'#1F7EA1'},
+  {h:50,c:'#B07820'},{h:65,c:'#1F7EA1'},{h:80,c:'#1F7EA1'},{h:45,c:'#B07820'},
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const ans={};
+let totalSubs=parseInt(localStorage.getItem('gtt_t')||'0');
+let flourish=parseInt(localStorage.getItem('gtt_f')||'0');
+let subsToday=parseInt(localStorage.getItem('gtt_d')||'0');
+
+// ── CLOCK ─────────────────────────────────────────────────────────────────────
+function tick(){
+  const n=new Date();
+  const h=n.getHours();
+  document.getElementById('clock').textContent=
+    n.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'})+' · '+
+    n.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const sl=h<12?'Morning Check-In · Session 1 of 3':h<17?'Midday Check-In · Session 2 of 3':'Evening Check-In · Session 3 of 3';
+  document.getElementById('session-lbl').textContent=sl;
+  const nx=h<12?'Midday check-in opens at noon':h<17?'Evening check-in opens at 6 PM':'Morning check-in opens at 6 AM';
+  document.getElementById('next-lbl').textContent=nx;
+}
+tick();setInterval(tick,30000);
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('panel-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='dashboard') buildDash();
+  if(id==='fishing') buildFishing();
+}
+
+// ── CHECK-IN ──────────────────────────────────────────────────────────────────
+function pick(btn,q,val){
+  btn.closest('.q-opts').querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  ans[q]=val;
+  const allDone=['q1','q2','q3','q4','q5'].every(k=>ans[k]);
+  document.getElementById('sub-btn').disabled=!allDone;
+}
+
+function calcScore(){
+  const map={
+    'Loving it':20,'Pretty good':14,'Getting there':8,'Struggling':3,'Not at all':0,
+    'Right now — I will':20,'After this session':14,'Nothing needed':16,'I am not sure yet':7,'I need help with this':5
+  };
+  let s=50;
+  if(map[ans.q1]!==undefined) s+=(map[ans.q1]-10);
+  if(map[ans.q5]!==undefined) s+=(map[ans.q5]-10);
+  return Math.max(0,Math.min(100,Math.round(s)));
+}
+
+function submitCI(){
+  totalSubs++; subsToday++; 
+  const ns=calcScore();
+  flourish=totalSubs===1?ns:Math.round((flourish*(totalSubs-1)+ns)/totalSubs);
+  localStorage.setItem('gtt_t',totalSubs);
+  localStorage.setItem('gtt_f',flourish);
+  localStorage.setItem('gtt_d',subsToday);
+  document.getElementById('ci-form').style.display='none';
+  document.getElementById('thankyou').style.display='block';
+  updateSidebar();
+  addFeedItem();
+  updateDashStats();
+}
+
+function resetCI(){
+  Object.keys(ans).forEach(k=>delete ans[k]);
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('ci-form').style.display='block';
+  document.getElementById('thankyou').style.display='none';
+  document.getElementById('sub-btn').disabled=true;
+}
+
+// ── SIDEBAR BUILD ─────────────────────────────────────────────────────────────
+function buildSidebar(){
+  // Colours
+  const cg=document.getElementById('col-grid');
+  cg.innerHTML='';
+  COLOURS.forEach(c=>{
+    cg.innerHTML+=`<div class="col-cell" style="background:${c.bg}">
+      <div class="col-icon">${c.icon}</div>
+      <div class="col-name" style="color:${c.col}">${c.name}</div>
+      <div class="col-pct" style="color:${c.col}">${c.pct}%</div>
+      <div class="col-bw"><div class="col-bf" style="background:${c.col};width:${c.pct}%"></div></div>
+    </div>`;
+  });
+  // HALT
+  const hr=document.getElementById('halt-rows');
+  hr.innerHTML='';
+  HALT_D.forEach(d=>{
+    hr.innerHTML+=`<div class="halt-row">
+      <span class="halt-l" style="color:${d.c}">${d.k}</span>
+      <div class="halt-track"><div class="halt-fill" style="background:${d.c};width:${d.v}%"></div></div>
+      <span class="halt-v" style="color:${d.c}">${d.v}%</span>
+    </div>`;
+  });
+  // Feed seeds
+  const fd=document.getElementById('feed');
+  fd.innerHTML='';
+  FEED_SEEDS.slice(0,4).forEach(f=>fd.innerHTML+=makeFeedItem(f));
+}
+
+function updateSidebar(){
+  // Flourish ring
+  if(flourish>0){
+    const offset=Math.round(264*(1-flourish/100));
+    document.getElementById('f-arc').style.strokeDashoffset=offset;
+    document.getElementById('f-num').textContent=flourish;
+    const desc=flourish>=70?'Cohort is flourishing. Beautiful data.':flourish>=50?'Cohort moving toward flourishing. Keep going.':'Early stages. Every check-in helps.';
+    document.getElementById('f-desc').textContent=desc;
+  }
+}
+
+function makeFeedItem(f){
+  const now=new Date();
+  const t=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  return `<div class="feed-item" style="border-left-color:${f.col}">
+    <div class="feed-time">${t}</div>
+    <div class="feed-q">${f.q}</div>
+    <div class="feed-a" style="color:${f.col}">${f.a}</div>
+    <div class="feed-node">${f.node}</div>
+  </div>`;
+}
+
+function addFeedItem(){
+  const fd=document.getElementById('feed');
+  const templates=[
+    {q:'How are you liking it?',a:ans.q1,col:'#1F7EA1'},
+    {q:'What could make you flourish?',a:ans.q3,col:'#1A5C2A'},
+  ];
+  const f=templates[totalSubs%2];
+  f.node='Your Node';
+  fd.innerHTML=makeFeedItem(f)+fd.innerHTML;
+  const items=fd.querySelectorAll('.feed-item');
+  if(items.length>6) items[items.length-1].remove();
+}
+
+// ── DASHBOARD BUILD ───────────────────────────────────────────────────────────
+function buildDash(){
+  updateDashStats();
+  // Timeline
+  const tl=document.getElementById('timeline');
+  tl.innerHTML='';
+  TL_DATA.forEach((b,i)=>{
+    tl.innerHTML+=`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <div class="t-bar" style="height:${b.h}%;background:${b.c};width:100%" title="${b.c==='#1F7EA1'?'Flourishing':b.c==='#B07820'?'Moderate':'Stress'}"></div>
+    </div>`;
+  });
+  // Nodes
+  const nl=document.getElementById('node-list');
+  nl.innerHTML='';
+  NODES.forEach(n=>{
+    nl.innerHTML+=`<div class="node-row">
+      <div class="node-dot" style="background:${n.col}"></div>
+      <span class="node-name">${n.name}</span>
+      <div class="node-bw"><div class="node-bf" style="background:${n.col};width:${n.score}%"></div></div>
+      <span class="node-s" style="color:${n.col}">${n.score}</span>
+    </div>`;
+  });
+  // Stress
+  const sg=document.getElementById('stress-grid');
+  sg.innerHTML='';
+  STRESS.forEach(s=>{
+    sg.innerHTML+=`<div class="stress-cell" style="background:${s.col}0D">
+      <div class="stress-icon">${s.icon}</div>
+      <div class="stress-lbl">${s.lbl}</div>
+      <div class="stress-val" style="color:${s.col}">${s.val}</div>
+      <div class="stress-trend" style="color:${s.col}">${s.trend}</div>
+    </div>`;
+  });
+  // Q3 breakdown
+  const qb=document.getElementById('q-breakdown');
+  qb.innerHTML='';
+  Q3_D.forEach(q=>{
+    qb.innerHTML+=`<div class="qb-row">
+      <div class="qb-lbl">${q.lbl}</div>
+      <div class="qb-bw"><div class="qb-bf" style="width:${q.pct}%"></div></div>
+      <div class="qb-meta"><span></span><span>${q.pct}%</span></div>
+    </div>`;
+  });
+  // IRF
+  const ig=document.getElementById('irf-grid');
+  ig.innerHTML='';
+  IRF_D.forEach(c=>{
+    const scol=c.status==='Clear'?'#1A5C2A':c.status==='Active'?'#D4A820':'#1F7EA1';
+    ig.innerHTML+=`<div class="irf-card" style="border-left:3px solid ${c.sc}">
+      <div class="irf-header">
+        <span class="irf-title" style="color:${c.sc}">${c.icon} ${c.title}</span>
+        <span class="irf-status" style="background:${scol}18;color:${scol};border:1px solid ${scol}44">${c.status}</span>
+      </div>
+      <div class="irf-detail">${c.detail}</div>
+    </div>`;
+  });
+}
+
+function updateDashStats(){
+  document.getElementById('d-checkins').textContent=subsToday||'247';
+  document.getElementById('d-flourish').textContent=flourish||'68';
+  document.getElementById('d-mayhem').textContent=flourish<30?'Elevated':'Low';
+}
+
+// ── FISHING HOLE BUILD ────────────────────────────────────────────────────────
+function buildFishing(){
+  // Journey
+  const jt=document.getElementById('j-track');
+  jt.innerHTML='';
+  JOURNEY.forEach((j,i)=>{
+    if(i>0) jt.innerHTML+=`<div class="j-line${j.done?' done':''}"></div>`;
+    const isActive=i===1;
+    jt.innerHTML+=`<div class="j-node">
+      <div class="j-circle${isActive?' active':''}" style="background:${j.col}18;border-color:${j.col}55">
+        <span style="font-size:16px;color:${j.col}">${j.icon}</span>
+      </div>
+      <div class="j-name" style="color:${j.col}">${j.name}</div>
+      <div class="j-w">${j.w}</div>
+      <div class="j-pct" style="color:${j.col}">${j.pct}</div>
+    </div>`;
+  });
+  // Intentions
+  const ig=document.getElementById('int-grid');
+  ig.innerHTML='';
+  INTENTIONS.forEach((text,i)=>{
+    const colours=['#1F7EA1','#1A5C2A','#D4A820','#7B4EA6','#B07820','#5AADCC'];
+    const col=colours[i%colours.length];
+    const nodes=['MASH — Cobalt','Don River Node','Newmarket School','Blue Door Node','Remote'];
+    ig.innerHTML+=`<div class="int-card" style="border-color:${col}22">
+      <div class="int-text">${text}</div>
+      <div class="int-meta">
+        <span style="color:${col}">${nodes[i%nodes.length]}</span>
+        <span>Anonymous</span>
+      </div>
+    </div>`;
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildSidebar();
+updateSidebar();
+</script>
+</body>
+</html>

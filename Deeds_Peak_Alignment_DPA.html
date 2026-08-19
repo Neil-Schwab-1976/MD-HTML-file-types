@@ -162,6 +162,11 @@ input[type=file].dp-file { color:#8A8080; font-size:8px; margin-top:4px; }
                             <div class="topbar"><button class="back-btn" onclick="dpaGoTo('intro')">←</button><span class="topbar-title">UPLOADS</span></div>
                             <div class="disclosure">Both are optional. Uploading a school record with a known curriculum color lets you skip the Wheel 1 questionnaire — otherwise you'll answer 5 quick questions instead. This extraction is simple keyword-matching, shown to you plainly below, not a black box.</div>
                             <div class="step-card">
+                                <div class="st">AGE</div>
+                                <div style="font-size:8px;color:#8A8080;margin-bottom:4px">Asked once, for one reason: GOLD carries an Elder standing provision (55+) alongside its competency criteria. This is the only thing your age affects here — it plays no role in any other score. Optional; skip and GOLD is simply treated as not yet age-eligible.</div>
+                                <input type="number" id="dpa-age" class="dp-input" placeholder="Your age" min="0" max="120" onchange="setDpaAge(this.value)">
+                            </div>
+                            <div class="step-card">
                                 <div class="st">RESUME</div>
                                 <input type="file" id="resume-file" class="dp-file" accept=".txt,.pdf,.doc,.docx" onchange="handleResumeFile(event)">
                                 <div id="resume-status" style="font-size:8px;color:#8A8080;margin-top:4px">No file uploaded — you can also paste text below.</div>
@@ -264,7 +269,7 @@ input[type=file].dp-file { color:#8A8080; font-size:8px; margin-top:4px; }
     <div class="panel">
         <div class="panel-tag">HALO ANTIFRAGILE AI — GSRT</div>
         <div class="panel-title">Deeds Peak Alignment (DPA)</div>
-        <div class="panel-desc">The DEEDSPROOF onboarding tool for GSRT Earthworks. Three wheels — WHIMS/Curriculum, Feelings, Personal Dimensions — merge into one Palette. Mildred matches; Rose sets Shade; Jenny sets Tint. Every score shown is exactly what it's built from — no hidden weighting.</div>
+        <div class="panel-desc">The DEEDSPROOF onboarding tool for GSRT Earthworks. Three wheels — WHIMS/Curriculum, Feelings, Personal Dimensions — merge into one Palette. Mildred matches; Rose sets Shade; Jenny sets Tint. Every score shown is exactly what it's built from — no hidden weighting. GOLD carries an Elder standing provision (age 55+) alongside its competency criteria, shown transparently if your quiz result leans GOLD before you're age-eligible.</div>
         <div class="panel-features">
             <div class="feat"><span class="feat-icon">🎨</span><div><div class="feat-title">Wheel 1 — WHIMS/Curriculum</div><div class="feat-sub">Base Hue — from school record or 5-question quiz</div></div></div>
             <div class="feat"><span class="feat-icon">💭</span><div><div class="feat-title">Wheel 2 — Feelings</div><div class="feat-sub">Emotional register within your Hue</div></div></div>
@@ -283,11 +288,11 @@ input[type=file].dp-file { color:#8A8080; font-size:8px; margin-top:4px; }
         // Wheel 1 — WHIMS / Curriculum. WHITE and BLUE verified against source documents.
         // GREEN / BLACK / GOLD reconstructed from established pattern — flag for verification.
         const WHIMS = {
-            WHITE: { color:'#E8E4DC', name:'White — Foundation', desc:'Entry point. Orientation, safety basics, first exposure to the work.', verified:true },
-            BLUE:  { color:'#1F7EA1', name:'Blue — Health / Depth', desc:'Reflection, grief work, health & wellbeing focus.', verified:true },
-            GREEN: { color:'#1A5C2A', name:'Green — Growth / Restoration', desc:'Environmental stewardship, restoration labor, ecological skill-building.', verified:false },
-            BLACK: { color:'#3A3A3E', name:'Black — Courage / Crisis Response', desc:'Highest-hazard work, crisis response readiness, courage under pressure.', verified:false },
-            GOLD:  { color:'#D4A820', name:'Gold — Mastery / Leadership', desc:'Elder status, mentorship, leadership within the program.', verified:false }
+            WHITE: { color:'#E8E4DC', name:'White — Foundation', desc:'Entry point. Orientation, safety basics, first exposure to the work.', verified:true, whmis:'Current WHMIS category' },
+            BLUE:  { color:'#1F7EA1', name:'Blue — Health / Depth', desc:'Reflection, grief work, health & wellbeing focus.', verified:true, whmis:'Current WHMIS category' },
+            GREEN: { color:'#1A5C2A', name:'Green — Growth / Restoration', desc:'Environmental stewardship, restoration labor, ecological skill-building.', verified:false, whmis:'Proposed category — not yet submitted' },
+            BLACK: { color:'#3A3A3E', name:'Black — Courage / Crisis Response', desc:'Highest-hazard work, crisis response readiness, courage under pressure.', verified:false, whmis:'Current WHMIS category' },
+            GOLD:  { color:'#D4A820', name:'Gold — Mastery / Leadership', desc:'Elder status, mentorship, leadership within the program.', verified:false, whmis:'Not a WHMIS category — internal only', minAge:55 }
         };
 
         const WHIMS_QUIZ = [
@@ -390,7 +395,7 @@ input[type=file].dp-file { color:#8A8080; font-size:8px; margin-top:4px; }
         // ═══════════════ STATE ═══════════════
         let dpaState = {
             hue: null, hueScores: { WHITE:0, BLUE:0, GREEN:0, BLACK:0, GOLD:0 },
-            knownCurriculumColor: null,
+            knownCurriculumColor: null, age: null,
             dimAnswers: {}, dimIndex: 0,
             acesMode: null, acesAnswers: {},
             shade: null, tint: 1.0, hcs: 5
@@ -462,6 +467,11 @@ input[type=file].dp-file { color:#8A8080; font-size:8px; margin-top:4px; }
         }
         function setKnownCurriculumColor(val) {
             dpaState.knownCurriculumColor = val || null;
+            saveDPA();
+        }
+        function setDpaAge(val) {
+            const n = parseInt(val, 10);
+            dpaState.age = Number.isFinite(n) && n >= 0 ? n : null;
             saveDPA();
         }
 
@@ -593,7 +603,22 @@ input[type=file].dp-file { color:#8A8080; font-size:8px; margin-top:4px; }
 
         // ── RESULTS ──
         function renderResults() {
-            const hue = dpaState.hue || 'WHITE';
+            const quizHue = dpaState.hue || 'WHITE';
+            let hue = quizHue;
+            let goldPending = false;
+            if (quizHue === 'GOLD') {
+                const eligible = typeof dpaState.age === 'number' && dpaState.age >= WHIMS.GOLD.minAge;
+                if (!eligible) {
+                    goldPending = true;
+                    // fall back to the next-highest scored colour for the working Hue — never silently keep GOLD
+                    let second = null, secondScore = -1;
+                    for (const c in dpaState.hueScores) {
+                        if (c === 'GOLD') continue;
+                        if (dpaState.hueScores[c] > secondScore) { second = c; secondScore = dpaState.hueScores[c]; }
+                    }
+                    hue = second || 'WHITE';
+                }
+            }
             const w = WHIMS[hue];
             const tintScore = Math.min(3, 1 + (Object.values(dpaState.dimAnswers).filter(v => v >= 4).length * 0.05));
             const shadeScore = dpaState.shade !== null ? dpaState.shade : null;
@@ -602,6 +627,20 @@ input[type=file].dp-file { color:#8A8080; font-size:8px; margin-top:4px; }
             document.getElementById('palette-swatches').innerHTML = Object.keys(WHIMS).map(c => `
                 <div class="swatch-wrap"><div class="swatch ${c===hue?'active':''}" style="background:${WHIMS[c].color}"></div><div class="swatch-label">${c}</div></div>`).join('');
             document.getElementById('palette-headline').textContent = w.name;
+
+            const whmisNote = document.getElementById('whmis-status-note') || (() => {
+                const el = document.createElement('div');
+                el.id = 'whmis-status-note';
+                el.className = 'disclosure';
+                document.getElementById('palette-headline').insertAdjacentElement('afterend', el);
+                return el;
+            })();
+            if (goldPending) {
+                const ageText = typeof dpaState.age === 'number' ? `You're ${dpaState.age}.` : `Your age wasn't provided.`;
+                whmisNote.innerHTML = `<b>Your quiz answers leaned GOLD</b> — but GOLD carries an Elder standing provision (55+) alongside its competency criteria. ${ageText} Your working Hue for matching is <b>${hue}</b> instead. This isn't a penalty — it's the same rule for everyone, and GOLD becomes available the day you're eligible, competency already on record.`;
+            } else {
+                whmisNote.innerHTML = `WHMIS status: <b>${w.whmis}</b>${w.minAge ? ` · Elder standing from age ${w.minAge}` : ''}.`;
+            }
 
             const shadeDisplay = shadeScore !== null ? shadeScore.toFixed(2) : 'Pending — Controller conversation';
             const shadeNumeric = shadeScore !== null ? shadeScore : 1.5;
