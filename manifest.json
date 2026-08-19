@@ -1,7 +1,7 @@
 {
   "name": "G.A.P.S. Reaching Out",
   "short_name": "GAPS",
-  "start_url": "/",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#0d111a",
   "theme_color": "#0d111a",
